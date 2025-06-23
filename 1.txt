@@ -1,30 +1,960 @@
+ 我理解您需要将这个虚拟主播平台的前端部分从纯HTML/CSS/JavaScript改为Vue 3 + Vite的实现，同时后端使用Flask。我将为您改写JavaScript部分，使其适用于Vue 3。
+
+以下是使用Vue 3的实现方式：
+
+<artifact id="vue3-virtual-host-platform" type="application/vnd.ant.code" language="vue">
+
 <template>
-  <div class="p-4">
-    <SelectComponent
-      v-model="selectedValue"
-      :options="options"
-      placeholder="请选择一个选项"
-    />
-    <p class="mt-2">你选择的是: {{ selectedValue }}</p>
+  <div class="container">
+    <!-- 第一列 -->
+    <div class="column column-1">
+      <!-- 声音库选择 -->
+      <div class="box box-1">
+        <h2>声音库选择</h2>
+        <p>选择已训练好的声音模型或上传声音模型文件</p>
+        
+        <div class="model-list">
+          <div 
+            v-for="(model, index) in voiceModels" 
+            :key="'voice-' + index"
+            class="model-item"
+            :class="{ active: model.active }"
+            @click="selectVoiceModel(index)">
+            {{ model.name }}
+          </div>
+        </div>
+        
+        <div class="file-upload">
+          <label>上传声音模型文件:</label>
+          <input type="file" id="voice-model-file" accept=".mdl, .bin" @change="handleVoiceModelUpload">
+        </div>
+        
+        <button class="btn" @click="applyVoice">应用声音</button>
+      </div>
+      
+      <!-- 训练新声音 -->
+      <div class="box box-2">
+        <h2>训练新声音</h2>
+        <p>上传声音样本以训练新的声音模型</p>
+        
+        <div class="file-upload">
+          <label>上传声音样本文件 (MP3/WAV):</label>
+          <input type="file" id="voice-sample-file" accept=".mp3, .wav" multiple @change="handleVoiceSampleUpload">
+        </div>
+        
+        <p>上传至少10分钟的清晰语音样本以获得最佳效果</p>
+        
+        <div class="file-upload">
+          <label>声音名称:</label>
+          <input type="text" v-model="newVoiceName" placeholder="为你的声音模型命名">
+        </div>
+        
+        <button class="btn" @click="startTraining">开始训练</button>
+        <a href="#" class="link">高级语音模型训练设置</a>
+        
+        <div id="training-status" style="margin-top: 15px;">
+          训练状态: <span class="status-badge" :class="trainingStatus.class">{{ trainingStatus.text }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 第二列 -->
+    <div class="column column-2">
+      <!-- Live2D模型选择 -->
+      <div class="box box-1">
+        <h2>Live2D模型选择</h2>
+        <p>选择或上传Live2D模型文件</p>
+        
+        <div class="model-list">
+          <div 
+            v-for="(model, index) in live2dModels" 
+            :key="'live2d-' + index"
+            class="model-item"
+            :class="{ active: model.active }"
+            @click="selectLive2dModel(index)">
+            {{ model.name }}
+          </div>
+        </div>
+        
+        <div class="file-upload">
+          <label>上传Live2D模型文件:</label>
+          <input type="file" id="live2d-model-file" accept=".model3.json" @change="handleLive2dModelUpload">
+        </div>
+        
+        <button class="btn" @click="applyModel">应用模型</button>
+        <a href="#" class="link">高级Live2D模型训练设置</a>
+        
+        <div id="model-status" style="margin-top: 15px;">
+          模型状态: <span class="status-badge" :class="modelStatus.class">{{ modelStatus.text }}</span>
+        </div>
+      </div>
+      
+      <!-- 直播平台推流码 -->
+      <div class="box box-2">
+        <h2>直播平台选择与推流码</h2>
+        <p>选择直播平台并输入推流码</p>
+        
+        <div class="platform-select">
+          <div 
+            v-for="(platform, index) in platforms" 
+            :key="'platform-' + index"
+            class="platform-item"
+            :class="{ active: platform.active }"
+            @click="selectPlatform(index)">
+            {{ platform.name }}
+          </div>
+        </div>
+        
+        <div class="file-upload">
+          <label>推流地址:</label>
+          <input type="text" v-model="streamUrl" placeholder="输入推流地址">
+        </div>
+        
+        <div class="file-upload">
+          <label>推流码:</label>
+          <input type="text" v-model="streamKey" placeholder="输入推流码">
+        </div>
+        
+        <button class="btn" @click="startStream">开始直播</button>
+        <button class="btn" @click="testStream" style="background-color: #27ae60;">测试连接</button>
+      </div>
+    </div>
+    
+    <!-- 第三列 -->
+    <div class="column column-3">
+      <!-- 直播效果预览 -->
+      <div class="box box-1">
+        <h2>直播效果预览</h2>
+        <div class="preview-area">
+          <p>{{ previewText }}</p>
+        </div>
+        
+        <div style="display: flex; justify-content: space-between;">
+          <div>
+            状态: <span class="status-badge" :class="previewStatus.class">{{ previewStatus.text }}</span>
+          </div>
+          <div>
+            <button class="btn" @click="refreshPreview" style="margin: 0; background-color: #95a5a6;">刷新预览</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- AI讲稿生成测试 -->
+      <div class="box box-2">
+        <h2>AI讲稿生成测试</h2>
+        <p>生成AI讲稿并在预览区域测试效果</p>
+        
+        <div class="file-upload">
+          <label>讲稿主题:</label>
+          <input type="text" v-model="speechTopic" placeholder="输入讲稿主题，如：今日游戏资讯">
+        </div>
+        
+        <div class="file-upload">
+          <label>关键词 (用逗号分隔):</label>
+          <input type="text" v-model="speechKeywords" placeholder="输入关键词，如：赛博朋克2077,补丁,更新">
+        </div>
+        
+        <div class="file-upload">
+          <label>讲稿风格:</label>
+          <select v-model="speechStyle" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 15px;">
+            <option value="casual">轻松休闲</option>
+            <option value="professional">专业正式</option>
+            <option value="cute">可爱活泼</option>
+            <option value="humorous">幽默诙谐</option>
+          </select>
+        </div>
+        
+        <button class="btn" @click="generateSpeech">生成讲稿</button>
+        <button class="btn" @click="testSpeech" style="background-color: #e67e22;">测试讲稿</button>
+        
+        <div class="file-upload" style="margin-top: 15px;">
+          <label>生成的讲稿:</label>
+          <textarea v-model="generatedSpeech" placeholder="生成的AI讲稿将显示在这里..." readonly></textarea>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
-<script>
-import SelectComponent from './SelectComponent.vue';
+<script setup>
+import { ref, reactive } from 'vue';
+import axios from 'axios';
 
-export default {
-  components: {
-    SelectComponent
-  },
-  data() {
-    return {
-      selectedValue: null,
-      options: [
-        { value: 'option1', label: '选项一' },
-        { value: 'option2', label: '选项二' },
-        { value: 'option3', label: '选项三' }
-      ]
-    };
+// 声音模型数据
+const voiceModels = reactive([
+  { name: '默认女声', active: true },
+  { name: '默认男声', active: false },
+  { name: '可爱女声', active: false },
+  { name: '低沉男声', active: false }
+]);
+
+// Live2D模型数据
+const live2dModels = reactive([
+  { name: '默认女孩模型', active: true },
+  { name: '默认男孩模型', active: false },
+  { name: '猫耳女孩模型', active: false },
+  { name: '商务男模型', active: false }
+]);
+
+// 直播平台数据
+const platforms = reactive([
+  { name: '抖音', active: true },
+  { name: 'B站', active: false },
+  { name: 'YouTube', active: false },
+  { name: 'Twitch', active: false }
+]);
+
+// 表单数据
+const newVoiceName = ref('');
+const streamUrl = ref('');
+const streamKey = ref('');
+const speechTopic = ref('');
+const speechKeywords = ref('');
+const speechStyle = ref('casual');
+const generatedSpeech = ref('');
+
+// 状态数据
+const trainingStatus = reactive({
+  text: '未开始',
+  class: 'not-ready'
+});
+
+const modelStatus = reactive({
+  text: '已就绪',
+  class: 'ready'
+});
+
+const previewStatus = reactive({
+  text: '预览就绪',
+  class: 'ready'
+});
+
+const previewText = ref('Live2D模型预览区域');
+
+// 上传文件数据
+const voiceModelFile = ref(null);
+const voiceSampleFiles = ref([]);
+const live2dModelFile = ref(null);
+
+// 声音模型选择
+function selectVoiceModel(index) {
+  voiceModels.forEach((model, i) => {
+    model.active = i === index;
+  });
+}
+
+// Live2D模型选择
+function selectLive2dModel(index) {
+  live2dModels.forEach((model, i) => {
+    model.active = i === index;
+  });
+}
+
+// 平台选择
+function selectPlatform(index) {
+  platforms.forEach((platform, i) => {
+    platform.active = i === index;
+  });
+}
+
+// 文件上传处理
+function handleVoiceModelUpload(e) {
+  voiceModelFile.value = e.target.files[0];
+}
+
+function handleVoiceSampleUpload(e) {
+  voiceSampleFiles.value = Array.from(e.target.files);
+}
+
+function handleLive2dModelUpload(e) {
+  live2dModelFile.value = e.target.files[0];
+}
+
+// 应用声音
+async function applyVoice() {
+  const selectedVoice = voiceModels.find(model => model.active);
+  
+  if (voiceModelFile.value) {
+    try {
+      const formData = new FormData();
+      formData.append('voice_model', voiceModelFile.value);
+      
+      await axios.post('/api/upload-voice-model', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      alert(`已上传并应用声音模型: ${voiceModelFile.value.name}`);
+    } catch (error) {
+      console.error('上传声音模型失败:', error);
+      alert('上传声音模型失败，请重试');
+    }
+  } else {
+    try {
+      await axios.post('/api/apply-voice', {
+        voice_name: selectedVoice.name
+      });
+      
+      alert(`已应用声音: ${selectedVoice.name}`);
+    } catch (error) {
+      console.error('应用声音失败:', error);
+      alert('应用声音失败，请重试');
+    }
   }
 }
+
+// 开始训练
+async function startTraining() {
+  if (voiceSampleFiles.value.length === 0) {
+    alert('请上传声音样本文件');
+    return;
+  }
+  
+  if (!newVoiceName.value) {
+    alert('请为声音模型命名');
+    return;
+  }
+  
+  // 更新训练状态
+  trainingStatus.text = '训练中';
+  trainingStatus.class = 'training';
+  
+  try {
+    const formData = new FormData();
+    voiceSampleFiles.value.forEach(file => {
+      formData.append('voice_samples', file);
+    });
+    formData.append('voice_name', newVoiceName.value);
+    
+    // 发送到后端API
+    const response = await axios.post('/api/train-voice', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    
+    // 训练完成后更新状态
+    trainingStatus.text = '训练完成';
+    trainingStatus.class = 'ready';
+    
+    // 添加新的模型到列表
+    voiceModels.push({
+      name: newVoiceName.value,
+      active: false
+    });
+    
+    // 重置表单
+    newVoiceName.value = '';
+    voiceSampleFiles.value = [];
+    document.getElementById('voice-sample-file').value = '';
+    
+    alert('声音模型训练完成！');
+  } catch (error) {
+    console.error('训练声音模型失败:', error);
+    trainingStatus.text = '训练失败';
+    trainingStatus.class = 'not-ready';
+    alert('训练声音模型失败，请重试');
+  }
+}
+
+// 应用模型
+async function applyModel() {
+  const selectedModel = live2dModels.find(model => model.active);
+  
+  if (live2dModelFile.value) {
+    try {
+      const formData = new FormData();
+      formData.append('live2d_model', live2dModelFile.value);
+      
+      await axios.post('/api/upload-live2d-model', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      previewText.value = `模型 "${live2dModelFile.value.name}" 已加载`;
+      alert(`已上传并应用模型: ${live2dModelFile.value.name}`);
+    } catch (error) {
+      console.error('上传Live2D模型失败:', error);
+      alert('上传Live2D模型失败，请重试');
+    }
+  } else {
+    try {
+      await axios.post('/api/apply-model', {
+        model_name: selectedModel.name
+      });
+      
+      previewText.value = `模型 "${selectedModel.name}" 已加载`;
+      alert(`已应用模型: ${selectedModel.name}`);
+    } catch (error) {
+      console.error('应用模型失败:', error);
+      alert('应用模型失败，请重试');
+    }
+  }
+}
+
+// 开始直播
+async function startStream() {
+  if (!streamUrl.value || !streamKey.value) {
+    alert('请输入推流地址和推流码');
+    return;
+  }
+  
+  const selectedPlatform = platforms.find(platform => platform.active);
+  
+  try {
+    await axios.post('/api/start-stream', {
+      platform: selectedPlatform.name,
+      stream_url: streamUrl.value,
+      stream_key: streamKey.value
+    });
+    
+    alert(`已开始在 ${selectedPlatform.name} 平台直播`);
+  } catch (error) {
+    console.error('开始直播失败:', error);
+    alert('开始直播失败，请重试');
+  }
+}
+
+// 测试连接
+async function testStream() {
+  if (!streamUrl.value || !streamKey.value) {
+    alert('请输入推流地址和推流码');
+    return;
+  }
+  
+  try {
+    const response = await axios.post('/api/test-stream', {
+      stream_url: streamUrl.value,
+      stream_key: streamKey.value
+    });
+    
+    if (response.data.success) {
+      alert('连接测试成功！可以开始直播');
+    } else {
+      alert(`连接测试失败: ${response.data.message}`);
+    }
+  } catch (error) {
+    console.error('测试连接失败:', error);
+    alert('测试连接失败，请重试');
+  }
+}
+
+// 生成讲稿
+async function generateSpeech() {
+  if (!speechTopic.value) {
+    alert('请输入讲稿主题');
+    return;
+  }
+  
+  try {
+    const response = await axios.post('/api/generate-speech', {
+      topic: speechTopic.value,
+      keywords: speechKeywords.value,
+      style: speechStyle.value
+    });
+    
+    generatedSpeech.value = response.data.speech_text;
+  } catch (error) {
+    console.error('生成讲稿失败:', error);
+    alert('生成讲稿失败，请重试');
+  }
+}
+
+// 测试讲稿
+async function testSpeech() {
+  if (!generatedSpeech.value) {
+    alert('请先生成讲稿');
+    return;
+  }
+  
+  previewText.value = '正在测试讲稿...';
+  
+  try {
+    await axios.post('/api/test-speech', {
+      speech_text: generatedSpeech.value
+    });
+    
+    previewText.value = '讲稿测试完成！';
+    alert('讲稿测试完成！');
+  } catch (error) {
+    console.error('测试讲稿失败:', error);
+    previewText.value = '讲稿测试失败';
+    alert('测试讲稿失败，请重试');
+  }
+}
+
+// 刷新预览
+function refreshPreview() {
+  previewText.value = 'Live2D模型预览区域';
+}
 </script>
+
+<style scoped>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+  min-height: 90vh;
+  gap: 20px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 20px;
+}
+
+.box {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+h2 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  border-bottom: 2px solid #e7eaee;
+  padding-bottom: 10px;
+}
+
+p {
+  color: #5a6a85;
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+.column-1 .box-1 {
+  flex: 0.4;
+}
+
+.column-1 .box-2 {
+  flex: 0.6;
+}
+
+.column-2 .box-1 {
+  flex: 0.6;
+}
+
+.column-2 .box-2 {
+  flex: 0.4;
+}
+
+.column-3 .box-1 {
+  flex: 0.4;
+}
+
+.column-3 .box-2 {
+  flex: 0.6;
+}
+
+.btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-weight: 500;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.btn:hover {
+  background-color: #2980b9;
+}
+
+.file-upload {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.file-upload label {
+  margin-bottom: 8px;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.file-upload input {
+  margin-bottom: 10px;
+}
+
+.model-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.model-item {
+  border: 2px solid #e7eaee;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: calc(50% - 5px);
+}
+
+.model-item:hover, .model-item.active {
+  border-color: #3498db;
+  background-color: rgba(52, 152, 219, 0.05);
+}
+
+.model-item.active {
+  font-weight: bold;
+}
+
+.preview-area {
+  background-color: #000;
+  border-radius: 8px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  margin-bottom: 15px;
+}
+
+.platform-select {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.platform-item {
+  border: 2px solid #e7eaee;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  width: 80px;
+}
+
+.platform-item:hover, .platform-item.active {
+  border-color: #3498db;
+  background-color: rgba(52, 152, 219, 0.05);
+}
+
+.platform-item.active {
+  font-weight: bold;
+}
+
+input[type="text"], textarea, select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.link {
+  color: #3498db;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.status-badge.ready {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.status-badge.training {
+  background-color: #f39c12;
+  color: white;
+}
+
+.status-badge.not-ready {
+  background-color: #e74c3c;
+  color: white;
+}
+</style>
+</artifact>
+
+现在，让我为您提供一个简单的Flask后端实现，以支持这个Vue 3前端：
+
+<artifact id="flask-backend" type="application/vnd.ant.code" language="python">
+# app.py
+from flask import Flask, request, jsonify
+import os
+from werkzeug.utils import secure_filename
+import time
+
+app = Flask(__name__)
+
+# 配置上传文件的保存路径
+UPLOAD_FOLDER = 'uploads'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# 允许上传的文件类型
+ALLOWED_VOICE_EXTENSIONS = {'mp3', 'wav'}
+ALLOWED_MODEL_EXTENSIONS = {'json', 'model3.json'}
+
+def allowed_file(filename, allowed_extensions):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
+
+@app.route('/api/upload-voice-model', methods=['POST'])
+def upload_voice_model():
+    if 'voice_model' not in request.files:
+        return jsonify({'error': '没有文件'}), 400
+    
+    file = request.files['voice_model']
+    
+    if file.filename == '':
+        return jsonify({'error': '没有选择文件'}), 400
+    
+    if file:
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'voice_models', filename))
+        return jsonify({'success': True, 'filename': filename})
+    
+    return jsonify({'error': '上传失败'}), 500
+
+@app.route('/api/apply-voice', methods=['POST'])
+def apply_voice():
+    data = request.get_json()
+    voice_name = data.get('voice_name')
+    
+    if not voice_name:
+        return jsonify({'error': '未提供声音名称'}), 400
+    
+    # 这里可以添加应用声音的逻辑
+    
+    return jsonify({'success': True, 'message': f'已应用声音: {voice_name}'})
+
+@app.route('/api/train-voice', methods=['POST'])
+def train_voice():
+    if 'voice_samples' not in request.files:
+        return jsonify({'error': '没有文件'}), 400
+    
+    voice_name = request.form.get('voice_name')
+    if not voice_name:
+        return jsonify({'error': '未提供声音名称'}), 400
+    
+    files = request.files.getlist('voice_samples')
+    
+    if not files or files[0].filename == '':
+        return jsonify({'error': '没有选择文件'}), 400
+    
+    # 创建保存目录
+    voice_samples_dir = os.path.join(app.config['UPLOAD_FOLDER'], 'voice_samples', voice_name)
+    if not os.path.exists(voice_samples_dir):
+        os.makedirs(voice_samples_dir)
+    
+    # 保存所有文件
+    for file in files:
+        if file and allowed_file(file.filename, ALLOWED_VOICE_EXTENSIONS):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(voice_samples_dir, filename))
+    
+    # 模拟训练过程（实际项目中，这里应该调用真正的训练逻辑）
+    time.sleep(2)  # 模拟训练需要的时间
+    
+    return jsonify({
+        'success': True, 
+        'message': f'声音 {voice_name} 训练完成',
+        'voice_model': {
+            'name': voice_name,
+            'path': f'voice_models/{voice_name}.mdl'  # 假设的模型文件路径
+        }
+    })
+
+@app.route('/api/upload-live2d-model', methods=['POST'])
+def upload_live2d_model():
+    if 'live2d_model' not in request.files:
+        return jsonify({'error': '没有文件'}), 400
+    
+    file = request.files['live2d_model']
+    
+    if file.filename == '':
+        return jsonify({'error': '没有选择文件'}), 400
+    
+    if file and allowed_file(file.filename, ALLOWED_MODEL_EXTENSIONS):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'live2d_models', filename))
+        return jsonify({'success': True, 'filename': filename})
+    
+    return jsonify({'error': '上传失败或文件类型不允许'}), 500
+
+@app.route('/api/apply-model', methods=['POST'])
+def apply_model():
+    data = request.get_json()
+    model_name = data.get('model_name')
+    
+    if not model_name:
+        return jsonify({'error': '未提供模型名称'}), 400
+    
+    # 这里可以添加应用模型的逻辑
+    
+    return jsonify({'success': True, 'message': f'已应用模型: {model_name}'})
+
+@app.route('/api/start-stream', methods=['POST'])
+def start_stream():
+    data = request.get_json()
+    platform = data.get('platform')
+    stream_url = data.get('stream_url')
+    stream_key = data.get('stream_key')
+    
+    if not all([platform, stream_url, stream_key]):
+        return jsonify({'error': '缺少必要参数'}), 400
+    
+    # 这里可以添加开始直播的逻辑
+    
+    return jsonify({'success': True, 'message': f'已开始在 {platform} 平台直播'})
+
+@app.route('/api/test-stream', methods=['POST'])
+def test_stream():
+    data = request.get_json()
+    stream_url = data.get('stream_url')
+    stream_key = data.get('stream_key')
+    
+    if not all([stream_url, stream_key]):
+        return jsonify({'error': '缺少必要参数'}), 400
+    
+    # 这里可以添加测试连接的逻辑
+    # 模拟连接测试成功
+    return jsonify({'success': True, 'message': '连接测试成功'})
+
+@app.route('/api/generate-speech', methods=['POST'])
+def generate_speech():
+    data = request.get_json()
+    topic = data.get('topic')
+    keywords = data.get('keywords', '')
+    style = data.get('style', 'casual')
+    
+    if not topic:
+        return jsonify({'error': '未提供讲稿主题'}), 400
+    
+    # 根据不同风格生成不同的讲稿
+    if style == 'casual':
+        speech_text = f"""嗨，大家好！今天我们要聊的主题是"{topic}"。\n\n"""
+        speech_text += f"""{keywords and '关键词有：' + keywords + '。\n\n' or ''}"""
+        speech_text += """这个话题最近超级火爆，我们一起来看看有什么新鲜事吧！最近有很多玩家都在讨论这个，我个人觉得真的很酷。你们觉得呢？欢迎在评论区留言哦！"""
+    elif style == 'professional':
+        speech_text = f"""各位观众好，欢迎收看今天的"{topic}"专题报道。\n\n"""
+        speech_text += f"""{keywords and '本次讨论的要点包括：' + keywords + '。\n\n' or ''}"""
+        speech_text += """根据最新数据分析，此领域正在经历重大变革。专家指出，这些变化将对行业产生深远影响。接下来，我们将深入分析这些趋势及其潜在影响。"""
+    elif style == 'cute':
+        speech_text = f"""哇~大家好呀！今天咱们要说的是超级有趣的"{topic}"！\n\n"""
+        speech_text += f"""{keywords and '有这些好玩的东西哦：' + keywords + '～\n\n' or ''}"""
+        speech_text += """好开心能和大家分享这些内容呀！这些东西实在是太可爱啦！你们喜欢吗？记得点赞支持我哦，爱你们哟~"""
+    elif style == 'humorous':
+        speech_text = f"""哈喽，各位沙雕网友们！今天我们要整活的主题是"{topic}"。\n\n"""
+        speech_text += f"""{keywords and '梗来了：' + keywords + '。\n\n' or ''}"""
+        speech_text += """说实话，我第一次看到这个消息的时候差点把键盘喷了！这也太搞笑了吧！不知道你们有没有同款震惊，反正我已经笑抽了！来来来，一起来搞笑吧！"""
+    
+    return jsonify({'success': True, 'speech_text': speech_text})
+
+@app.route('/api/test-speech', methods=['POST'])
+def test_speech():
+    data = request.get_json()
+    speech_text = data.get('speech_text')
+    
+    if not speech_text:
+        return jsonify({'error': '未提供讲稿内容'}), 400
+    
+    # 这里可以添加测试讲稿的逻辑
+    
+    return jsonify({'success': True, 'message': '讲稿测试完成'})
+
+if __name__ == '__main__':
+    # 确保上传目录存在
+    for dir_name in ['voice_models', 'voice_samples', 'live2d_models']:
+        dir_path = os.path.join(app.config['UPLOAD_FOLDER'], dir_name)
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
+            
+    app.run(debug=True)
+</artifact>
+
+最后，这是一个简单的Vite配置文件，用于设置Vue 3项目并处理API请求的代理：
+
+<artifact id="vite-config" type="application/vnd.ant.code" language="javascript">
+// vite.config.js
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+
+export default defineConfig({
+  plugins: [vue()],
+  server: {
+    port: 3000,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true
+      }
+    }
+  }
+})
+</artifact>
+
+### 实现说明
+
+我已经将您的原始HTML/CSS/JavaScript代码转换为Vue 3组件，并使用了Composition API（script setup）实现了功能逻辑。以下是主要的更改：
+
+1. **使用Vue 3响应式API**：
+   - 使用`ref`和`reactive`来管理状态
+   - 将原来的DOM操作转换为Vue的响应式数据绑定
+
+2. **添加了与Flask后端的集成**：
+   - 使用Axios进行API调用
+   - 所有功能都通过API与后端交互
+
+3. **Flask后端实现**：
+   - 提供了基本的API端点处理文件上传和处理
+   - 添加了模拟训练和应用模型的逻辑
+   - 包含了文件保存和管理功能
+
+4. **Vite配置**：
+   - 设置了开发服务器代理，用于将API请求转发到Flask后端
+
+### 使用方法
+
+1. 在Vue项目中，将Vue组件代码放入您的Vue文件中（例如`App.vue`或创建一个新的组件）
+2. 在Flask项目中，使用提供的Flask应用代码
+3. 将Vite配置添加到您的项目中
+
+这样，您的应用程序将使用Vue 3作为前端，同时通过API与Flask后端进行通信，实现文件上传、声音训练、模型应用等功能。
+
+需要注意的是，这只是一个基本的实现框架，您可能需要根据实际需求调整API和功能逻辑。在实际项目中，您可能还需要添加更多的错误处理、用户验证和数据验证逻辑。

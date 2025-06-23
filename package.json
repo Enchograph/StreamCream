@@ -1,20 +1,24 @@
 {
-  "name": "streamcream",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "font-awesome": "^4.7.0",
-    "vue": "^3.5.13",
-    "vue-router": "^4.5.1"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-vue": "^5.2.3",
-    "vite": "^6.3.5"
-  }
+    "name": "streamcream",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "font-awesome": "^4.7.0",
+        "vue": "^3.5.13",
+        "vue-router": "^4.5.1",
+        "vuedraggable": "^4.1.0"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^5.2.3",
+        "autoprefixer": "^10.4.21",
+        "postcss": "^8.5.6",
+        "tailwindcss": "^4.1.10",
+        "vite": "^6.3.5"
+    }
 }

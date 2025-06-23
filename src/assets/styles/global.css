@@ -1,0 +1,43 @@
+@font-face {
+    font-family: 'Trajan Pro';
+    src: url('/fonts/TrajanPro-Regular.ttf') format('ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.next-step-button {
+    /* 基础样式 */
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+
+    /* 悬浮定位 */
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+
+    /* 增加阴影效果 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.next-step-button:hover {
+    background-color: #45a049;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+* {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}

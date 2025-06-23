@@ -1,0 +1,60 @@
+.page-container {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table-layout {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.table-cell {
+    background-color: white;
+    border-radius: 6px;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    min-height: 150px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.table-cell:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.table-cell h3 {
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+    color: #333;
+}
+
+/* 为每个区域设置不同的样式 */
+.section-1 {
+    background-color: #e3f2fd;
+}
+
+.section-2 {
+    background-color: #e8f5e9;
+}
+
+.section-3 {
+    background-color: #fff3e0;
+}
+
+.section-4 {
+    background-color: #f3e5f5;
+}
+
+.section-5 {
+    background-color: #e0f2f1;
+}
+
+.section-6 {
+    background-color: #fff8e1;
+}

@@ -1,0 +1,30 @@
+<template>
+  <div class="p-4">
+    <SelectComponent
+      v-model="selectedValue"
+      :options="options"
+      placeholder="请选择一个选项"
+    />
+    <p class="mt-2">你选择的是: {{ selectedValue }}</p>
+  </div>
+</template>
+
+<script>
+import SelectComponent from './SelectComponent.vue';
+
+export default {
+  components: {
+    SelectComponent
+  },
+  data() {
+    return {
+      selectedValue: null,
+      options: [
+        { value: 'option1', label: '选项一' },
+        { value: 'option2', label: '选项二' },
+        { value: 'option3', label: '选项三' }
+      ]
+    };
+  }
+}
+</script>

@@ -2,9 +2,9 @@
     <header class="top-banner">
         <div class="logo">StreamCream</div>
         <nav class="nav-links">
-            <a href="#" class="nav-link" @click.prevent="goToSettings">设置</a>
-            <a href="#" class="nav-link">帮助</a>
+            <!-- <a href="#" class="nav-link">帮助</a> -->
             <a href="#" class="nav-link">文档</a>
+            <a href="#" class="nav-link" @click.prevent="goToSettings">设置</a>
         </nav>
     </header>
 </template>
@@ -35,6 +35,7 @@ function goToSettings() {
     padding: 15px 30px;
     width: 100%;
     box-sizing: border-box;
+    height: 10%;
 }
 
 .logo {

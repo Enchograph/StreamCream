@@ -1,33 +1,166 @@
 <div class="page-container">
-    <h2>页面 1</h2>
-    <p>这是主页面的内容</p>
+    <div class="container">
+        <!-- 第一列 -->
+        <div class="column column-1">
+            <!-- 声音库选择 -->
+            <div class="box box-1">
+                <h2>声音库选择</h2>
+                <p>选择已训练好的声音模型或上传声音模型文件</p>
 
-    <div class="table-layout">
-        <div class="table-cell section-1">
-            <h3>区域 1</h3>
-            <p>这里是区域1的内容。你可以在这里放置文本、图片或其他组件。</p>
+                <div class="model-list">
+                    <div class="model-item active">模型1</div>
+                    <div class="model-item">模型2</div>
+                    <div class="model-item">模型3</div>
+                    <div class="model-item">模型4</div>
+                </div>
+
+                <div class="file-upload">
+                    <label>上传声音模型文件:</label>
+                    <input type="file" id="voice-model-file" accept=".mdl, .bin">
+                </div>
+
+                <button class="btn" id="apply-voice">应用声音</button>
+            </div>
+
+            <!-- 训练新声音 -->
+            <div class="box box-2">
+                <h2>训练新声音</h2>
+                <p>上传声音样本以训练新的声音模型</p>
+
+                <div class="file-upload">
+                    <label>上传声音样本文件 (MP3/WAV):</label>
+                    <input type="file" id="voice-sample-file" accept=".mp3, .wav" multiple>
+                </div>
+
+                <p>上传至少10分钟的清晰语音样本以获得最佳效果</p>
+
+                <div class="file-upload">
+                    <label>声音名称:</label>
+                    <input type="text" id="voice-name" placeholder="为你的声音模型命名">
+                </div>
+
+                <button class="btn" id="start-training">开始训练</button>
+                <a href="#" class="link">高级语音模型训练设置</a>
+
+                <div id="training-status" style="margin-top: 15px;">
+                    训练状态: <span class="status-badge not-ready">未开始</span>
+                </div>
+            </div>
         </div>
-        <div class="table-cell section-2">
-            <h3>区域 2</h3>
-            <p>这里是区域2的内容。这个区域可以用来展示统计数据或重要信息。</p>
+
+        <!-- 第二列 -->
+        <div class="column column-2">
+            <!-- Live2D模型选择 -->
+            <div class="box box-1">
+                <h2>Live2D模型选择</h2>
+                <p>选择或上传Live2D模型文件</p>
+
+                <div class="model-list">
+                    <div class="model-item active">模型名1</div>
+                    <div class="model-item">模型名2</div>
+                    <div class="model-item">模型名3</div>
+                    <div class="model-item">模型名4</div>
+                </div>
+
+                <div class="file-upload">
+                    <label>上传Live2D模型文件:</label>
+                    <input type="file" id="live2d-model-file" accept=".model3.json">
+                </div>
+
+                <button class="btn" id="apply-model">应用模型</button>
+                <a href="#" class="link">高级Live2D模型训练设置</a>
+
+                <div id="model-status" style="margin-top: 15px;">
+                    模型状态: <span class="status-badge ready">已就绪</span>
+                </div>
+            </div>
+
+            <!-- 直播平台推流码 -->
+            <div class="box box-2">
+                <h2>直播平台选择与推流码</h2>
+                <p>选择直播平台并输入推流码</p>
+
+                <div class="platform-select">
+                    <div class="platform-item active">抖音</div>
+                    <div class="platform-item">B站</div>
+                    <div class="platform-item">YouTube</div>
+                    <div class="platform-item">Twitch</div>
+                </div>
+
+                <div class="file-upload">
+                    <label>推流地址:</label>
+                    <input type="text" id="stream-url" placeholder="输入推流地址">
+                </div>
+
+                <div class="file-upload">
+                    <label>推流码:</label>
+                    <input type="text" id="stream-key" placeholder="输入推流码">
+                </div>
+
+                <button class="btn" id="test-stream">测试连接</button>
+
+            </div>
         </div>
-        <div class="table-cell section-3">
-            <h3>区域 3</h3>
-            <p>这里是区域3的内容。这个区域可以包含图表或数据可视化。</p>
-        </div>
-        <div class="table-cell section-4">
-            <h3>区域 4</h3>
-            <p>这里是区域4的内容。这个区域适合放置状态信息或进度指标。</p>
-        </div>
-        <div class="table-cell section-5">
-            <h3>区域 5</h3>
-            <p>这里是区域5的内容。这个区域可以用于最近活动或通知。</p>
-        </div>
-        <div class="table-cell section-6">
-            <h3>区域 6</h3>
-            <p>这里是区域6的内容。这个区域可以包含设置选项或快捷功能。</p>
+
+        <!-- 第三列 -->
+        <div class="column column-3">
+            <!-- 直播效果预览 -->
+            <div class="box box-1">
+                <h2>直播效果预览</h2>
+                <div class="preview-area">
+                    <p>Live2D模型预览区域</p>
+                </div>
+
+                <div style="display: flex; justify-content: space-between;">
+                    <div>
+                        状态: <span class="status-badge ready">预览就绪</span>
+                    </div>
+                    <div>
+                        <button class="btn" id="refresh-preview"
+                            style="margin: 0; background-color: #95a5a6;">刷新预览</button>
+                    </div><button class="btn" id="test-stream" style="background-color: #27ae60;"
+                        @click="goToNextPage">开始直播</button>
+                    <!-- !!! 这里开始直播前要先检测一下 GPT-sovits, Live 2D, 大模型API的可用性。 -->
+
+                </div>
+            </div>
+
+            <!-- AI讲稿生成测试 -->
+            <div class="box box-2">
+                <h2>AI讲稿生成测试</h2>
+                <p>生成AI讲稿并在预览区域测试效果</p>
+
+                <div class="file-upload">
+                    <label>讲稿主题:</label>
+                    <input type="text" id="speech-topic" placeholder="输入讲稿主题，如：今日游戏资讯">
+                </div>
+
+                <div class="file-upload">
+                    <label>关键词 (用逗号分隔):</label>
+                    <input type="text" id="speech-keywords" placeholder="输入关键词，如：赛博朋克2077,补丁,更新">
+                </div>
+
+                <div class="file-upload">
+                    <label>讲稿风格:</label>
+                    <select id="speech-style"
+                        style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 15px;">
+                        <option value="casual">轻松休闲</option>
+                        <option value="professional">专业正式</option>
+                        <option value="cute">可爱活泼</option>
+                        <option value="humorous">幽默诙谐</option>
+                    </select>
+                </div>
+
+                <button class="btn" id="generate-speech">生成讲稿</button>
+                <button class="btn" id="test-speech" style="background-color: #e67e22;">测试讲稿</button>
+
+                <div class="file-upload" style="margin-top: 15px;">
+                    <label>生成的讲稿:</label>
+                    <textarea id="generated-speech" placeholder="生成的AI讲稿将显示在这里..." readonly></textarea>
+                </div>
+            </div>
         </div>
     </div>
 
-    <button class="next-step-button" @click="goToNextPage">开始直播</button>
+
 </div>

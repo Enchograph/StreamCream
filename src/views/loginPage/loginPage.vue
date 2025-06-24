@@ -87,10 +87,18 @@
 
 <script>
 import { ref, reactive, computed, watch } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '/src/stores/auth.js'
+import {useRoute} from 'vue-router'
+import api from '/src/api/index.js'
 
 export default {
     name: 'loginPage',
     setup() {
+
+        const auth = useAuthStore();
+        const router = useRouter();
+        const route = useRoute();
         // 定义响应式状态
         const isRegistering = ref(false);
         const backgroundStyle = computed(() => {
@@ -145,7 +153,7 @@ export default {
         };
 
         // 登录处理
-        const handleLogin = () => {
+        const handleLogin = async () => {
             let isValid = true;
 
             // 验证用户名
@@ -165,14 +173,41 @@ export default {
             }
 
             if (isValid) {
-                // 这里添加登录逻辑，通常是发送到服务器验证
-                alert('登录成功！');
-                clearForms();
+                try {
+                    // 发送登录请求
+                    const response = await api.login({
+                        username: loginForm.username,
+                        password: loginForm.password
+                    })
+                    
+                    if (response.success) {
+                        // 保存 token
+                        localStorage.setItem('token', response.token)
+                        auth.login(response.token)
+                        
+                        // 获取用户信息
+                        const userResponse = await api.getProtectedData()
+                        if (userResponse.success) {
+                            auth.setUser(userResponse.user)
+                        }
+                        
+                        alert('登录成功！');
+                        // 修复重定向问题
+                        const redirect = route.query.redirect || '/mainPage';
+                        router.push(redirect);
+                        clearForms();
+                    } else {
+                        alert(response.message || '登录失败')
+                    }
+                } catch (error) {
+                    console.error('登录失败:', error)
+                    alert('登录失败: ' + (error.message || '服务器错误'))
+                }
             }
         };
 
         // 注册处理
-        const handleRegister = () => {
+        const handleRegister = async () => {
             let isValid = true;
 
             // 验证用户名
@@ -221,10 +256,28 @@ export default {
             }
 
             if (isValid) {
-                // 这里添加注册逻辑，通常是发送到服务器进行注册
-                alert('注册成功！');
-                isRegistering.value = false;
-                clearForms();
+                try {
+                    // 发送注册请求
+                    const response = await api.register({
+                        username: registerForm.username,
+                        email: registerForm.email,
+                        password: registerForm.password
+                    })
+                    
+                    if (response.success) {
+                        alert('注册成功！');
+                        isRegistering.value = false;
+                        clearForms();
+                        
+                        // 自动登录
+                        await handleLogin()
+                    } else {
+                        alert(response.message || '注册失败')
+                    }
+                } catch (error) {
+                    console.error('注册失败:', error)
+                    alert('注册失败: ' + (error.message || '服务器错误'))
+                }
             }
         };
 

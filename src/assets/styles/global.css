@@ -41,28 +41,3 @@
     padding: 0;
     box-sizing: border-box;
 }
-
-/* global.css */
-html,
-body {
-    height: 100%;
-    /* 确保html和body占满视口高度 */
-    margin: 0;
-    /* 移除默认边距 */
-}
-
-/* global.css */
-.page-container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    /* 至少占满视口高度 */
-}
-
-
-main {
-    flex: 1;
-    /* 这会让main占据剩余高度 */
-    display: flex;
-    /* 添加flex布局 */
-}

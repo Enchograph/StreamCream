@@ -1,5 +1,5 @@
 <template>
-    <div class="live-streaming-assistant">
+    <div class="live-streaming-assistant" ref="assistant">
         <div class="container">
             <!-- 第一列：主题设置和提纲生成 -->
             <div class="column">
@@ -10,7 +10,8 @@
                         {{ isGeneratingOutline ? '生成中...' : '生成提纲' }}
                     </button>
                 </div>
-                <div class="outline-section" v-if="outline">
+                <!-- <div class="outline-section" v-if="outline"> -->
+                <div class="outline-section">
                     <label for="outline">提纲（可编辑）：</label>
                     <textarea id="outline" v-model="outline" rows="10"></textarea>
                     <button @click="confirmOutline" :disabled="!outline || isConfirmingOutline">
@@ -19,33 +20,42 @@
                 </div>
             </div>
 
-            <!-- 第二列：提纲块管理 -->
-            <div class="column" v-if="outlineConfirmed">
+            <!-- 第二列：提纲块管理（使用拖拽功能） -->
+            <!-- <div class="column" v-if="outlineConfirmed"> -->
+            <div class="column">
                 <h3>提纲管理</h3>
                 <div class="blocks-container">
-                    <div v-for="(block, index) in outlineBlocks" :key="index" class="outline-block"
-                        :class="{ 'current-block': currentBlockIndex === index }">
-                        <div class="block-header">
-                            <span @click="editBlockTitle(index)" class="block-title">{{ block.title }}</span>
-                            <div class="block-actions">
-                                <button @click="moveBlockUp(index)" :disabled="index === 0">↑</button>
-                                <button @click="moveBlockDown(index)"
-                                    :disabled="index === outlineBlocks.length - 1">↓</button>
-                                <button @click="removeBlock(index)" class="remove-btn">×</button>
+                    <draggable v-model="outlineBlocks" item-key="id" handle=".drag-handle" ghost-class="ghost-block"
+                        @end="onDragEnd">
+                        <template #item="{ element, index }">
+                            <div class="outline-block" :class="{ 'current-block': currentBlockIndex === index }">
+                                <div v-if="editingBlockIndex !== index" class="block-header">
+                                    <span @click="editBlockTitle(index)" class="block-title">{{ element.title }}</span>
+                                    <div class="block-actions">
+                                        <button @click="removeBlock(index)" class="remove-btn">×</button>
+                                        <div class="drag-handle">
+                                            <svg viewBox="0 0 24 24" width="24" height="24">
+                                                <path
+                                                    d="M8,4 L16,4 L16,6 L8,6 L8,4 Z M8,11 L16,11 L16,13 L8,13 L8,11 Z M8,18 L16,18 L16,20 L8,20 L8,18 Z"
+                                                    fill="currentColor"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div v-else class="block-edit">
+                                    <input v-model="editingBlockTitle" @keyup.enter="saveBlockTitle"
+                                        @blur="saveBlockTitle" ref="editTitleInput" class="edit-title-input" />
+                                </div>
                             </div>
-                        </div>
-                        <div v-if="editingBlockIndex === index" class="block-edit">
-                            <input v-model="editingBlockTitle" @keyup.enter="saveBlockTitle" />
-                            <button @click="saveBlockTitle">保存</button>
-                            <button @click="cancelEditBlockTitle">取消</button>
-                        </div>
-                    </div>
+                        </template>
+                    </draggable>
                     <button @click="addNewBlock" class="add-block-btn">+ 添加新章节</button>
                 </div>
             </div>
 
             <!-- 第三列：直播界面 -->
-            <div class="column" v-if="outlineConfirmed">
+            <!-- <div class="column" v-if="outlineConfirmed"> -->
+            <div class="column">
                 <div class="broadcast-section">
                     <h3>直播界面</h3>
                     <div class="fake-video-area">
@@ -83,8 +93,15 @@
 </template>
 
 <script>
-export default {
+// 引入vue-draggable-next
+import { defineComponent } from 'vue';
+import draggable from 'vuedraggable';
+
+export default defineComponent({
     name: 'LiveStreamingAssistant',
+    components: {
+        draggable
+    },
     data() {
         return {
             // API配置 - 实际使用时应该从环境变量或配置文件中获取
@@ -107,7 +124,6 @@ export default {
             isBroadcasting: false,
             currentBlockIndex: -1,
             currentContentIndex: 0,
-            currentBlockContent: [],
             currentSubtitle: '',
             nextSubtitle: '',
             subtitleInterval: null,
@@ -130,6 +146,7 @@ export default {
         }
     },
     methods: {
+
         async generateOutline() {
             if (!this.topic) return;
 
@@ -161,12 +178,14 @@ export default {
                     const match = line.match(/^\d+\.\s*(.+)$/);
                     if (match) {
                         this.outlineBlocks.push({
+                            id: Date.now() + Math.random().toString(36).substr(2, 9), // 添加唯一ID用于拖拽
                             title: match[1].trim(),
                             content: []
                         });
                     } else if (line.trim()) {
                         // 如果不匹配格式但有内容，直接添加
                         this.outlineBlocks.push({
+                            id: Date.now() + Math.random().toString(36).substr(2, 9),
                             title: line.trim(),
                             content: []
                         });
@@ -186,11 +205,17 @@ export default {
         editBlockTitle(index) {
             this.editingBlockIndex = index;
             this.editingBlockTitle = this.outlineBlocks[index].title;
+
+            this.$nextTick(() => {
+                if (this.$refs.editTitleInput) {
+                    this.$refs.editTitleInput.focus();
+                }
+            });
         },
 
         saveBlockTitle() {
             if (this.editingBlockIndex >= 0) {
-                this.outlineBlocks[this.editingBlockIndex].title = this.editingBlockTitle;
+                this.outlineBlocks[this.editingBlockIndex].title = this.editingBlockTitle || '未命名章节';
                 this.cancelEditBlockTitle();
             }
         },
@@ -200,43 +225,34 @@ export default {
             this.editingBlockTitle = '';
         },
 
-        moveBlockUp(index) {
-            if (index > 0) {
-                const temp = this.outlineBlocks[index];
-                this.$set(this.outlineBlocks, index, this.outlineBlocks[index - 1]);
-                this.$set(this.outlineBlocks, index - 1, temp);
-
-                // 更新当前块索引（如果需要）
-                if (this.currentBlockIndex === index) {
-                    this.currentBlockIndex--;
-                } else if (this.currentBlockIndex === index - 1) {
-                    this.currentBlockIndex++;
-                }
-            }
-        },
-
-        moveBlockDown(index) {
-            if (index < this.outlineBlocks.length - 1) {
-                const temp = this.outlineBlocks[index];
-                this.$set(this.outlineBlocks, index, this.outlineBlocks[index + 1]);
-                this.$set(this.outlineBlocks, index + 1, temp);
-
-                // 更新当前块索引（如果需要）
-                if (this.currentBlockIndex === index) {
-                    this.currentBlockIndex++;
-                } else if (this.currentBlockIndex === index + 1) {
-                    this.currentBlockIndex--;
+        onDragEnd() {
+            // 拖拽结束后更新当前块的索引（如果需要）
+            if (this.currentBlockIndex !== -1) {
+                const currentBlockId = this.outlineBlocks[this.currentBlockIndex]?.id;
+                if (currentBlockId) {
+                    const newIndex = this.outlineBlocks.findIndex(block => block.id === currentBlockId);
+                    if (newIndex !== -1) {
+                        this.currentBlockIndex = newIndex;
+                    }
                 }
             }
         },
 
         removeBlock(index) {
             if (confirm('确定要删除这个章节吗？')) {
+                // 保存被删除块的ID，以便更新currentBlockIndex
+                const removedBlockId = this.outlineBlocks[index].id;
                 this.outlineBlocks.splice(index, 1);
 
-                // 更新当前块索引（如果需要）
-                if (this.currentBlockIndex >= index) {
-                    this.currentBlockIndex = Math.max(-1, this.currentBlockIndex - 1);
+                // 更新当前块索引
+                if (this.currentBlockIndex !== -1) {
+                    if (index === this.currentBlockIndex) {
+                        // 如果删除的是当前块，移到前一个块
+                        this.currentBlockIndex = Math.max(-1, this.currentBlockIndex - 1);
+                    } else if (index < this.currentBlockIndex) {
+                        // 如果删除的块在当前块之前，当前块索引需要减1
+                        this.currentBlockIndex--;
+                    }
                 }
             }
         },
@@ -245,6 +261,7 @@ export default {
             const newBlockTitle = prompt('请输入新章节标题：');
             if (newBlockTitle && newBlockTitle.trim()) {
                 this.outlineBlocks.push({
+                    id: Date.now() + Math.random().toString(36).substr(2, 9),
                     title: newBlockTitle.trim(),
                     content: []
                 });
@@ -400,28 +417,56 @@ export default {
                 console.error('API调用出错:', error);
                 throw error;
             }
+        },
+        setColumnHeight() {
+            // 获取视窗高度
+            const viewportHeight = window.innerHeight;
+            // 获取组件顶部到视窗顶部的距离
+            const assistantTop = this.$refs.assistant.getBoundingClientRect().top;
+            // 计算列的高度（视窗高度减去组件顶部的距离再减去一些padding）
+            const columnHeight = viewportHeight - assistantTop - 40; // 40px 作为底部缓冲
+            // 设置 CSS 变量
+            document.documentElement.style.setProperty('--column-height', `${columnHeight}px`);
         }
     },
+    mounted() {
+        this.setColumnHeight();
+        window.addEventListener('resize', this.setColumnHeight);
+    },
+
     beforeUnmount() {
         // 清理定时器
         if (this.subtitleInterval) {
             clearInterval(this.subtitleInterval);
         }
-    }
-}
+        // 移除事件监听
+        window.removeEventListener('resize', this.setColumnHeight);
+    },
+});
 </script>
 
 <style scoped>
 .live-streaming-assistant {
     font-family: 'Arial', sans-serif;
     color: #333;
+    /* 移除max-width限制，使其占满整个屏幕 */
+    width: 100%;
+    /* 保留下面的样式 */
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .container {
     display: flex;
+    /* 修改为100%确保占满父元素 */
     width: 100%;
-    min-height: 600px;
     gap: 20px;
+    box-sizing: border-box;
+    padding: 15px;
+    flex-wrap: wrap;
+    /* 允许在需要时换行 */
+    /* 移除任何max-width限制 */
 }
 
 .column {
@@ -433,6 +478,24 @@ export default {
     display: flex;
     flex-direction: column;
     overflow: auto;
+    margin: 0 10px;
+    min-width: 300px;
+    /* 设置最小宽度 */
+    height: var(--column-height);
+    /* 使用CSS变量 */
+}
+
+/* 响应式调整 */
+@media (max-width: 1200px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .column {
+        width: 100%;
+        flex: none;
+        /* 取消 flex: 1 */
+    }
 }
 
 /* 第一列样式 */
@@ -480,7 +543,7 @@ button:disabled {
     cursor: not-allowed;
 }
 
-/* 第二列样式 */
+/* 第二列样式 - 拖拽相关 */
 .blocks-container {
     display: flex;
     flex-direction: column;
@@ -492,11 +555,17 @@ button:disabled {
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 10px;
+    transition: all 0.2s;
 }
 
 .current-block {
     border-color: #4CAF50;
     background-color: #f0fff0;
+}
+
+.ghost-block {
+    opacity: 0.5;
+    background: #c8ebfb;
 }
 
 .block-header {
@@ -508,35 +577,46 @@ button:disabled {
 .block-title {
     cursor: pointer;
     font-weight: bold;
+    flex: 1;
 }
 
 .block-actions {
     display: flex;
-    gap: 5px;
-}
-
-.block-actions button {
-    padding: 2px 8px;
-    font-size: 12px;
+    align-items: center;
 }
 
 .remove-btn {
+    padding: 2px 8px;
+    font-size: 12px;
     background-color: #f44336;
+    margin-right: 8px;
 }
 
 .remove-btn:hover {
     background-color: #d32f2f;
 }
 
-.block-edit {
-    margin-top: 10px;
+.drag-handle {
+    cursor: grab;
+    color: #888;
     display: flex;
-    gap: 5px;
+    align-items: center;
 }
 
-.block-edit input {
-    flex: 1;
-    margin-bottom: 0;
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.block-edit {
+    width: 100%;
+}
+
+.edit-title-input {
+    width: 100%;
+    margin: 0;
+    padding: 8px;
+    font-weight: bold;
+    font-size: 14px;
 }
 
 .add-block-btn {
@@ -617,16 +697,5 @@ button:disabled {
 
 .broadcast-controls button.active:hover {
     background-color: #d32f2f;
-}
-
-/* 响应式调整 */
-@media (max-width: 1200px) {
-    .container {
-        flex-direction: column;
-    }
-
-    .column {
-        width: 100%;
-    }
 }
 </style>

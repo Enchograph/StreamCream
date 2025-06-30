@@ -1,0 +1,22 @@
+cd GPT-SoVITS
+
+# 创建新的conda环境
+conda create -n sovits python=3.9.0 -y
+
+# 激活环境并安装依赖
+conda activate sovits
+
+# 解决SSL问题的方法1：使用conda安装基础包
+conda install numpy scipy pip -c conda-forge
+
+# 方法2：如果方法1不行，尝试更新pip和设置信任源
+python -m pip install --upgrade pip
+pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org -r .\requirements.txt
+
+# 方法3：如果还是有问题，可以尝试使用国内镜像源
+# pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r .\requirements.txt
+
+# 运行Python脚本
+cd GPT-SoVITS
+conda activate sovits
+python .\api_v2.py -a 127.0.0.1 -p 9880 -c .\GPT_SoVITS\configs\tts_infer.yaml

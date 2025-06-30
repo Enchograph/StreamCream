@@ -1,0 +1,10 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "wanko.moc3",
+		"Textures": [
+			"wanko.1024/texture_00.png"
+		],
+		"DisplayInfo": "wanko.cdi3.json"
+	}
+}

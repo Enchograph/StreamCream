@@ -1,0 +1,10 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "tororo.moc3",
+		"Textures": [
+			"tororo.1024/texture_00.png"
+		],
+		"DisplayInfo": "tororo.cdi3.json"
+	}
+}

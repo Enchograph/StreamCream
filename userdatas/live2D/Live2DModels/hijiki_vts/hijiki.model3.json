@@ -1,0 +1,10 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "hijiki.moc3",
+		"Textures": [
+			"hijiki.1024/texture_00.png"
+		],
+		"DisplayInfo": "hijiki.cdi3.json"
+	}
+}

@@ -1,0 +1,1 @@
+你需要在这里自行下载https://www.modelscope.cn/models/FlowerCry/gpt-sovits-7z-pacakges/resolve/master/GPT-SoVITS-v2pro-20250604.7z并改其文件夹名为GPT-SoVITS

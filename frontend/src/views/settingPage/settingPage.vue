@@ -1,0 +1,660 @@
+<template>
+    <v-container class="pa-4">
+        <v-card flat class="mx-auto" max-width="800">
+            <v-card-title class="text-h5 font-weight-medium">设置</v-card-title>
+
+
+            <v-row>
+
+
+                <v-col cols="12">
+                    <v-card flat class="mb-4">
+                        <v-card-title class="text-subtitle-1 font-weight-medium">调试设置</v-card-title>
+                        <v-card-text>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-switch v-model="debugMode" label="调试模式" color="primary"
+                                        :messages="debugMode ? '已开启' : '已关闭'"></v-switch>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-select v-model="bannerColor" :items="[
+                                        { text: '默认', value: 'default' },
+                                        { text: '红色', value: 'red' },
+                                        { text: '蓝色', value: 'blue' },
+                                        { text: '紫色', value: 'purple' }
+                                    ]" item-title="text" item-value="value" label="TopBanner颜色" outlined
+                                        dense></v-select>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+
+
+
+
+
+                <v-col cols="12">
+                    <v-card flat class="mb-4">
+                        <v-card-title class="text-subtitle-1 font-weight-medium">AI设置</v-card-title>
+                        <v-card-text>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-select v-model="aiSettings.provider" :items="[
+                                        { text: 'OpenAI', value: 'https://api.openai.com/v1/chat/completions' },
+                                        { text: 'DeepSeek', value: 'https://api.deepseek.com/v1/chat/completions' },
+                                        { text: 'Anthropic', value: 'https://api.anthropic.com/v1/messages' },
+                                        { text: 'Google', value: 'https://generativelanguage.googleapis.com/v1beta/models' },
+                                        { text: '硅基流动', value: 'https://api.siliconflow.cn/v1/chat/completions' },
+                                        { text: '火山方舟', value: 'https://ark.volcengineapi.com/v1/chat/completions' },
+                                        { text: '腾讯云', value: 'https://hunyuan.cloud.tencent.com/hyllm/v1/chat/completions' },
+                                        { text: 'SORUX', value: 'https://api.soruxgpt.com/v1/chat/completions' },
+                                        { text: '自定义', value: 'custom' }
+                                    ]" item-title="text" item-value="value" label="模型提供商" outlined dense
+                                        @change="handleProviderChange"></v-select>
+                                    <v-text-field v-if="aiSettings.provider === 'custom'"
+                                        v-model="aiSettings.customProvider" label="API端点URL"
+                                        placeholder="https://api.soruxgpt.com/v1/chat/completions" outlined dense
+                                        class="mt-2"></v-text-field>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-text-field v-model="aiSettings.apiKey" label="API 密钥" placeholder="输入API密钥"
+                                        type="password" outlined dense></v-text-field>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-select v-model="aiSettings.modelName" :items="[
+                                        { text: 'GPT-4o', value: 'gpt-4o', group: 'OpenAI' },
+                                        { text: 'GPT-4 Turbo', value: 'gpt-4-turbo', group: 'OpenAI' },
+                                        { text: 'GPT-3.5 Turbo', value: 'gpt-3.5-turbo', group: 'OpenAI' },
+                                        { text: 'Claude 3 Opus', value: 'claude-3-opus-20240229', group: 'Anthropic' },
+                                        { text: 'Claude 3 Sonnet', value: 'claude-3-sonnet-20240229', group: 'Anthropic' },
+                                        { text: 'Claude 3 Haiku', value: 'claude-3-haiku-20240307', group: 'Anthropic' },
+                                        { text: 'Gemini 2.5 Pro', value: 'gemini-2.5-pro-preview-05-06', group: 'Google' },
+                                        { text: 'Gemini 2.0 Flash', value: 'gemini-2.0-flash-exp', group: 'Google' },
+                                        { text: 'DeepSeek V3', value: 'deepseek-v3', group: '其他' },
+                                        { text: 'Grok-3', value: 'grok-3', group: '其他' },
+                                        { text: 'GPT-4o-2024-05-13', value: 'gpt-4o-2024-05-13', group: 'OpenAI' },
+                                        { text: 'GPT-4o-2024-08-06', value: 'gpt-4o-2024-08-06', group: 'OpenAI' },
+                                        { text: 'GPT-4o-2024-11-20', value: 'gpt-4o-2024-11-20', group: 'OpenAI' },
+                                        { text: 'GPT-4o-image-vip', value: 'gpt-4o-image-vip', group: 'OpenAI' },
+                                        { text: 'GPT-4o-mini', value: 'gpt-4o-mini', group: 'OpenAI' },
+                                        { text: 'Claude 3.5 Haiku', value: 'claude-3-5-haiku-20241022', group: 'Anthropic' },
+                                        { text: 'Claude 3.5 Sonnet', value: 'claude-3-5-sonnet-20240620', group: 'Anthropic' },
+                                        { text: 'Claude 3.5 Sonnet 2024', value: 'claude-3-5-sonnet-20241022', group: 'Anthropic' },
+                                        { text: 'Claude 3.7 Sonnet', value: 'claude-3-7-sonnet-20250219', group: 'Anthropic' },
+                                        { text: 'Claude 3.7 Sonnet Thinking', value: 'claude-3-7-sonnet-thinking', group: 'Anthropic' },
+                                        { text: 'Claude Opus 4', value: 'claude-opus-4', group: 'Anthropic' },
+                                        { text: 'Claude Opus 4 2025', value: 'claude-opus-4-20250514', group: 'Anthropic' },
+                                        { text: 'Claude Opus 4 Thinking', value: 'claude-opus-4-thinking', group: 'Anthropic' },
+                                        { text: 'Claude Opus 4 All', value: 'claude-opus-4-all', group: 'Anthropic' },
+                                        { text: 'Claude Opus 4 Thinking All', value: 'claude-opus-4-thinking-all', group: 'Anthropic' },
+                                        { text: 'Claude Sonnet 4', value: 'claude-sonnet-4', group: 'Anthropic' },
+                                        { text: 'Claude Sonnet 4 2025', value: 'claude-sonnet-4-20250514', group: 'Anthropic' },
+                                        { text: 'Claude Sonnet 4 Thinking', value: 'claude-sonnet-4-thinking', group: 'Anthropic' },
+                                        { text: 'Claude Sonnet 4 All', value: 'claude-sonnet-4-all', group: 'Anthropic' },
+                                        { text: 'Claude Sonnet 4 Thinking All', value: 'claude-sonnet-4-thinking-all', group: 'Anthropic' },
+                                        { text: 'DeepSeek R1', value: 'deepseek-r1', group: '其他' },
+                                        { text: 'DeepSeek R1 0528', value: 'deepseek-r1-0528', group: '其他' },
+                                        { text: 'DeepSeek Reasoner All', value: 'deepseek-reasoner-all', group: '其他' },
+                                        { text: 'Gemini 2.0 Flash Thinking', value: 'gemini-2.0-flash-thinking-exp', group: 'Google' },
+                                        { text: 'Gemini 2.0 Flash Thinking 01-21', value: 'gemini-2.0-flash-thinking-exp-01-21', group: 'Google' },
+                                        { text: 'Gemini 2.0 Flash Thinking 1219', value: 'gemini-2.0-flash-thinking-exp-1219', group: 'Google' },
+                                        { text: 'Gemini 2.5 Flash Preview', value: 'gemini-2.5-flash-preview-04-17', group: 'Google' },
+                                        { text: 'Gemini 2.5 Flash Thinking', value: 'gemini-2.5-flash-preview-04-17-thinking', group: 'Google' },
+                                        { text: 'Gemini 2.5 Pro Exp', value: 'gemini-2.5-pro-exp-03-25', group: 'Google' },
+                                        { text: 'Grok-3 DeepSearch', value: 'grok-3-deepsearch', group: '其他' },
+                                        { text: 'Grok-3 Reasoning', value: 'grok-3-reasoning', group: '其他' },
+                                        { text: 'MJ Chat', value: 'mj-chat', group: '其他' },
+                                        { text: 'Net DeepSeek R1', value: 'net-deepseek-r1', group: '其他' },
+                                        { text: 'O1', value: 'o1', group: '其他' },
+                                        { text: 'O1 Mini', value: 'o1-mini', group: '其他' },
+                                        { text: 'O3', value: 'o3', group: '其他' },
+                                        { text: 'O3 All', value: 'o3-all', group: '其他' },
+                                        { text: 'Text Embedding Ada 002', value: 'text-embedding-ada-002', group: '其他' }
+                                    ]" label="模型名称" outlined dense item-title="text" item-value="value"
+                                        :filter="modelFilter" :search-input.sync="modelSearch" clearable
+                                        no-data-text="没有找到匹配的模型">
+                                        <template v-slot:prepend-item>
+                                            <v-text-field v-model="modelSearch" label="搜索模型"
+                                                prepend-inner-icon="mdi-magnify" clearable hide-details
+                                                class="px-4"></v-text-field>
+                                        </template>
+                                    </v-select>
+                                </v-col>
+                                <v-col cols="12" v-if="aiSettings.modelName === 'custom'">
+                                    <v-text-field v-model="aiSettings.customModelName" label="自定义模型名称"
+                                        placeholder="输入自定义模型名称" outlined dense></v-text-field>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+
+
+
+            <v-row class="mt-4">
+                <v-col cols="12" class="text-center">
+                    <!-- <v-btn color="primary" variant="flat" @click="saveSettings">
+                        保存
+                    </v-btn> -->
+                </v-col>
+            </v-row>
+
+            <v-row>
+                <v-col cols="12">
+                    <v-card flat class="mb-4">
+                        <v-card-title class="text-subtitle-1 font-weight-medium">直播设置</v-card-title>
+                        <v-card-text>
+                            <v-row>
+                                <v-col cols="12" md="6">
+                                    <v-select v-model="revolutionPreference" :items="[
+                                        { text: '1920×1080 (16:9)', value: '1920x1080' },
+                                        { text: '1280×720 (16:9)', value: '1280x720' },
+                                        { text: '2048×1080 (≈17:9)', value: '2048x1080' }
+                                    ]" item-title="text" item-value="value" label="直播分辨率" outlined dense></v-select>
+                                </v-col>
+                                <v-col cols="12" md="6">
+                                    <v-select v-model="fpsPreference" :items="[
+                                        { text: '30fps', value: '30' },
+                                        { text: '60fps', value: '60' }
+                                    ]" item-title="text" item-value="value" label="直播帧率" outlined dense></v-select>
+                                </v-col>
+                                <v-col cols="12" md="6">
+                                    <v-select v-model="bgPreference" :items="[
+                                        { text: '默认', value: 'default' },
+                                        ...customBackgrounds.map(bg => ({ text: bg, value: bg }))
+                                    ]" item-title="text" item-value="value" label="直播背景" outlined dense></v-select>
+                                </v-col>
+                                <v-col cols="12" md="6">
+                                    <v-btn color="primary" variant="outlined" block height="40"
+                                        @click="$refs.bgUpload.click()">
+                                        上传背景
+                                    </v-btn>
+                                    <input type="file" ref="bgUpload" @change="handleBgUpload" accept="image/*"
+                                        style="display: none">
+                                </v-col>
+                                <v-col cols="12" md="6">
+                                    <v-select v-model="platformPreference" :items="[
+                                        { text: '哔哩哔哩', value: 'bilibili' },
+                                        { text: '抖音', value: 'douyin' },
+                                        { text: '快手', value: 'kuaishou' },
+                                        { text: '虎牙', value: 'huya' },
+                                        { text: '斗鱼', value: 'douyu' },
+                                        { text: 'YY直播', value: 'yy' }
+                                    ]" item-title="text" item-value="value" label="直播平台" outlined dense></v-select>
+                                </v-col>
+
+                                <v-col cols="12" md="6">
+                                    <v-btn color="secondary" variant="outlined" block height="40" class="mb-4">
+                                        获取推流码
+                                    </v-btn>
+                                </v-col>
+                                <v-col cols="12" md="6">
+                                    <v-text-field v-model="streamDomain" label="推流地址" placeholder="请输入推流地址" outlined
+                                        dense></v-text-field>
+                                </v-col>
+                                <v-col cols="12" md="6">
+                                    <v-text-field v-model="streamKey" label="推流码" placeholder="请输入推流码" outlined
+                                        dense></v-text-field>
+                                </v-col>
+                                <v-col cols="12" class="text-center">
+                                    <v-btn color="primary" class="mr-4" @click="testStreamConnection">
+                                        测试连接
+                                    </v-btn>
+                                    <v-btn color="success" @click="saveStreamSettings">
+                                        保存设置
+                                    </v-btn>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12">
+                    <v-card class="mb-4" outlined>
+                        <v-card-title class="text-h5">语音转换设置</v-card-title>
+                        <v-card-text>
+                            <!-- 预留内容 -->
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12">
+                    <v-card class="mb-4" outlined>
+                        <v-card-title class="text-h5">Live 2D 设置</v-card-title>
+                        <v-card-text>
+                            <!-- 预留内容 -->
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row> </v-card>
+    </v-container>
+    <v-btn color="primary" variant="text" fixed bottom right @click="completeSetting">
+        完成
+    </v-btn>
+</template>
+
+<script>
+import api from '/src/api/index.js'
+import { useRouter } from 'vue-router'
+
+export default {
+    name: 'settingPage',
+    data() {
+        return {
+            debugMode: localStorage.getItem('debugMode') === 'true',
+            bannerColor: localStorage.getItem('bannerColor') || 'default',
+            resolution: localStorage.getItem('resolution') || '1920x1080',
+            revolutionPreference: localStorage.getItem('revolutionPreference') || '1920x1080',
+            fpsPreference: localStorage.getItem('fpsPreference') || '30',
+            bgPreference: localStorage.getItem('bgPreference') || 'default',
+            platformPreference: localStorage.getItem('platformPreference') || 'bilibili',
+            streamDomain: localStorage.getItem('streamDomain') || '',
+            streamKey: localStorage.getItem('streamKey') || '',
+            modelSearch: '',
+            aiSettings: {
+                provider: 'openai',
+                customProvider: '',
+                apiKey: '',
+                modelName: '',
+                temperature: 0.7,
+                maxTokens: 1000
+            },
+            customBackgrounds: [],
+            modelSearch: '',
+            showModelSearch: false,
+            allModels: [
+                { value: 'gpt-4o', label: 'GPT-4o', group: 'OpenAI' },
+                { value: 'gpt-4-turbo', label: 'GPT-4 Turbo', group: 'OpenAI' },
+                { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo', group: 'OpenAI' },
+                { value: 'claude-3-opus-20240229', label: 'Claude 3 Opus', group: 'Anthropic' },
+                { value: 'claude-3-sonnet-20240229', label: 'Claude 3 Sonnet', group: 'Anthropic' },
+                { value: 'claude-3-haiku-20240307', label: 'Claude 3 Haiku', group: 'Anthropic' },
+                { value: 'gemini-2.5-pro-preview-05-06', label: 'Gemini 2.5 Pro', group: 'Google' },
+                { value: 'gemini-2.0-flash-exp', label: 'Gemini 2.0 Flash', group: 'Google' },
+                { value: 'deepseek-v3', label: 'DeepSeek V3', group: '其他' },
+                { value: 'grok-3', label: 'Grok-3', group: '其他' },
+                { value: 'gpt-4o-2024-05-13', label: 'GPT-4o-2024-05-13', group: 'OpenAI' },
+                { value: 'gpt-4o-2024-08-06', label: 'GPT-4o-2024-08-06', group: 'OpenAI' },
+                { value: 'gpt-4o-2024-11-20', label: 'GPT-4o-2024-11-20', group: 'OpenAI' },
+                { value: 'gpt-4o-image-vip', label: 'GPT-4o-image-vip', group: 'OpenAI' },
+                { value: 'gpt-4o-mini', label: 'GPT-4o-mini', group: 'OpenAI' },
+                { value: 'claude-3-5-haiku-20241022', label: 'Claude 3.5 Haiku', group: 'Anthropic' },
+                { value: 'claude-3-5-sonnet-20240620', label: 'Claude 3.5 Sonnet', group: 'Anthropic' },
+                { value: 'claude-3-5-sonnet-20241022', label: 'Claude 3.5 Sonnet 2024', group: 'Anthropic' },
+                { value: 'claude-3-7-sonnet-20250219', label: 'Claude 3.7 Sonnet', group: 'Anthropic' },
+                { value: 'claude-3-7-sonnet-thinking', label: 'Claude 3.7 Sonnet Thinking', group: 'Anthropic' },
+                { value: 'claude-opus-4', label: 'Claude Opus 4', group: 'Anthropic' },
+                { value: 'claude-opus-4-20250514', label: 'Claude Opus 4 2025', group: 'Anthropic' },
+                { value: 'claude-opus-4-thinking', label: 'Claude Opus 4 Thinking', group: 'Anthropic' },
+                { value: 'claude-opus-4-all', label: 'Claude Opus 4 All', group: 'Anthropic' },
+                { value: 'claude-opus-4-thinking-all', label: 'Claude Opus 4 Thinking All', group: 'Anthropic' },
+                { value: 'claude-sonnet-4', label: 'Claude Sonnet 4', group: 'Anthropic' },
+                { value: 'claude-sonnet-4-20250514', label: 'Claude Sonnet 4 2025', group: 'Anthropic' },
+                { value: 'claude-sonnet-4-thinking', label: 'Claude Sonnet 4 Thinking', group: 'Anthropic' },
+                { value: 'claude-sonnet-4-all', label: 'Claude Sonnet 4 All', group: 'Anthropic' },
+                { value: 'claude-sonnet-4-thinking-all', label: 'Claude Sonnet 4 Thinking All', group: 'Anthropic' },
+                { value: 'deepseek-r1', label: 'DeepSeek R1', group: '其他' },
+                { value: 'deepseek-r1-0528', label: 'DeepSeek R1 0528', group: '其他' },
+                { value: 'deepseek-reasoner-all', label: 'DeepSeek Reasoner All', group: '其他' },
+                { value: 'gemini-2.0-flash-thinking-exp', label: 'Gemini 2.0 Flash Thinking', group: 'Google' },
+                { value: 'gemini-2.0-flash-thinking-exp-01-21', label: 'Gemini 2.0 Flash Thinking 01-21', group: 'Google' },
+                { value: 'gemini-2.0-flash-thinking-exp-1219', label: 'Gemini 2.0 Flash Thinking 1219', group: 'Google' },
+                { value: 'gemini-2.5-flash-preview-04-17', label: 'Gemini 2.5 Flash Preview', group: 'Google' },
+                { value: 'gemini-2.5-flash-preview-04-17-thinking', label: 'Gemini 2.5 Flash Thinking', group: 'Google' },
+                { value: 'gemini-2.5-pro-exp-03-25', label: 'Gemini 2.5 Pro Exp', group: 'Google' },
+                { value: 'grok-3-deepsearch', label: 'Grok-3 DeepSearch', group: '其他' },
+                { value: 'grok-3-reasoning', label: 'Grok-3 Reasoning', group: '其他' },
+                { value: 'mj-chat', label: 'MJ Chat', group: '其他' },
+                { value: 'net-deepseek-r1', label: 'Net DeepSeek R1', group: '其他' },
+                { value: 'o1', label: 'O1', group: '其他' },
+                { value: 'o1-mini', label: 'O1 Mini', group: '其他' },
+                { value: 'o3', label: 'O3', group: '其他' },
+                { value: 'o3-all', label: 'O3 All', group: '其他' },
+                { value: 'text-embedding-ada-002', label: 'Text Embedding Ada 002', group: '其他' }
+            ]
+        }
+    },
+    watch: {
+        debugMode(newVal) {
+            localStorage.setItem('debugMode', newVal)
+        },
+        bannerColor(newVal) {
+            localStorage.setItem('bannerColor', newVal)
+            window.dispatchEvent(new Event('storage'))
+        },
+        resolution(newVal) {
+            localStorage.setItem('resolution', newVal)
+            window.dispatchEvent(new Event('storage'))
+        },
+        revolutionPreference(newVal) {
+            localStorage.setItem('revolutionPreference', newVal)
+            window.dispatchEvent(new Event('storage'))
+        },
+        fpsPreference(newVal) {
+            localStorage.setItem('fpsPreference', newVal)
+            window.dispatchEvent(new Event('storage'))
+        },
+        bgPreference(newVal) {
+            localStorage.setItem('bgPreference', newVal)
+            window.dispatchEvent(new Event('storage'))
+        },
+        platformPreference(newVal) {
+            localStorage.setItem('platformPreference', newVal)
+            window.dispatchEvent(new Event('storage'))
+        },
+        streamDomain(newVal) {
+            localStorage.setItem('streamDomain', newVal)
+            window.dispatchEvent(new Event('storage'))
+        },
+        streamKey(newVal) {
+            localStorage.setItem('streamKey', newVal)
+            window.dispatchEvent(new Event('storage'))
+        }
+    },
+    async mounted() {
+        // 优先从后端获取
+        try {
+            const prefs = await api.getPreferences();
+            if (prefs && prefs.aiSettings) {
+                this.aiSettings = prefs.aiSettings;
+                localStorage.setItem('aiSettings', JSON.stringify(this.aiSettings));
+            }
+
+            // 加载Live2D模型设置
+            if (prefs.live2dSettings) {
+                localStorage.setItem('live2dX', prefs.live2dSettings.x);
+                localStorage.setItem('live2dY', prefs.live2dSettings.y);
+                localStorage.setItem('live2dScale', prefs.live2dSettings.scale);
+            }
+        } catch (e) {
+            // 后端获取失败时再用本地
+            if (localStorage.getItem('aiSettings')) {
+                this.aiSettings = JSON.parse(localStorage.getItem('aiSettings'));
+            }
+            console.error('加载Live2D设置失败:', e);
+        }
+        if (localStorage.getItem('debugMode') !== null) {
+            this.debugMode = localStorage.getItem('debugMode') === 'true'
+        }
+        if (localStorage.getItem('bannerColor') !== null) {
+            this.bannerColor = localStorage.getItem('bannerColor')
+        }
+    },
+    methods: {
+        async handleBgUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await axios.post('/api/upload-background', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+
+                const fileName = response.data.filename;
+                this.customBackgrounds.push(fileName);
+                localStorage.setItem('customBackgrounds', JSON.stringify(this.customBackgrounds));
+            } catch (error) {
+                console.error('上传失败:', error);
+            }
+        },
+        handleProviderChange() {
+            if (this.aiSettings.provider !== 'custom') {
+                this.aiSettings.customProvider = '';
+            }
+        },
+        filterModels() {
+            // 实现模型搜索过滤逻辑
+            const searchTerm = this.modelSearch.toLowerCase();
+            this.showModelSearch = searchTerm.length > 0;
+
+            if (this.showModelSearch) {
+                // 这里可以添加动态过滤逻辑
+                // 例如: 根据搜索词过滤allModels数组
+            }
+        },
+        modelFilter(item, queryText, itemText) {
+            const search = queryText.toLowerCase();
+            return (
+                item.text.toLowerCase().includes(search) ||
+                item.value.toLowerCase().includes(search) ||
+                item.group.toLowerCase().includes(search)
+            );
+        },
+        async completeSetting() {
+            // 先自动测试LLM连接
+            const llmOk = await this.testLLMConnection(false);
+            if (!llmOk) {
+                alert('AI设置保存失败');
+                return;
+            }
+            this.saveAISettings(false);
+
+            try {
+                await api.savePreferences({
+                    debugMode: this.debugMode,
+                    bannerColor: this.bannerColor,
+                    resolution: this.resolution
+                })
+            } catch (e) {
+                // 可选：提示保存失败
+            }
+            alert('设置完成');
+            const redirectPath = this.$route.query.redirect || '/mainPage'
+            this.$router.push(redirectPath).then(() => {
+                window.location.reload();
+            });
+        },
+        testStreamConnection() {
+            // Implement stream connection test logic here
+            console.log('Testing stream connection');
+        },
+        saveStreamSettings() {
+            // Implement save settings logic here
+            console.log('Saving stream settings');
+        },
+        async handleBgUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            try {
+                const response = await api.uploadBackground(file);
+                this.customBackgrounds.push(response.filename);
+                this.bgPreference = response.filename;
+                localStorage.setItem('bgPreference', response.filename);
+                window.dispatchEvent(new Event('storage'));
+            } catch (error) {
+                console.error('上传背景失败:', error);
+                alert('上传背景失败');
+            }
+            event.target.value = ''; // 重置input
+        },
+        async saveStreamSettings(showAlert = true) {
+            localStorage.setItem('revolutionPreference', this.revolutionPreference);
+            localStorage.setItem('fpsPreference', this.fpsPreference);
+            localStorage.setItem('bgPreference', this.bgPreference);
+            localStorage.setItem('platformPreference', this.platformPreference);
+            localStorage.setItem('streamDomain', this.streamDomain);
+            localStorage.setItem('streamKey', this.streamKey);
+
+            try {
+                await api.savePreferences({
+                    revolutionPreference: this.revolutionPreference,
+                    fpsPreference: this.fpsPreference,
+                    bgPreference: this.bgPreference,
+                    platformPreference: this.platformPreference,
+                    streamDomain: this.streamDomain,
+                    streamKey: this.streamKey
+                });
+                if (showAlert) alert('直播设置已保存！');
+            } catch (e) {
+                if (showAlert) alert('直播设置保存失败：' + e.message);
+            }
+        },
+
+        async saveAISettings(showAlert = true) {
+            // 自动测试LLM连接
+            const llmOk = await this.testLLMConnection(false);
+            if (!llmOk) {
+                alert('AI设置保存失败');
+                return;
+            }
+            localStorage.setItem('aiSettings', JSON.stringify(this.aiSettings));
+            // 保存到后端
+            api.savePreferences({ aiSettings: this.aiSettings });
+            if (showAlert) {
+                alert('AI设置已保存！');
+            }
+        },
+        async testLLMConnection(showAlert = true) {
+            // 构造测试请求参数
+            const { provider, apiKey, modelName, temperature } = this.aiSettings;
+            if (!provider || !apiKey || !modelName) {
+                if (showAlert) alert('请填写完整的API地址、API密钥和模型名称！');
+                return false;
+            }
+            try {
+                // 以OpenAI兼容API为例
+                const res = await fetch(provider, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: modelName,
+                        messages: [
+                            { role: 'user', content: '你好，请简单回复"测试成功"四个字。' }
+                        ],
+                        temperature: temperature || 0.7,
+                        max_tokens: 16
+                    })
+                });
+                const data = await res.json();
+                if (res.ok && data.choices && data.choices.length > 0) {
+                    if (showAlert) alert('LLM服务连接成功！返回内容：' + (data.choices[0].message?.content || '无'));
+                    return true;
+                } else {
+                    if (showAlert) alert('LLM服务连接失败！' + (data.error?.message || JSON.stringify(data)));
+                    return false;
+                }
+            } catch (e) {
+                if (showAlert) alert('LLM服务连接异常：' + e);
+                return false;
+            }
+        }
+    },
+    computed: {
+        finishBtnColor() {
+            if (this.bannerColor === 'blue') return '#1976d2';
+            if (this.bannerColor === 'purple') return '#7c3aed';
+            return '#409eff';
+        }
+    }
+}
+</script>
+
+<style scoped>
+.plain-container {
+    background: #fff;
+    color: #222;
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 32px 16px;
+    font-size: 16px;
+    font-family: system-ui, Arial, sans-serif;
+    position: relative;
+}
+
+hr {
+    margin: 18px 0 28px 0;
+    border: none;
+    border-top: 1px solid #e0e0e0;
+}
+
+.plain-section {
+    margin-bottom: 28px;
+}
+
+.plain-section label {
+    margin-right: 8px;
+}
+
+.plain-section input[type="text"],
+.plain-section input[type="password"],
+.plain-section input[type="number"],
+.plain-section select {
+    margin: 4px 0 12px 0;
+    padding: 4px 8px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    background: #fff;
+}
+
+.plain-section button {
+    margin-right: 10px;
+    margin-top: 8px;
+    padding: 4px 16px;
+    font-size: 15px;
+    border: 1px solid #bbb;
+    border-radius: 2px;
+    background: #fafafa;
+    color: #222;
+    cursor: pointer;
+}
+
+.plain-section button:hover {
+    background: #f0f0f0;
+}
+
+h2,
+h3 {
+    font-weight: normal;
+    color: #222;
+    margin: 18px 0 10px 0;
+}
+
+.floating-finish-btn {
+    position: fixed;
+    right: 36px;
+    bottom: 36px;
+    z-index: 100;
+    padding: 14px 36px;
+    font-size: 18px;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(64, 158, 255, 0.12);
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.floating-finish-btn:hover {
+    filter: brightness(1.08);
+    box-shadow: 0 6px 24px rgba(64, 158, 255, 0.18);
+}
+
+@media (max-width: 700px) {
+    .plain-container {
+        padding-left: 2vw;
+        padding-right: 2vw;
+        max-width: 100vw;
+    }
+
+    .floating-finish-btn {
+        right: 10px;
+        bottom: 10px;
+        padding: 10px 18px;
+        font-size: 15px;
+    }
+}
+</style>

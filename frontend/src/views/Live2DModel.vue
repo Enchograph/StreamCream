@@ -114,52 +114,21 @@ const init = async () => {
     });
 
     // 添加背景图片
-    console.log('开始加载背景图片...');
-    try {
-        const bgTexture = await PIXI.Texture.from('/api/get-background');
-        console.log('背景图片加载成功:', bgTexture);
-        const bgSprite = new PIXI.Sprite(bgTexture);
-        const [canvasWidth, canvasHeight] = effectiveResolution.value.split('x').map(Number);
-
-        // 计算保持比例的缩放(确保不拉伸)
-        const scale = Math.min(
-            window.innerWidth / bgSprite.width,
-            window.innerHeight / bgSprite.height
-        );
-
-        // 确保缩放比例不超过1(不放大)
-        const finalScale = scale;
-
-        // 设置精灵尺寸和位置
-        bgSprite.width = bgSprite.width * finalScale;
-        bgSprite.height = bgSprite.height * finalScale;
-        bgSprite.x = (window.innerWidth - bgSprite.width) / 2;
-        bgSprite.y = (window.innerHeight - bgSprite.height) / 2;
-
-        app.stage.addChildAt(bgSprite, 0);
-        console.log('背景图片已添加到舞台');
-    } catch (error) {
-        console.error('背景图片加载失败:', error);
-        // 加载默认背景
-        const defaultBg = await PIXI.Texture.from('/default.jpg');
-        const defaultSprite = new PIXI.Sprite(defaultBg);
-        const [canvasWidth, canvasHeight] = effectiveResolution.value.split('x').map(Number);
-
-        // 计算居中裁剪的比例
-        const scale = Math.max(
-            canvasWidth / defaultSprite.width,
-            canvasHeight / defaultSprite.height
-        );
-
-        // 设置精灵尺寸和位置
-        defaultSprite.width = defaultSprite.width * scale;
-        defaultSprite.height = defaultSprite.height * scale;
-        defaultSprite.x = (canvasWidth - defaultSprite.width) / 2;
-        defaultSprite.y = (canvasHeight - defaultSprite.height) / 2;
-
-        app.stage.addChildAt(defaultSprite, 0);
-        console.log('已使用默认背景图片');
-    }
+    const bgDiv = document.createElement('div');
+    bgDiv.className = 'background-image';
+    bgDiv.style.backgroundImage = 'url(/api/get-background)';
+    bgDiv.style.backgroundSize = 'cover';
+    bgDiv.style.backgroundPosition = 'center';
+    bgDiv.style.position = 'absolute';
+    bgDiv.style.width = '100%';
+    bgDiv.style.height = '100%';
+    bgDiv.style.zIndex = '0';
+    document.querySelector('.canvasWrap').prepend(bgDiv);
+    
+    // 确保canvas在背景之上
+    const canvas = document.getElementById('myCanvas');
+    canvas.style.position = 'relative';
+    canvas.style.zIndex = '1';
     // 加载 Live2D 模型（Haru），autoInteract 设为 false 禁用默认交互
     model = await Live2DModel.from("live2d/Mao/Mao.model3.json", {
         autoHitTest: false,
@@ -217,10 +186,13 @@ const init = async () => {
     model.y = lastPosition.y;
     model.x = lastPosition.x;
 
-    // 根据分辨率调整模型尺寸
-    const targetWidth = containerWidth * 0.8; // 模型占容器80%宽度
-    const scale = targetWidth / model.width;
-    model.scale.set(scale);
+    // 仅在初始加载时根据分辨率调整模型尺寸
+    if (!localStorage.getItem('live2dScale')) {
+        const targetWidth = containerWidth * 0.8; // 模型占容器80%宽度
+        const initialScale = targetWidth / model.width;
+        model.scale.set(initialScale);
+        live2DStore.scale = initialScale;
+    }
 
     // 将模型添加到舞台
     app.stage.addChild(model);

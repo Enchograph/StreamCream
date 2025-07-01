@@ -74,28 +74,7 @@
 
                 <!-- 直播平台推流码 -->
                 <div class="box box-2">
-                    <h2>直播平台选择与推流码</h2>
-                    <p>选择直播平台并输入推流码</p>
-
-                    <div class="platform-select">
-                        <div class="platform-item active">抖音</div>
-                        <div class="platform-item">B站</div>
-                        <div class="platform-item">YouTube</div>
-                        <div class="platform-item">Twitch</div>
-                    </div>
-
-                    <div class="file-upload">
-                        <label>推流地址:</label>
-                        <input type="text" id="stream-url" placeholder="输入推流地址">
-                    </div>
-
-                    <div class="file-upload">
-                        <label>推流码:</label>
-                        <input type="text" id="stream-key" placeholder="输入推流码">
-                    </div>
-
-                    <button class="btn" id="test-stream">测试连接</button>
-
+                    <streamConfig />
                 </div>
             </div>
 
@@ -169,6 +148,7 @@ import ModelSelector from './ModelSelector.vue';
 import { defineComponent } from 'vue';
 import LivePreview from '../../components/livepreview.vue';
 import Live2DModel from '../../components/Live2DModel.vue';
+import streamConfig from '../../components/streamConfig.vue';
 
 
 export default {
@@ -176,7 +156,8 @@ export default {
     components: {
         ModelSelector,
         LivePreview,
-        Live2DModel
+        Live2DModel,
+        streamConfig
     },
     setup() {
         // 获取路由实例

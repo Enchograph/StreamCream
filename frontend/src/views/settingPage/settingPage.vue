@@ -13,6 +13,11 @@
                         <v-card-text>
                             <v-row>
                                 <v-col cols="12">
+                                    <v-btn color="error" variant="outlined" @click="resetPreferences">
+                                        重置所有偏好设置
+                                    </v-btn>
+                                </v-col>
+                                <v-col cols="12">
                                     <v-switch v-model="debugMode" label="调试模式" color="primary"
                                         :messages="debugMode ? '已开启' : '已关闭'"></v-switch>
                                 </v-col>
@@ -461,6 +466,15 @@ export default {
             this.$router.push(redirectPath).then(() => {
                 window.location.reload();
             });
+        },
+        async resetPreferences() {
+            try {
+                await api.resetPreferences();
+                localStorage.clear();
+                this.$toast.success('所有偏好设置已重置');
+            } catch (error) {
+                this.$toast.error('重置失败: ' + error.message);
+            }
         },
         testStreamConnection() {
             // Implement stream connection test logic here

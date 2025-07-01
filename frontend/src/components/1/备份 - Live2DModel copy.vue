@@ -26,12 +26,7 @@ import { useLive2DStore } from "../stores/live2d";
 
 
 // 组件属性
-const props = defineProps({
-    resolution: {
-        type: String,
-        default: '1920x1080'
-    }
-});
+
 
 // 获取实际使用的分辨率
 const effectiveResolution = computed(() => {
@@ -99,15 +94,12 @@ const init = async () => {
         app.destroy(true, true);
     }
 
-    const container = document.querySelector('.canvasWrap');
-    const containerWidth = window.innerWidth;
-    const containerHeight = window.innerHeight;
-
+    const [canvasWidth, canvasHeight] = effectiveResolution.value.split('x').map(Number);
     app = new PIXI.Application({
         view: document.querySelector("#myCanvas"),
         autoStart: true,
-        width: containerWidth,
-        height: containerHeight,
+        width: canvasWidth,
+        height: canvasHeight,
         backgroundAlpha: 0,
         resolution: window.devicePixelRatio || 1,
         autoDensity: true
@@ -121,20 +113,35 @@ const init = async () => {
         const bgSprite = new PIXI.Sprite(bgTexture);
         const [canvasWidth, canvasHeight] = effectiveResolution.value.split('x').map(Number);
 
-        // 计算保持比例的缩放(确保不拉伸)
-        const scale = Math.min(
-            window.innerWidth / bgSprite.width,
-            window.innerHeight / bgSprite.height
-        );
-
-        // 确保缩放比例不超过1(不放大)
-        const finalScale = scale;
-
+        // 计算裁剪比例和区域
+        const targetRatio = canvasWidth / canvasHeight;
+        const sourceRatio = bgSprite.width / bgSprite.height;
+        
+        let cropWidth, cropHeight;
+        
+        if (sourceRatio > targetRatio) {
+            // 源图更宽，裁剪左右
+            cropHeight = bgSprite.height;
+            cropWidth = cropHeight * targetRatio;
+        } else {
+            // 源图更高，裁剪上下
+            cropWidth = bgSprite.width;
+            cropHeight = cropWidth / targetRatio;
+        }
+        
+        // 计算裁剪区域
+        const cropX = (bgSprite.width - cropWidth) / 2;
+        const cropY = (bgSprite.height - cropHeight) / 2;
+        
+        // 创建裁剪矩形并应用
+        const cropRect = new PIXI.Rectangle(cropX, cropY, cropWidth, cropHeight);
+        bgTexture.frame = cropRect;
+        
         // 设置精灵尺寸和位置
-        bgSprite.width = bgSprite.width * finalScale;
-        bgSprite.height = bgSprite.height * finalScale;
-        bgSprite.x = (window.innerWidth - bgSprite.width) / 2;
-        bgSprite.y = (window.innerHeight - bgSprite.height) / 2;
+        bgSprite.width = canvasWidth;
+        bgSprite.height = canvasHeight;
+        bgSprite.x = 0;
+        bgSprite.y = 0;
 
         app.stage.addChildAt(bgSprite, 0);
         console.log('背景图片已添加到舞台');
@@ -146,7 +153,7 @@ const init = async () => {
         const [canvasWidth, canvasHeight] = effectiveResolution.value.split('x').map(Number);
 
         // 计算居中裁剪的比例
-        const scale = Math.max(
+        const scale = Math.min(
             canvasWidth / defaultSprite.width,
             canvasHeight / defaultSprite.height
         );
@@ -218,7 +225,8 @@ const init = async () => {
     model.x = lastPosition.x;
 
     // 根据分辨率调整模型尺寸
-    const targetWidth = containerWidth * 0.8; // 模型占容器80%宽度
+    const [modelResWidth, modelResHeight] = effectiveResolution.value.split('x').map(Number);
+    const targetWidth = modelResWidth * 0.8; // 模型占画布80%宽度
     const scale = targetWidth / model.width;
     model.scale.set(scale);
 
@@ -265,6 +273,7 @@ const applyExpression = () => {
     width: 100%;
     height: 100%;
     background-color: #f5f5f5;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;

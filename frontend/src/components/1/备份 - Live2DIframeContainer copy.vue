@@ -19,6 +19,7 @@ const live2dStore = useLive2DStore();
 
 const containerStyle = computed(() => {
     const [width, height] = live2dStore.resolution.split('x').map(Number);
+    const ratio = width / height;
     return {
         'aspect-ratio': `${width}/${height}`,
         'max-width': '100%',

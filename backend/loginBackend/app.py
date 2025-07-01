@@ -333,6 +333,17 @@ def save_preferences():
     print("commit+refresh后 preferences：", setting.preferences)
     return jsonify({'success': True})
 
+@app.route('/api/reset-preferences', methods=['POST'])
+def reset_preferences():
+    user_id = get_user_id_from_token()
+    if not user_id:
+        return jsonify({'success': False, 'message': '未登录'}), 401
+    setting = UserSetting.query.filter_by(user_id=user_id).first()
+    if setting:
+        setting.preferences = {}
+        db.session.commit()
+    return jsonify({'success': True})
+
 if __name__ == '__main__':
     # 确保背景图片目录存在
     os.makedirs('backgrounds', exist_ok=True)

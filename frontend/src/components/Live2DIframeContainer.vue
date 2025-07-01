@@ -22,7 +22,9 @@ const containerStyle = computed(() => {
     return {
         'aspect-ratio': `${width}/${height}`,
         'max-width': '100%',
-        'max-height': '100%'
+        'max-height': '100%',
+        'transform': `scale(${live2dStore.relativeScale})`,
+        'transform-origin': 'center'
     };
 });
 </script>

@@ -11,6 +11,7 @@
             <!-- 用于渲染 Live2D 模型的 canvas -->
             <canvas id="myCanvas" />
         </div>
+        <button @click="resetModel">重置模型位置</button>
     </div>
 </template>
 
@@ -77,9 +78,10 @@ watch(() => live2DStore.resolution, () => {
 });
 
 // 组件挂载时初始化 PIXI 应用和 Live2D 模型
-onMounted(() => {
-    init();
-});
+    onMounted(() => {
+        live2DStore.loadState();
+        init();
+    });
 
 // 组件卸载前销毁 PIXI 应用，释放资源
 onBeforeUnmount(() => {
@@ -92,12 +94,12 @@ onBeforeUnmount(() => {
 
 // 初始化函数，创建 PIXI 应用并加载 Live2D 模型
 const init = async () => {
-    const [width, height] = effectiveResolution.value.split('x').map(Number);
-
-    // 销毁现有应用（如果存在）
-    if (app) {
-        app.destroy(true, true);
-    }
+        const [width, height] = effectiveResolution.value.split('x').map(Number);
+        
+        // 销毁现有应用（如果存在）
+        if (app) {
+            app.destroy(true, true);
+        }
 
     const container = document.querySelector('.canvasWrap');
     const containerWidth = window.innerWidth;
@@ -124,7 +126,7 @@ const init = async () => {
     bgDiv.style.height = '100%';
     bgDiv.style.zIndex = '0';
     document.querySelector('.canvasWrap').prepend(bgDiv);
-    
+
     // 确保canvas在背景之上
     const canvas = document.getElementById('myCanvas');
     canvas.style.position = 'relative';
@@ -140,32 +142,48 @@ const init = async () => {
     model.interactive = true;
 
     let isDragging = false;
-    live2DStore.loadState(); // 从store加载状态
     let lastPosition = { x: live2DStore.position.x, y: live2DStore.position.y };
-    let currentScale = live2DStore.scale;
+    let containerRect = document.querySelector('.canvasWrap').getBoundingClientRect();
 
     // 鼠标按下开始拖动
     model.on('pointerdown', (e) => {
         isDragging = true;
-        lastPosition = e.data.global.clone();
+        const rect = document.querySelector('#myCanvas').getBoundingClientRect();
+        lastPosition = {
+            x: (e.data.global.x - rect.left) / rect.width,
+            y: (e.data.global.y - rect.top) / rect.height
+        };
     });
 
     // 鼠标移动时拖动模型
     model.on('pointermove', (e) => {
         if (isDragging) {
-            const newPosition = e.data.global;
-            model.x += newPosition.x - lastPosition.x;
-            model.y += newPosition.y - lastPosition.y;
-            lastPosition = newPosition.clone();
-            live2DStore.position = { x: model.x, y: model.y }; // 更新store中的位置
+            const rect = document.querySelector('#myCanvas').getBoundingClientRect();
+            const newPosition = {
+                x: (e.data.global.x - rect.left) / rect.width,
+                y: (e.data.global.y - rect.top) / rect.height
+            };
+
+            model.x += (newPosition.x - lastPosition.x) * rect.width;
+            model.y += (newPosition.y - lastPosition.y) * rect.height;
+            lastPosition = newPosition;
+
+            // 保存相对位置
+            live2DStore.position = {
+                x: (model.x - rect.left) / rect.width,
+                y: (model.y - rect.top) / rect.height
+            };
         }
     });
 
     // 鼠标释放停止拖动
     model.on('pointerup', () => {
         isDragging = false;
-        live2DStore.position = { x: model.x, y: model.y };
-        live2DStore.scale = model.scale.x;
+        const rect = document.querySelector('#myCanvas').getBoundingClientRect();
+        live2DStore.position = {
+            x: (model.x - rect.left) / rect.width,
+            y: (model.y - rect.top) / rect.height
+        };
         live2DStore.saveState(); // 保存状态到localStorage
     });
 
@@ -176,26 +194,46 @@ const init = async () => {
     // 滚轮缩放功能
     document.querySelector('#myCanvas').addEventListener('wheel', (e) => {
         e.preventDefault();
+
         const delta = e.deltaY > 0 ? 0.95 : 1.05;
-        model.scale.set(model.scale.x * delta);
-        live2DStore.scale = model.scale.x;
+        // model.scale.set(model.scale.x * delta);
+
+        const newScale = model.scale.x * delta;
+        model.scale.set(newScale, newScale);
+        live2DStore.saveState();
     });
 
     // 缩放和位置调整
-    model.scale.set(currentScale);
-    model.y = lastPosition.y;
-    model.x = lastPosition.x;
+    const rect = document.querySelector('#myCanvas').getBoundingClientRect();
+    model.x = rect.left + lastPosition.x * rect.width;
+    model.y = rect.top + lastPosition.y * rect.height;
 
-    // 仅在初始加载时根据分辨率调整模型尺寸
-    if (!localStorage.getItem('live2dScale')) {
-        const targetWidth = containerWidth * 0.8; // 模型占容器80%宽度
-        const initialScale = targetWidth / model.width;
-        model.scale.set(initialScale);
-        live2DStore.scale = initialScale;
-    }
+    // 根据容器尺寸统一调整模型大小
+    const initialScale = (containerWidth * live2DStore.relativeScale) / model.width;
+    model.scale.set(initialScale);
+    live2DStore.saveState();
 
     // 将模型添加到舞台
     app.stage.addChild(model);
+};
+
+// 重置模型位置和大小
+const resetModel = () => {
+    if (!model) return;
+
+    const rect = document.querySelector('#myCanvas').getBoundingClientRect();
+    const containerWidth = rect.width;
+    const initialScale = (containerWidth * live2DStore.relativeScale) / model.width;
+
+    model.scale.set(initialScale);
+    model.x = rect.width / 2;
+    model.y = rect.height / 2;
+
+    live2DStore.position = {
+        x: 0.5,
+        y: 0.5
+    };
+    live2DStore.saveState();
 };
 
 // 嘴型变换函数，随机设置嘴巴张开程度

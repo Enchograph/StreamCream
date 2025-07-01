@@ -151,7 +151,9 @@
                                     <v-select v-model="revolutionPreference" :items="[
                                         { text: '1920×1080 (16:9)', value: '1920x1080' },
                                         { text: '1280×720 (16:9)', value: '1280x720' },
-                                        { text: '2048×1080 (≈17:9)', value: '2048x1080' }
+                                        { text: '2048×1080 (≈17:9)', value: '2048x1080' },
+                                        { text: '1080×1920 (=9:16)', value: '1080x1920' }
+
                                     ]" item-title="text" item-value="value" label="直播分辨率" outlined dense></v-select>
                                 </v-col>
                                 <v-col cols="12" md="6">
@@ -202,7 +204,8 @@
                                     <v-btn color="primary" class="mr-4" @click="testStreamConnection">
                                         测试连接
                                     </v-btn>
-                                    <v-btn color="success" @click="saveStreamSettings">
+                                    <v-btn color="success" @click="saveStreamSettings"
+                                        @update:model-value="handleResolutionChange">
                                         保存设置
                                     </v-btn>
                                 </v-col>
@@ -240,6 +243,7 @@
 <script>
 import api from '/src/api/index.js'
 import { useRouter } from 'vue-router'
+import { useLive2DStore } from '../../stores/live2d';
 
 export default {
     name: 'settingPage',
@@ -385,6 +389,11 @@ export default {
         }
     },
     methods: {
+        handleResolutionChange(newResolution) {
+            const live2DStore = useLive2DStore();
+            live2DStore.setResolution(newResolution);
+            localStorage.setItem('revolutionPreference', newResolution);
+        },
         async handleBgUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -431,12 +440,12 @@ export default {
         },
         async completeSetting() {
             // 先自动测试LLM连接
-            const llmOk = await this.testLLMConnection(false);
-            if (!llmOk) {
-                alert('AI设置保存失败');
-                return;
-            }
-            this.saveAISettings(false);
+            // const llmOk = await this.testLLMConnection(false);
+            // if (!llmOk) {
+            //     alert('AI设置保存失败');
+            //     return;
+            // }
+            // this.saveAISettings(false);
 
             try {
                 await api.savePreferences({
@@ -494,10 +503,17 @@ export default {
                     streamDomain: this.streamDomain,
                     streamKey: this.streamKey
                 });
+                const live2dStore = useLive2DStore();
+                live2dStore.setResolution(this.resolution);
                 if (showAlert) alert('直播设置已保存！');
             } catch (e) {
                 if (showAlert) alert('直播设置保存失败：' + e.message);
             }
+        },
+
+        handleResolutionChange(newVal) {
+            const live2dStore = useLive2DStore();
+            live2dStore.setResolution(newVal);
         },
 
         async saveAISettings(showAlert = true) {

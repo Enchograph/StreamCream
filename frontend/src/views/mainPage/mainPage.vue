@@ -104,9 +104,9 @@
                 <!-- 直播效果预览 -->
                 <div class="box box-1">
                     <h2>直播效果预览</h2>
-                    <LivePreview title="直播效果预览" placeholder-text="Live2D模型预览区域" :resolution="revolutionPreference"
-                        :show-title="false" />
-                    <Live2DModel :resolution="revolutionPreference" />
+                    <!-- <LivePreview title="直播效果预览" placeholder-text="Live2D模型预览区域" :resolution="revolutionPreference"
+                        :show-title="false" /> -->
+                    <Live2DIframeContainer src="/live2d" :resolution="'1920x1080'" />
 
                     <div style="display: flex; justify-content: space-between;">
                         <div>
@@ -166,17 +166,16 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { createApp } from 'vue';
 import ModelSelector from './ModelSelector.vue';
-import { defineComponent } from 'vue';
-import LivePreview from '../../components/livepreview.vue';
-import Live2DModel from '../../components/Live2DModel.vue';
+import Live2DIframeContainer from '../../components/Live2DIframeContainer.vue';
 
 
 export default {
     name: 'mainPage',
     components: {
         ModelSelector,
-        LivePreview,
-        Live2DModel
+        // LivePreview,
+        // Live2DModel,
+        Live2DIframeContainer
     },
     setup() {
         // 获取路由实例
@@ -271,6 +270,23 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     padding: 20px;
     transition: all 0.3s ease;
+}
+
+.iframe-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    /* 16:9 比例 */
+    height: 0;
+    overflow: hidden;
+}
+
+.iframe-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 .box:hover {

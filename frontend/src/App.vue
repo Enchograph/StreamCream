@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-        <Header />
+        <Header v-if="!$route.path.includes('/live2d')" />
         <main>
             <router-view />
         </main>

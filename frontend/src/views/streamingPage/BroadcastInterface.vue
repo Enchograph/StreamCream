@@ -2,9 +2,9 @@
     <div class="column">
         <h3><span>直播管理</span></h3>
 
-        <LivePreview :resolution="revolutionPreference" :show-title="false" />
+        <!-- <LivePreview :resolution="revolutionPreference" :show-title="false" /> -->
 
-        <Live2DModel :resolution="revolutionPreference" />
+        <Live2DIframeContainer src="/live2d" :resolution="'1920x1080'" />
 
 
         <div class="subtitle-section">
@@ -43,6 +43,532 @@
 </template>
 
 <script>
+
+
+import { defineComponent } from 'vue';
+import Live2DIframeContainer from '../../components/Live2DIframeContainer.vue';
+
+
+
+export default defineComponent({
+    components: {
+        // LivePreview,
+        // Live2DModel
+        Live2DIframeContainer
+
+    },
+    name: 'BroadcastInterface',
+    props: {
+        // 提纲块数据
+        outlineBlocks: {
+            type: Array,
+            required: true
+        },
+        // 当前正在播放的块索引
+        currentBlockIndex: {
+            type: Number,
+            default: -1
+        },
+        // 直播主题
+        topic: {
+            type: String,
+            required: true
+        }
+    },
+    data() {
+        return {
+            isBroadcasting: false,
+            hasStartedBroadcasting: false,
+            currentContentIndex: 0,
+            currentSubtitle: '',
+            nextSubtitle: '',
+            synthesizedSentences: {}, // 格式: {blockIndex-sentenceIndex: {status, audioUrl}}
+            speechSynthesizer: null,
+            speechPlayer: null,
+            revolutionPreference: '1920x1080',
+        }
+    },
+    computed: {
+        currentBlockTitle() {
+            if (this.currentBlockIndex >= 0 && this.currentBlockIndex < this.outlineBlocks.length) {
+                return this.outlineBlocks[this.currentBlockIndex].title;
+            }
+            return '未开始';
+        },
+        nextBlockTitle() {
+            const nextIndex = this.currentBlockIndex + 1;
+            if (nextIndex < this.outlineBlocks.length) {
+                return this.outlineBlocks[nextIndex].title;
+            }
+            return '直播结束';
+        }
+    },
+    created() {
+        // 从本地存储获取分辨率设置
+        const savedResolution = localStorage.getItem('revolutionPreference');
+        if (savedResolution) {
+            this.revolutionPreference = savedResolution;
+        }
+
+        // 初始化语音合成和播放模块
+        this.speechSynthesizer = new SpeechSynthesizer();
+        this.speechPlayer = new SpeechPlayer();
+        this.speechPlayer.outlineBlocks = this.outlineBlocks;
+
+        // 设置合成完成回调
+        this.speechSynthesizer.onSynthesisComplete = (sentence) => {
+            console.log('语音合成完成:', sentence);
+            // 将合成好的句子添加到播放队列
+            if (this.isBroadcasting) {
+                this.speechPlayer.addToPlayQueue(sentence);
+            }
+
+            // 更新句子状态
+            const key = `${sentence.blockIndex}-${sentence.sentenceIndex}`;
+            this.synthesizedSentences[key] = {
+                status: 'completed',
+                audioUrl: sentence.audioUrl
+            };
+        };
+
+        // 设置播放相关回调
+        this.speechPlayer.onPlayStart = (sentence) => {
+            console.log('开始播放句子:', sentence);
+            // 更新当前播放的章节和句子索引
+            this.$emit('update:currentBlockIndex', sentence.blockIndex);
+            this.currentContentIndex = sentence.sentenceIndex;
+        };
+
+        this.speechPlayer.onPlayEnd = (sentence) => {
+            console.log('句子播放结束:', sentence);
+
+            // 检查是否是章节的最后一句
+            const currentBlock = this.outlineBlocks[this.currentBlockIndex];
+            if (!currentBlock || !currentBlock.content) return;
+
+            const sentences = currentBlock.content;
+
+            // 如果播放的是最后一句，触发章节结束
+            if (sentence.sentenceIndex === sentences.length - 1) {
+                this.speechPlayer.signalChapterEnd();
+            } else if (this.isBroadcasting) {
+                // 否则准备下一句
+                this.prepareNextSentence();
+            }
+
+            // 通知父组件句子播放完成
+            this.$emit('sentence-played', {
+                blockIndex: sentence.blockIndex,
+                sentenceIndex: sentence.sentenceIndex
+            });
+        };
+
+        this.speechPlayer.onSubtitleChange = (text) => {
+            this.currentSubtitle = text;
+
+            // 更新下一句字幕
+            this.updateNextSubtitle();
+        };
+
+        // 添加章节结束回调
+        this.speechPlayer.onChapterEnd = () => {
+            console.log('章节播放结束');
+            this.moveToNextChapter();
+        };
+    },
+    methods: {
+        // 页面卸载处理
+        handlePageUnload(event) {
+            // 取消所有请求和清理资源
+            this.cleanupResources();
+
+            // 在某些浏览器中，可能需要返回一个字符串或设置returnValue来显示确认对话框
+            const confirmationMessage = '确定要离开吗？正在进行的语音合成将被取消。';
+            (event || window.event).returnValue = confirmationMessage;
+            return confirmationMessage;
+        },
+
+        // 清理所有资源的方法
+        cleanupResources() {
+            console.log('清理资源...');
+
+            // 取消所有语音合成请求
+            if (this.speechSynthesizer) {
+                this.speechSynthesizer.cancelAllRequests();
+            }
+
+            // 停止所有音频播放
+            if (this.speechPlayer) {
+                this.speechPlayer.stop();
+            }
+
+            // 停止直播状态
+            this.isBroadcasting = false;
+
+            // 通知父组件直播状态变更
+            this.$emit('broadcast-status-change', false);
+        },
+
+        // 预处理当前章节的语音
+        processSpeechForBlock(blockIndex) {
+            if (!this.outlineBlocks[blockIndex] || !this.outlineBlocks[blockIndex].content) {
+                return;
+            }
+
+            const block = this.outlineBlocks[blockIndex];
+            const sentences = block.content;
+
+            // 只处理当前章节的语音
+            if (blockIndex === this.currentBlockIndex) {
+                sentences.forEach((sentence, sentenceIndex) => {
+                    const key = `${blockIndex}-${sentenceIndex}`;
+                    if (!this.synthesizedSentences[key]) {
+                        this.speechSynthesizer.addToQueue(sentence, blockIndex, sentenceIndex);
+                        this.synthesizedSentences[key] = {
+                            status: 'queued'
+                        };
+                    }
+                });
+            }
+        },
+
+        // 准备下一句语音
+        prepareNextSentence() {
+            if (!this.isBroadcasting) return;
+
+            const currentBlock = this.outlineBlocks[this.currentBlockIndex];
+            if (!currentBlock || !currentBlock.content) return;
+
+            const sentences = currentBlock.content;
+            const nextSentenceIndex = this.currentContentIndex + 1;
+
+            // 确保不是章节最后一句
+            if (nextSentenceIndex < sentences.length) {
+                // 正常处理下一句
+                const key = `${this.currentBlockIndex}-${nextSentenceIndex}`;
+                if (!this.synthesizedSentences[key]) {
+                    this.speechSynthesizer.addToQueue(
+                        sentences[nextSentenceIndex],
+                        this.currentBlockIndex,
+                        nextSentenceIndex
+                    );
+                }
+
+                // 更新下一句字幕
+                this.nextSubtitle = sentences[nextSentenceIndex];
+            }
+        },
+
+        // 更新下一句字幕显示
+        updateNextSubtitle() {
+            const currentBlock = this.outlineBlocks[this.currentBlockIndex];
+            if (!currentBlock || !currentBlock.content) {
+                this.nextSubtitle = '';
+                return;
+            }
+
+            const sentences = currentBlock.content;
+            const nextSentenceIndex = this.currentContentIndex + 1;
+
+            if (nextSentenceIndex < sentences.length) {
+                this.nextSubtitle = sentences[nextSentenceIndex];
+            } else if (this.currentBlockIndex < this.outlineBlocks.length - 1) {
+                this.nextSubtitle = '章节结束，即将进入下一章节';
+            } else {
+                this.nextSubtitle = '直播结束';
+            }
+
+            // 如果当前句子播放完毕但下一句还没开始，仍然显示当前句子
+            if (this.currentSubtitle === '' && this.nextSubtitle !== '') {
+                const currentSentenceIndex = this.currentContentIndex;
+                if (currentSentenceIndex >= 0 && currentSentenceIndex < sentences.length) {
+                    this.currentSubtitle = sentences[currentSentenceIndex];
+                }
+            }
+        },
+
+        // 章节结束处理方法
+        handleChapterEnd() {
+            if (!this.isBroadcasting) return;
+
+            // 显示章节结束过渡提示
+            // this.currentSubtitle = '章节结束，即将进入下一章节';
+            this.nextSubtitle = '';
+
+            // 延迟一段时间后切换到下一章节
+            setTimeout(() => {
+                if (this.isBroadcasting) {
+                    this.moveToNextChapter();
+                }
+            }, 3000); // 等待3秒后切换
+        },
+
+        // 移动到下一章节的方法
+        async moveToNextChapter() {
+            const nextBlockIndex = this.currentBlockIndex + 1;
+
+            if (nextBlockIndex < this.outlineBlocks.length) {
+                // 通知父组件更新当前块索引
+                this.$emit('update:currentBlockIndex', nextBlockIndex);
+                this.currentContentIndex = 0;
+
+                // 确保新章节内容已生成
+                const nextBlock = this.outlineBlocks[nextBlockIndex];
+                if (!nextBlock.content || nextBlock.content.length === 0) {
+                    // 通知父组件生成内容
+                    this.$emit('generate-content', nextBlockIndex);
+                    return; // 等待内容生成后再继续
+                }
+
+                // 显示新章节信息
+                if (nextBlock.content && nextBlock.content.length > 0) {
+                    // this.currentSubtitle = `开始新章节: ${nextBlock.title}`;
+                    this.nextSubtitle = nextBlock.content[0];
+
+                    // 清空之前的播放队列
+                    this.speechPlayer.stop();
+                    await this.speechSynthesizer.clearQueue();
+
+                    // 添加新章节第一句
+                    this.speechSynthesizer.addToQueue(
+                        nextBlock.content[0],
+                        nextBlockIndex,
+                        0
+                    );
+                }
+            } else {
+                // 所有章节播放完毕
+                this.isBroadcasting = false;
+                this.$emit('broadcast-status-change', false);
+                // this.currentSubtitle = '直播已结束';
+                this.nextSubtitle = '';
+            }
+        },
+
+        // 预处理下一章节
+        prepareNextBlock() {
+            const nextBlockIndex = this.currentBlockIndex + 1;
+
+            if (nextBlockIndex < this.outlineBlocks.length) {
+                // 检查下一章节是否有内容
+                const nextBlock = this.outlineBlocks[nextBlockIndex];
+                if (!nextBlock.content || nextBlock.content.length === 0) {
+                    // 通知父组件生成下一章节内容
+                    this.$emit('generate-next-content', nextBlockIndex);
+                } else {
+                    // 已有内容，直接预处理语音
+                    this.processSpeechForBlock(nextBlockIndex);
+                }
+            } else {
+                // 所有章节已结束
+                this.isBroadcasting = false;
+                this.$emit('broadcast-status-change', false);
+                // this.currentSubtitle = '直播已结束';
+                this.nextSubtitle = '';
+            }
+        },
+
+        toggleBroadcast() {
+            if (this.isBroadcasting) {
+                this.pauseBroadcast();
+            } else {
+                this.startBroadcast();
+            }
+        },
+
+        async startBroadcast() {
+            if (this.outlineBlocks.length === 0) {
+                alert('请先生成并确认提纲');
+                return;
+            }
+
+            this.isBroadcasting = true;
+            this.hasStartedBroadcasting = true;
+            this.speechPlayer.isBroadcasting = true;
+            // 通知父组件直播状态变更
+            this.$emit('broadcast-status-change', true);
+            console.log('开始直播');
+
+            window.addEventListener('beforeunload', this.handlePageUnload);
+
+            // 如果没有开始或已经结束，从第一个块开始
+            if (this.currentBlockIndex < 0 || this.currentBlockIndex >= this.outlineBlocks.length) {
+                this.$emit('update:currentBlockIndex', 0);
+                this.currentContentIndex = 0;
+
+                // 通知父组件生成内容
+                this.$emit('generate-content', 0);
+                console.log('从第一章节开始');
+                return; // 等待内容生成后再继续
+            }
+
+            // 开始处理当前块的语音
+            this.processSpeechForBlock(this.currentBlockIndex);
+
+            // 如果有下一块，预处理下一块
+            if (this.currentBlockIndex < this.outlineBlocks.length - 1) {
+                this.prepareNextBlock();
+            }
+
+            // 设置初始字幕
+            const currentBlock = this.outlineBlocks[this.currentBlockIndex];
+            if (currentBlock && currentBlock.content && currentBlock.content.length > 0) {
+                this.currentSubtitle = `开始章节: ${currentBlock.title}`;
+                this.nextSubtitle = currentBlock.content[0];
+
+                // 延迟一小段时间后开始播放第一句，让用户看到章节标题
+                setTimeout(() => {
+                    if (this.isBroadcasting && currentBlock.content.length > 0) {
+                        // 开始播放第一句
+                        this.speechSynthesizer.addToQueue(
+                            currentBlock.content[0],
+                            this.currentBlockIndex,
+                            0
+                        );
+
+                        const key = `${this.currentBlockIndex}-0`;
+                        this.synthesizedSentences[key] = {
+                            status: 'queued'
+                        };
+
+                        console.log('开始播放第一句');
+                    }
+                }, 2000);
+            }
+        },
+
+        pauseBroadcast() {
+            this.isBroadcasting = false;
+            this.speechPlayer.isBroadcasting = false;
+            // 通知父组件直播状态变更
+            this.$emit('broadcast-status-change', false);
+            // 暂停语音播放
+            this.speechPlayer.pause();
+
+            // 直播暂停后，移除beforeunload事件监听
+            // window.removeEventListener('beforeunload', this.handlePageUnload);
+
+        },
+
+        // 清除特定章节的语音合成任务
+        clearSynthesisTasksForBlock(blockIndex) {
+            if (this.speechSynthesizer) {
+                this.speechSynthesizer.removeTasksByBlockIndex(blockIndex);
+            }
+        },
+
+        // 清除特定章节的合成状态记录
+        clearSynthesizedSentencesForBlock(blockIndex) {
+            // 删除所有以 "blockIndex-" 开头的键
+            Object.keys(this.synthesizedSentences).forEach(key => {
+                if (key.startsWith(`${blockIndex}-`)) {
+                    delete this.synthesizedSentences[key];
+                }
+            });
+        },
+
+        async skipToNextBlock() {
+            // 仅暂停当前播放而不清空资源
+            if (this.speechPlayer.currentAudio) {
+                this.speechPlayer.currentAudio.pause();
+            }
+
+            // 保留队列中的内容
+            this.speechPlayer.isPlaying = false;
+
+            // 切换到下一章节
+            await this.moveToNextChapter();
+        },
+
+        // 跳到下一句
+        skipToNextSentence() {
+            if (!this.isBroadcasting) return;
+
+            const currentBlock = this.outlineBlocks[this.currentBlockIndex];
+            if (!currentBlock || !currentBlock.content) return;
+
+            const sentences = currentBlock.content;
+            const nextSentenceIndex = this.currentContentIndex + 1;
+
+            // 确保不是章节最后一句
+            if (nextSentenceIndex < sentences.length) {
+                this.currentContentIndex = nextSentenceIndex;
+                this.currentSubtitle = sentences[nextSentenceIndex];
+                this.updateNextSubtitle();
+
+                // 准备播放下一句
+                const key = `${this.currentBlockIndex}-${nextSentenceIndex}`;
+                if (this.synthesizedSentences[key]?.status === 'ready') {
+                    this.speechPlayer.playAudio(this.synthesizedSentences[key].audioUrl);
+                }
+            }
+        },
+
+        // 结束直播（功能留空）
+        endBroadcast() {
+            // TODO: 实现结束直播功能
+        },
+
+        async cleanupAudioFiles() {
+            try {
+                const response = await fetch('http://localhost:5001/delete-all-audio');
+                if (!response.ok) {
+                    console.error('删除音频文件失败:', response.statusText);
+                }
+            } catch (error) {
+                console.error('删除音频文件出错:', error);
+            }
+        },
+    },
+    mounted() {
+        // 添加路由变化监听（如果使用 Vue Router）
+        if (this.$router) {
+            this.$router.beforeEach((to, from, next) => {
+                this.cleanupResources();
+                next();
+            });
+        }
+    },
+    beforeUnmount() {
+        // 清理资源
+        if (this.speechPlayer) {
+            this.speechPlayer.stop();
+        }
+        this.cleanupResources();
+        this.cleanupAudioFiles();
+        // 移除事件监听
+        window.removeEventListener('beforeunload', this.handlePageUnload);
+    },
+
+
+    watch: {
+        outlineBlocks: {
+            deep: true,
+            handler(newValue) {
+                if (this.speechPlayer) {
+                    this.speechPlayer.outlineBlocks = newValue;
+                }
+
+                // 如果正在播放且有新内容，处理当前块的语音
+                if (this.isBroadcasting && this.currentBlockIndex >= 0 &&
+                    newValue[this.currentBlockIndex] &&
+                    newValue[this.currentBlockIndex].content) {
+                    this.processSpeechForBlock(this.currentBlockIndex);
+                }
+            }
+        },
+        currentBlockIndex(newValue, oldValue) {
+            // 如果正在广播且章节变更，处理新章节的语音
+            if (this.isBroadcasting && newValue !== oldValue && newValue >= 0) {
+                this.processSpeechForBlock(newValue);
+                // 预处理下一章节
+                if (newValue < this.outlineBlocks.length - 1) {
+                    this.prepareNextBlock();
+                }
+            }
+        }
+    },
+},)
 
 // 语音合成模块
 class SpeechSynthesizer {
@@ -368,527 +894,6 @@ class SpeechPlayer {
     }
 }
 
-import { defineComponent } from 'vue';
-import LivePreview from '../../components/livepreview.vue';
-import Live2DModel from '../../components/Live2DModel.vue';
-
-
-export default defineComponent({
-    components: {
-        LivePreview, Live2DModel
-    },
-    name: 'BroadcastInterface',
-    props: {
-        // 提纲块数据
-        outlineBlocks: {
-            type: Array,
-            required: true
-        },
-        // 当前正在播放的块索引
-        currentBlockIndex: {
-            type: Number,
-            default: -1
-        },
-        // 直播主题
-        topic: {
-            type: String,
-            required: true
-        }
-    },
-    data() {
-        return {
-            isBroadcasting: false,
-            hasStartedBroadcasting: false,
-            currentContentIndex: 0,
-            currentSubtitle: '',
-            nextSubtitle: '',
-            synthesizedSentences: {}, // 格式: {blockIndex-sentenceIndex: {status, audioUrl}}
-            speechSynthesizer: null,
-            speechPlayer: null,
-            revolutionPreference: '1920x1080',
-        }
-    },
-    computed: {
-        currentBlockTitle() {
-            if (this.currentBlockIndex >= 0 && this.currentBlockIndex < this.outlineBlocks.length) {
-                return this.outlineBlocks[this.currentBlockIndex].title;
-            }
-            return '未开始';
-        },
-        nextBlockTitle() {
-            const nextIndex = this.currentBlockIndex + 1;
-            if (nextIndex < this.outlineBlocks.length) {
-                return this.outlineBlocks[nextIndex].title;
-            }
-            return '直播结束';
-        }
-    },
-    created() {
-        // 从本地存储获取分辨率设置
-        const savedResolution = localStorage.getItem('revolutionPreference');
-        if (savedResolution) {
-            this.revolutionPreference = savedResolution;
-        }
-
-        // 初始化语音合成和播放模块
-        this.speechSynthesizer = new SpeechSynthesizer();
-        this.speechPlayer = new SpeechPlayer();
-        this.speechPlayer.outlineBlocks = this.outlineBlocks;
-
-        // 设置合成完成回调
-        this.speechSynthesizer.onSynthesisComplete = (sentence) => {
-            console.log('语音合成完成:', sentence);
-            // 将合成好的句子添加到播放队列
-            if (this.isBroadcasting) {
-                this.speechPlayer.addToPlayQueue(sentence);
-            }
-
-            // 更新句子状态
-            const key = `${sentence.blockIndex}-${sentence.sentenceIndex}`;
-            this.synthesizedSentences[key] = {
-                status: 'completed',
-                audioUrl: sentence.audioUrl
-            };
-        };
-
-        // 设置播放相关回调
-        this.speechPlayer.onPlayStart = (sentence) => {
-            console.log('开始播放句子:', sentence);
-            // 更新当前播放的章节和句子索引
-            this.$emit('update:currentBlockIndex', sentence.blockIndex);
-            this.currentContentIndex = sentence.sentenceIndex;
-        };
-
-        this.speechPlayer.onPlayEnd = (sentence) => {
-            console.log('句子播放结束:', sentence);
-
-            // 检查是否是章节的最后一句
-            const currentBlock = this.outlineBlocks[this.currentBlockIndex];
-            if (!currentBlock || !currentBlock.content) return;
-
-            const sentences = currentBlock.content;
-
-            // 如果播放的是最后一句，触发章节结束
-            if (sentence.sentenceIndex === sentences.length - 1) {
-                this.speechPlayer.signalChapterEnd();
-            } else if (this.isBroadcasting) {
-                // 否则准备下一句
-                this.prepareNextSentence();
-            }
-
-            // 通知父组件句子播放完成
-            this.$emit('sentence-played', {
-                blockIndex: sentence.blockIndex,
-                sentenceIndex: sentence.sentenceIndex
-            });
-        };
-
-        this.speechPlayer.onSubtitleChange = (text) => {
-            this.currentSubtitle = text;
-
-            // 更新下一句字幕
-            this.updateNextSubtitle();
-        };
-
-        // 添加章节结束回调
-        this.speechPlayer.onChapterEnd = () => {
-            console.log('章节播放结束');
-            this.moveToNextChapter();
-        };
-    },
-    methods: {
-        // 页面卸载处理
-        handlePageUnload(event) {
-            // 取消所有请求和清理资源
-            this.cleanupResources();
-
-            // 在某些浏览器中，可能需要返回一个字符串或设置returnValue来显示确认对话框
-            const confirmationMessage = '确定要离开吗？正在进行的语音合成将被取消。';
-            (event || window.event).returnValue = confirmationMessage;
-            return confirmationMessage;
-        },
-
-        // 清理所有资源的方法
-        cleanupResources() {
-            console.log('清理资源...');
-
-            // 取消所有语音合成请求
-            if (this.speechSynthesizer) {
-                this.speechSynthesizer.cancelAllRequests();
-            }
-
-            // 停止所有音频播放
-            if (this.speechPlayer) {
-                this.speechPlayer.stop();
-            }
-
-            // 停止直播状态
-            this.isBroadcasting = false;
-
-            // 通知父组件直播状态变更
-            this.$emit('broadcast-status-change', false);
-        },
-
-        // 预处理当前章节的语音
-        processSpeechForBlock(blockIndex) {
-            if (!this.outlineBlocks[blockIndex] || !this.outlineBlocks[blockIndex].content) {
-                return;
-            }
-
-            const block = this.outlineBlocks[blockIndex];
-            const sentences = block.content;
-
-            // 只处理当前章节的语音
-            if (blockIndex === this.currentBlockIndex) {
-                sentences.forEach((sentence, sentenceIndex) => {
-                    const key = `${blockIndex}-${sentenceIndex}`;
-                    if (!this.synthesizedSentences[key]) {
-                        this.speechSynthesizer.addToQueue(sentence, blockIndex, sentenceIndex);
-                        this.synthesizedSentences[key] = {
-                            status: 'queued'
-                        };
-                    }
-                });
-            }
-        },
-
-        // 准备下一句语音
-        prepareNextSentence() {
-            if (!this.isBroadcasting) return;
-
-            const currentBlock = this.outlineBlocks[this.currentBlockIndex];
-            if (!currentBlock || !currentBlock.content) return;
-
-            const sentences = currentBlock.content;
-            const nextSentenceIndex = this.currentContentIndex + 1;
-
-            // 确保不是章节最后一句
-            if (nextSentenceIndex < sentences.length) {
-                // 正常处理下一句
-                const key = `${this.currentBlockIndex}-${nextSentenceIndex}`;
-                if (!this.synthesizedSentences[key]) {
-                    this.speechSynthesizer.addToQueue(
-                        sentences[nextSentenceIndex],
-                        this.currentBlockIndex,
-                        nextSentenceIndex
-                    );
-                }
-
-                // 更新下一句字幕
-                this.nextSubtitle = sentences[nextSentenceIndex];
-            }
-        },
-
-        // 更新下一句字幕显示
-        updateNextSubtitle() {
-            const currentBlock = this.outlineBlocks[this.currentBlockIndex];
-            if (!currentBlock || !currentBlock.content) {
-                this.nextSubtitle = '';
-                return;
-            }
-
-            const sentences = currentBlock.content;
-            const nextSentenceIndex = this.currentContentIndex + 1;
-
-            if (nextSentenceIndex < sentences.length) {
-                this.nextSubtitle = sentences[nextSentenceIndex];
-            } else if (this.currentBlockIndex < this.outlineBlocks.length - 1) {
-                this.nextSubtitle = '章节结束，即将进入下一章节';
-            } else {
-                this.nextSubtitle = '直播结束';
-            }
-
-            // 如果当前句子播放完毕但下一句还没开始，仍然显示当前句子
-            if (this.currentSubtitle === '' && this.nextSubtitle !== '') {
-                const currentSentenceIndex = this.currentContentIndex;
-                if (currentSentenceIndex >= 0 && currentSentenceIndex < sentences.length) {
-                    this.currentSubtitle = sentences[currentSentenceIndex];
-                }
-            }
-        },
-
-        // 章节结束处理方法
-        handleChapterEnd() {
-            if (!this.isBroadcasting) return;
-
-            // 显示章节结束过渡提示
-            this.currentSubtitle = '章节结束，即将进入下一章节';
-            this.nextSubtitle = '';
-
-            // 延迟一段时间后切换到下一章节
-            setTimeout(() => {
-                if (this.isBroadcasting) {
-                    this.moveToNextChapter();
-                }
-            }, 3000); // 等待3秒后切换
-        },
-
-        // 移动到下一章节的方法
-        async moveToNextChapter() {
-            const nextBlockIndex = this.currentBlockIndex + 1;
-
-            if (nextBlockIndex < this.outlineBlocks.length) {
-                // 通知父组件更新当前块索引
-                this.$emit('update:currentBlockIndex', nextBlockIndex);
-                this.currentContentIndex = 0;
-
-                // 确保新章节内容已生成
-                const nextBlock = this.outlineBlocks[nextBlockIndex];
-                if (!nextBlock.content || nextBlock.content.length === 0) {
-                    // 通知父组件生成内容
-                    this.$emit('generate-content', nextBlockIndex);
-                    return; // 等待内容生成后再继续
-                }
-
-                // 显示新章节信息
-                if (nextBlock.content && nextBlock.content.length > 0) {
-                    // this.currentSubtitle = `开始新章节: ${nextBlock.title}`;
-                    this.nextSubtitle = nextBlock.content[0];
-
-                    // 清空之前的播放队列
-                    this.speechPlayer.stop();
-                    await this.speechSynthesizer.clearQueue();
-
-                    // 添加新章节第一句
-                    this.speechSynthesizer.addToQueue(
-                        nextBlock.content[0],
-                        nextBlockIndex,
-                        0
-                    );
-                }
-            } else {
-                // 所有章节播放完毕
-                this.isBroadcasting = false;
-                this.$emit('broadcast-status-change', false);
-                this.currentSubtitle = '直播已结束';
-                this.nextSubtitle = '';
-            }
-        },
-
-        // 预处理下一章节
-        prepareNextBlock() {
-            const nextBlockIndex = this.currentBlockIndex + 1;
-
-            if (nextBlockIndex < this.outlineBlocks.length) {
-                // 检查下一章节是否有内容
-                const nextBlock = this.outlineBlocks[nextBlockIndex];
-                if (!nextBlock.content || nextBlock.content.length === 0) {
-                    // 通知父组件生成下一章节内容
-                    this.$emit('generate-next-content', nextBlockIndex);
-                } else {
-                    // 已有内容，直接预处理语音
-                    this.processSpeechForBlock(nextBlockIndex);
-                }
-            } else {
-                // 所有章节已结束
-                this.isBroadcasting = false;
-                this.$emit('broadcast-status-change', false);
-                this.currentSubtitle = '直播已结束';
-                this.nextSubtitle = '';
-            }
-        },
-
-        toggleBroadcast() {
-            if (this.isBroadcasting) {
-                this.pauseBroadcast();
-            } else {
-                this.startBroadcast();
-            }
-        },
-
-        async startBroadcast() {
-            if (this.outlineBlocks.length === 0) {
-                alert('请先生成并确认提纲');
-                return;
-            }
-
-            this.isBroadcasting = true;
-            this.hasStartedBroadcasting = true;
-            this.speechPlayer.isBroadcasting = true;
-            // 通知父组件直播状态变更
-            this.$emit('broadcast-status-change', true);
-            console.log('开始直播');
-
-            window.addEventListener('beforeunload', this.handlePageUnload);
-
-            // 如果没有开始或已经结束，从第一个块开始
-            if (this.currentBlockIndex < 0 || this.currentBlockIndex >= this.outlineBlocks.length) {
-                this.$emit('update:currentBlockIndex', 0);
-                this.currentContentIndex = 0;
-
-                // 通知父组件生成内容
-                this.$emit('generate-content', 0);
-                console.log('从第一章节开始');
-                return; // 等待内容生成后再继续
-            }
-
-            // 开始处理当前块的语音
-            this.processSpeechForBlock(this.currentBlockIndex);
-
-            // 如果有下一块，预处理下一块
-            if (this.currentBlockIndex < this.outlineBlocks.length - 1) {
-                this.prepareNextBlock();
-            }
-
-            // 设置初始字幕
-            const currentBlock = this.outlineBlocks[this.currentBlockIndex];
-            if (currentBlock && currentBlock.content && currentBlock.content.length > 0) {
-                this.currentSubtitle = `开始章节: ${currentBlock.title}`;
-                this.nextSubtitle = currentBlock.content[0];
-
-                // 延迟一小段时间后开始播放第一句，让用户看到章节标题
-                setTimeout(() => {
-                    if (this.isBroadcasting && currentBlock.content.length > 0) {
-                        // 开始播放第一句
-                        this.speechSynthesizer.addToQueue(
-                            currentBlock.content[0],
-                            this.currentBlockIndex,
-                            0
-                        );
-
-                        const key = `${this.currentBlockIndex}-0`;
-                        this.synthesizedSentences[key] = {
-                            status: 'queued'
-                        };
-
-                        console.log('开始播放第一句');
-                    }
-                }, 2000);
-            }
-        },
-
-        pauseBroadcast() {
-            this.isBroadcasting = false;
-            this.speechPlayer.isBroadcasting = false;
-            // 通知父组件直播状态变更
-            this.$emit('broadcast-status-change', false);
-            // 暂停语音播放
-            this.speechPlayer.pause();
-
-            // 直播暂停后，移除beforeunload事件监听
-            // window.removeEventListener('beforeunload', this.handlePageUnload);
-
-        },
-
-        // 清除特定章节的语音合成任务
-        clearSynthesisTasksForBlock(blockIndex) {
-            if (this.speechSynthesizer) {
-                this.speechSynthesizer.removeTasksByBlockIndex(blockIndex);
-            }
-        },
-
-        // 清除特定章节的合成状态记录
-        clearSynthesizedSentencesForBlock(blockIndex) {
-            // 删除所有以 "blockIndex-" 开头的键
-            Object.keys(this.synthesizedSentences).forEach(key => {
-                if (key.startsWith(`${blockIndex}-`)) {
-                    delete this.synthesizedSentences[key];
-                }
-            });
-        },
-
-        async skipToNextBlock() {
-            // 仅暂停当前播放而不清空资源
-            if (this.speechPlayer.currentAudio) {
-                this.speechPlayer.currentAudio.pause();
-            }
-
-            // 保留队列中的内容
-            this.speechPlayer.isPlaying = false;
-
-            // 切换到下一章节
-            await this.moveToNextChapter();
-        },
-
-        // 跳到下一句
-        skipToNextSentence() {
-            if (!this.isBroadcasting) return;
-
-            const currentBlock = this.outlineBlocks[this.currentBlockIndex];
-            if (!currentBlock || !currentBlock.content) return;
-
-            const sentences = currentBlock.content;
-            const nextSentenceIndex = this.currentContentIndex + 1;
-
-            // 确保不是章节最后一句
-            if (nextSentenceIndex < sentences.length) {
-                this.currentContentIndex = nextSentenceIndex;
-                this.currentSubtitle = sentences[nextSentenceIndex];
-                this.updateNextSubtitle();
-
-                // 准备播放下一句
-                const key = `${this.currentBlockIndex}-${nextSentenceIndex}`;
-                if (this.synthesizedSentences[key]?.status === 'ready') {
-                    this.speechPlayer.playAudio(this.synthesizedSentences[key].audioUrl);
-                }
-            }
-        },
-
-        // 结束直播（功能留空）
-        endBroadcast() {
-            // TODO: 实现结束直播功能
-        },
-
-        async cleanupAudioFiles() {
-            try {
-                const response = await fetch('http://localhost:5001/delete-all-audio');
-                if (!response.ok) {
-                    console.error('删除音频文件失败:', response.statusText);
-                }
-            } catch (error) {
-                console.error('删除音频文件出错:', error);
-            }
-        },
-    },
-    mounted() {
-        // 添加路由变化监听（如果使用 Vue Router）
-        if (this.$router) {
-            this.$router.beforeEach((to, from, next) => {
-                this.cleanupResources();
-                next();
-            });
-        }
-    },
-    beforeUnmount() {
-        // 清理资源
-        if (this.speechPlayer) {
-            this.speechPlayer.stop();
-        }
-        this.cleanupResources();
-        this.cleanupAudioFiles();
-        // 移除事件监听
-        window.removeEventListener('beforeunload', this.handlePageUnload);
-    },
-
-
-    watch: {
-        outlineBlocks: {
-            deep: true,
-            handler(newValue) {
-                if (this.speechPlayer) {
-                    this.speechPlayer.outlineBlocks = newValue;
-                }
-
-                // 如果正在播放且有新内容，处理当前块的语音
-                if (this.isBroadcasting && this.currentBlockIndex >= 0 &&
-                    newValue[this.currentBlockIndex] &&
-                    newValue[this.currentBlockIndex].content) {
-                    this.processSpeechForBlock(this.currentBlockIndex);
-                }
-            }
-        },
-        currentBlockIndex(newValue, oldValue) {
-            // 如果正在广播且章节变更，处理新章节的语音
-            if (this.isBroadcasting && newValue !== oldValue && newValue >= 0) {
-                this.processSpeechForBlock(newValue);
-                // 预处理下一章节
-                if (newValue < this.outlineBlocks.length - 1) {
-                    this.prepareNextBlock();
-                }
-            }
-        }
-    },
-},)
 
 </script>
 
@@ -905,6 +910,23 @@ export default defineComponent({
     margin: 0 15px;
     min-width: 350px;
     height: var(--column-height);
+}
+
+.iframe-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    /* 16:9 比例 */
+    height: 0;
+    overflow: hidden;
+}
+
+.iframe-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 @media (min-width: calc(100vw / 3)) {

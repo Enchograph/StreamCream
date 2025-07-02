@@ -133,10 +133,7 @@ watch(() => live2DStore.resolution, () => {
 onMounted(() => {
     live2DStore.loadState();
     init();
-<<<<<<< HEAD
     initAudioContext();
-=======
->>>>>>> 95d189a5c3389c896ef9142f57b74334f8ad99c4
 });
 
 // 组件卸载前销毁 PIXI 应用，释放资源
@@ -355,14 +352,9 @@ const init = async () => {
     const canvas = document.getElementById('myCanvas');
     canvas.style.position = 'relative';
     canvas.style.zIndex = '1';
-<<<<<<< HEAD
-    // 加载 Live2D 模型（Mao），autoInteract 设为 false 禁用默认交互
-    model = await Live2DModel.from("live2d/Haru/Haru.model3.json", {
-=======
 
-    // 加载 Live2D 模型（Haru），autoInteract 设为 false 禁用默认交互
+    // 加载 Live2D 模型（Mao），autoInteract 设为 false 禁用默认交互
     model = await Live2DModel.from("live2d/Mao/Mao.model3.json", {
->>>>>>> 95d189a5c3389c896ef9142f57b74334f8ad99c4
         autoHitTest: false,
         autoFocus: false
     });
@@ -811,7 +803,6 @@ const applyExpression = () => {
     justify-content: center;
 }
 
-<<<<<<< HEAD
 /* 按钮样式 */
 button {
     margin: 5px;
@@ -844,22 +835,5 @@ select {
 label {
     margin: 5px;
     font-weight: bold;
-=======
-
-
-button {
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 0.25rem;
-    background-color: #4CAF50;
-    color: white;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #45a049;
->>>>>>> 95d189a5c3389c896ef9142f57b74334f8ad99c4
 }
 </style>

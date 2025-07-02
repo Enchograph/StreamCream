@@ -73,6 +73,9 @@ function selectPlatform(platform) {
 }
 
 async function testStream() {
+    // 先打开Live2D页面
+    window.open('/live2d', '_blank');
+    
     let stream;
     try {
         stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
@@ -167,4 +170,4 @@ input[type="text"] {
 .btn:hover {
     background-color: #2980b9;
 }
-</style> 
+</style>

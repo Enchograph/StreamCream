@@ -315,12 +315,12 @@ const calculateMouthForm = (vowel, confidence) => {
 
 // 初始化函数，创建 PIXI 应用并加载 Live2D 模型
 const init = async () => {
-        const [width, height] = effectiveResolution.value.split('x').map(Number);
-        
-        // 销毁现有应用（如果存在）
-        if (app) {
-            app.destroy(true, true);
-        }
+    const [width, height] = effectiveResolution.value.split('x').map(Number);
+
+    // 销毁现有应用（如果存在）
+    if (app) {
+        app.destroy(true, true);
+    }
 
     const container = document.querySelector('.canvasWrap');
     const containerWidth = window.innerWidth;
@@ -352,8 +352,9 @@ const init = async () => {
     const canvas = document.getElementById('myCanvas');
     canvas.style.position = 'relative';
     canvas.style.zIndex = '1';
+
     // 加载 Live2D 模型（Mao），autoInteract 设为 false 禁用默认交互
-    model = await Live2DModel.from("live2d/Haru/Haru.model3.json", {
+    model = await Live2DModel.from("live2d/Mao/Mao.model3.json", {
         autoHitTest: false,
         autoFocus: false
     });

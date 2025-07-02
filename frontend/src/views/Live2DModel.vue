@@ -78,10 +78,10 @@ watch(() => live2DStore.resolution, () => {
 });
 
 // 组件挂载时初始化 PIXI 应用和 Live2D 模型
-    onMounted(() => {
-        live2DStore.loadState();
-        init();
-    });
+onMounted(() => {
+    live2DStore.loadState();
+    init();
+});
 
 // 组件卸载前销毁 PIXI 应用，释放资源
 onBeforeUnmount(() => {
@@ -94,12 +94,12 @@ onBeforeUnmount(() => {
 
 // 初始化函数，创建 PIXI 应用并加载 Live2D 模型
 const init = async () => {
-        const [width, height] = effectiveResolution.value.split('x').map(Number);
-        
-        // 销毁现有应用（如果存在）
-        if (app) {
-            app.destroy(true, true);
-        }
+    const [width, height] = effectiveResolution.value.split('x').map(Number);
+
+    // 销毁现有应用（如果存在）
+    if (app) {
+        app.destroy(true, true);
+    }
 
     const container = document.querySelector('.canvasWrap');
     const containerWidth = window.innerWidth;
@@ -131,6 +131,7 @@ const init = async () => {
     const canvas = document.getElementById('myCanvas');
     canvas.style.position = 'relative';
     canvas.style.zIndex = '1';
+
     // 加载 Live2D 模型（Haru），autoInteract 设为 false 禁用默认交互
     model = await Live2DModel.from("live2d/Mao/Mao.model3.json", {
         autoHitTest: false,
@@ -278,5 +279,22 @@ const applyExpression = () => {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+
+
+button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
 }
 </style>

@@ -12,6 +12,7 @@
                     <div class="input-group">
                         <label for="loginUsername">用户名</label>
                         <input type="text" id="loginUsername" v-model="loginForm.username"
+                            @keyup.enter="handleLogin"
                             :style="loginErrors.username ? errorInputStyle : {}" required>
                     </div>
                     <div class="error-message" v-if="loginErrors.username">{{ loginErrors.username }}</div>
@@ -19,6 +20,7 @@
                     <div class="input-group">
                         <label for="loginPassword">密码</label>
                         <input type="password" id="loginPassword" v-model="loginForm.password"
+                            @keyup.enter="handleLogin"
                             :style="loginErrors.password ? errorInputStyle : {}" required>
                     </div>
                     <div class="error-message" v-if="loginErrors.password">{{ loginErrors.password }}</div>

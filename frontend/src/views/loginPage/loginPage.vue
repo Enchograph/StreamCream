@@ -10,18 +10,39 @@
                 <div class="form-container login-container">
                     <h1>登录</h1>
                     <div class="input-group">
-                        <label for="loginUsername">用户名</label>
-                        <input type="text" id="loginUsername" v-model="loginForm.username"
+                        <!-- <label for="loginUsername">用户名</label> -->
+                        <input
+                            type="text"
+                            id="loginUsername"
+                            v-model="loginForm.username"
                             @keyup.enter="handleLogin"
-                            :style="loginErrors.username ? errorInputStyle : {}" required>
+                            :style="loginErrors.username ? errorInputStyle : {}"
+                            required
+                            placeholder="请输入用户名"
+                        >
                     </div>
                     <div class="error-message" v-if="loginErrors.username">{{ loginErrors.username }}</div>
 
-                    <div class="input-group">
-                        <label for="loginPassword">密码</label>
-                        <input type="password" id="loginPassword" v-model="loginForm.password"
+                    <div class="input-group" style="position: relative;">
+                        <input
+                            :type="showPassword ? 'text' : 'password'"
+                            id="loginPassword"
+                            v-model="loginForm.password"
                             @keyup.enter="handleLogin"
-                            :style="loginErrors.password ? errorInputStyle : {}" required>
+                            :style="loginErrors.password ? errorInputStyle : {}"
+                            required
+                            placeholder="请输入密码"
+                        >
+                        <button
+                            type="button"
+                            class="toggle-password-btn"
+                            @click="showPassword = !showPassword"
+                            :aria-label="showPassword ? '隐藏密码' : '显示密码'"
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer;"
+                        >
+                            <span v-if="showPassword">👁️</span>
+                            <span v-else>🙈</span>
+                        </button>
                     </div>
                     <div class="error-message" v-if="loginErrors.password">{{ loginErrors.password }}</div>
 
@@ -30,7 +51,8 @@
                     <div class="forgot-password">
                         <a href="#">忘记密码?</a>
                     </div>
-
+                    <hr class="divider" />
+                    <div class="other-login-tip">其他方式登录</div>
                     <div class="social-login">
                         <div class="social-icon facebook">
                             <i>f</i>
@@ -42,6 +64,7 @@
                             <i>t</i>
                         </div>
                     </div>
+                    
                 </div>
 
                 <!-- 注册表单 -->
@@ -81,9 +104,10 @@
                 </div>
             </div>
             <button class="next-step-button" @click="goToNextPage">先跳过登录部分</button>
+        
         </div>
 
-
+        
     </div>
 </template>
 
@@ -348,7 +372,8 @@ export default {
             handleLogin,
             handleRegister,
             clearForms,
-            goToNextPage
+            goToNextPage,
+            showPassword: ref(false) // 添加 showPassword 状态
         };
     },
     methods: {
@@ -539,7 +564,7 @@ h1 {
 .social-login {
     display: flex;
     justify-content: center;
-    margin-top: 25px;
+    margin-top: 10px; /* 缩小与上方的间距 */
 }
 
 .social-icon {
@@ -606,5 +631,21 @@ h1 {
 
 .next-step-button:active {
     transform: translateY(0);
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 16px 0 8px 0; /* 缩小上下间距 */
+    width: 100%;
+}
+
+.other-login-tip {
+    color: #aaa;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 10px;   /* 缩小上间距 */
+    margin-bottom: 6px; /* 缩小下间距 */
+    letter-spacing: 1px;
 }
 </style>

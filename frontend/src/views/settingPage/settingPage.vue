@@ -265,12 +265,12 @@ export default {
             streamKey: localStorage.getItem('streamKey') || '',
             modelSearch: '',
             aiSettings: {
-                provider: 'openai',
-                customProvider: '',
-                apiKey: '',
-                modelName: '',
-                temperature: 0.7,
-                maxTokens: 1000
+                provider: localStorage.getItem('aiProvider') || 'https://api.openai.com/v1/chat/completions',
+                customProvider: localStorage.getItem('aiCustomProvider') || '',
+                apiKey: localStorage.getItem('aiApiKey') || '',
+                modelName: localStorage.getItem('aiModelName') || '',
+                temperature: parseFloat(localStorage.getItem('aiTemperature')) || 0.7,
+                maxTokens: parseInt(localStorage.getItem('aiMaxTokens')) || 1000
             },
             customBackgrounds: [],
             modelSearch: '',
@@ -362,15 +362,41 @@ export default {
         streamKey(newVal) {
             localStorage.setItem('streamKey', newVal)
             window.dispatchEvent(new Event('storage'))
+        },
+        'aiSettings.provider'(newVal) {
+            localStorage.setItem('aiProvider', newVal)
+        },
+        'aiSettings.customProvider'(newVal) {
+            localStorage.setItem('aiCustomProvider', newVal)
+        },
+        'aiSettings.apiKey'(newVal) {
+            localStorage.setItem('aiApiKey', newVal)
+        },
+        'aiSettings.modelName'(newVal) {
+            localStorage.setItem('aiModelName', newVal)
+        },
+        'aiSettings.temperature'(newVal) {
+            localStorage.setItem('aiTemperature', newVal)
+        },
+        'aiSettings.maxTokens'(newVal) {
+            localStorage.setItem('aiMaxTokens', newVal)
         }
     },
     async mounted() {
         // 优先从后端获取
         try {
             const prefs = await api.getPreferences();
-            if (prefs && prefs.aiSettings) {
+            
+            // 只有当后端有aiSettings且本地没有保存过设置时，才使用后端的设置
+            if (prefs && prefs.aiSettings && !localStorage.getItem('aiProvider')) {
                 this.aiSettings = prefs.aiSettings;
-                localStorage.setItem('aiSettings', JSON.stringify(this.aiSettings));
+                // 保存到localStorage的各个字段
+                localStorage.setItem('aiProvider', this.aiSettings.provider);
+                localStorage.setItem('aiCustomProvider', this.aiSettings.customProvider);
+                localStorage.setItem('aiApiKey', this.aiSettings.apiKey);
+                localStorage.setItem('aiModelName', this.aiSettings.modelName);
+                localStorage.setItem('aiTemperature', this.aiSettings.temperature);
+                localStorage.setItem('aiMaxTokens', this.aiSettings.maxTokens);
             }
 
             // 加载Live2D模型设置
@@ -380,10 +406,7 @@ export default {
                 localStorage.setItem('live2dScale', prefs.live2dSettings.scale);
             }
         } catch (e) {
-            // 后端获取失败时再用本地
-            if (localStorage.getItem('aiSettings')) {
-                this.aiSettings = JSON.parse(localStorage.getItem('aiSettings'));
-            }
+            // 后端获取失败时，localStorage已经在data()中设置了默认值
             console.error('加载Live2D设置失败:', e);
         }
         if (localStorage.getItem('debugMode') !== null) {

@@ -108,17 +108,16 @@
 
                     <div class="file-upload">
                         <label>讲稿主题:</label>
-                        <input type="text" id="speech-topic" placeholder="输入讲稿主题，如：今日游戏资讯">
+                        <input type="text" v-model="topic" placeholder="输入讲稿主题">
                     </div>
-
-                    <div class="file-upload">
+                    <!-- <div class="file-upload">
                         <label>关键词 (用逗号分隔):</label>
-                        <input type="text" id="speech-keywords" placeholder="输入关键词，如：赛博朋克2077,补丁,更新">
-                    </div>
+                        <input type="text" v-model="keywords" placeholder="输入关键词，如：赛博朋克2077,补丁,更新">
+                    </div> -->
 
                     <div class="file-upload">
                         <label>讲稿风格:</label>
-                        <select id="speech-style"
+                        <select v-model="speechStyle"
                             style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 15px;">
                             <option value="casual">轻松休闲</option>
                             <option value="professional">专业正式</option>
@@ -127,12 +126,14 @@
                         </select>
                     </div>
 
-                    <button class="btn" id="generate-speech">生成讲稿</button>
-                    <button class="btn" id="test-speech" style="background-color: #e67e22;">测试讲稿</button>
+                    <button class="btn" @click="generateSpeech" :disabled="!topic || isGenerating">
+                        {{ isGenerating ? '生成中...' : '生成讲稿' }}
+                    </button>
+                    <button class="btn" @click="testSpeech" style="background-color: #e67e22;">测试讲稿</button>
 
                     <div class="file-upload" style="margin-top: 15px;">
                         <label>生成的讲稿:</label>
-                        <textarea id="generated-speech" placeholder="生成的AI讲稿将显示在这里..." readonly></textarea>
+                        <textarea v-model="generatedSpeech" placeholder="生成的AI讲稿将显示在这里..." readonly></textarea>
                     </div>
                 </div>
             </div>
@@ -165,6 +166,25 @@ export default {
         // 分辨率设置
         const revolutionPreference = ref('1920x1080');
 
+        // AI讲稿生成相关数据
+        const topic = ref('');
+        const keywords = ref('');
+        const speechStyle = ref('casual');
+        const generatedSpeech = ref('');
+        const isGenerating = ref(false);
+
+        // API配置
+        let aiSettings = {};
+        try {
+            aiSettings = JSON.parse(localStorage.getItem('aiSettings')) || {};
+        } catch (e) {
+            aiSettings = {};
+        }
+        const apiEndpoint = ref(aiSettings.provider || 'https://api.soruxgpt.com/v1/chat/completions');
+        const apiKey = ref(aiSettings.apiKey || '');
+        const modelName = ref(aiSettings.modelName || '');
+        const temperature = ref(aiSettings.temperature !== undefined ? aiSettings.temperature : 0.7);
+
         // 从本地存储或后端获取分辨率设置
         onMounted(() => {
             const savedResolution = localStorage.getItem('revolutionPreference');
@@ -187,6 +207,72 @@ export default {
             });
         };
 
+        // AI讲稿生成相关方法
+        const callOpenAI = async (prompt) => {
+            if (!apiKey.value) {
+                alert('请先配置API Key');
+                return '';
+            }
+
+            try {
+                const response = await fetch(apiEndpoint.value, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey.value}`
+                    },
+                    body: JSON.stringify({
+                        model: modelName.value,
+                        messages: [{
+                            role: 'user',
+                            content: prompt
+                        }],
+                        temperature: temperature.value
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API请求失败: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.choices[0].message.content;
+            } catch (error) {
+                console.error('调用OpenAI API出错:', error);
+                throw error;
+            }
+        };
+
+        const generateSpeech = async () => {
+            if (!topic.value) return;
+
+            isGenerating.value = true;
+
+            try {
+                const prompt = `根据以下信息生成一篇${speechStyle.value}风格的讲稿:\n` +
+                    `主题: ${topic.value}\n` +
+                    (keywords.value ? `关键词: ${keywords.value}\n` : '') +
+                    `要求: 语言流畅自然，符合${speechStyle.value}风格，长度约100字`;
+
+                generatedSpeech.value = await callOpenAI(prompt);
+            } catch (error) {
+                console.error('生成讲稿出错:', error);
+                alert('生成讲稿失败，请重试');
+            } finally {
+                isGenerating.value = false;
+            }
+        };
+
+        const testSpeech = () => {
+            if (!generatedSpeech.value) {
+                alert('请先生成讲稿');
+                return;
+            }
+
+            // 这里可以添加讲稿测试逻辑
+            alert('讲稿测试功能将在后续实现');
+        };
+
         // 动态挂载ModelSelector到html容器
         onMounted(() => {
             const container = document.getElementById('model-selector');
@@ -200,7 +286,16 @@ export default {
             selectedModel,
             revolutionPreference,
             handleModelChange,
-            goToNextPage
+            goToNextPage,
+
+            // AI讲稿生成相关
+            topic,
+            keywords,
+            speechStyle,
+            generatedSpeech,
+            isGenerating,
+            generateSpeech,
+            testSpeech
         };
     }
 }

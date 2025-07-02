@@ -25,6 +25,13 @@ import { Live2DModel } from "pixi-live2d-display-lipsyncpatch";
 // 引入Live2D状态管理
 import { useLive2DStore } from "../stores/live2d";
 
+// 添加音频分析相关变量
+let audioContext;
+let analyser;
+let microphone;
+let dataArray;
+let animationId;
+
 
 // 组件属性
 const props = defineProps({
@@ -88,6 +95,12 @@ onBeforeUnmount(() => {
     if (app) {
         app.destroy(true, true); // 销毁 PIXI 应用和所有子对象
     }
+    if (animationId) {
+        cancelAnimationFrame(animationId);
+    }
+    if (audioContext) {
+        audioContext.close();
+    }
     app = null;
     model = null;
 });
@@ -133,10 +146,13 @@ const init = async () => {
     canvas.style.zIndex = '1';
 
     // 加载 Live2D 模型（Haru），autoInteract 设为 false 禁用默认交互
-    model = await Live2DModel.from("live2d/Mao/Mao.model3.json", {
+    model = await Live2DModel.from("live2d/Haru/Haru.model3.json", {
         autoHitTest: false,
         autoFocus: false
     });
+
+    // 初始化音频分析
+    initAudioAnalysis();
 
     // 启用拖动功能
     model.buttonMode = true;
@@ -257,6 +273,75 @@ const applyExpression = () => {
     if (!model) return;
     model.expression(selectedExpression.value);
     live2DStore.currentExpression = selectedExpression.value;
+};
+
+// 初始化音频分析
+const initAudioAnalysis = async () => {
+    // 尝试从全局事件总线获取音频元素
+    if (window.live2DAudioElement) {
+        window.audioElement = window.live2DAudioElement;
+    } else {
+        // 尝试直接查找页面中的音频元素
+        window.audioElement = document.querySelector('audio');
+
+        if (!window.audioElement) {
+            console.warn('无法找到音频元素');
+            return false;
+        }
+    }
+
+    console.log('Initializing audio analysis...');
+    try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 256;
+
+        // 连接到分析器
+        const source = audioContext.createMediaElementSource(window.audioElement);
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+
+        console.log('Audio analysis initialized successfully');
+    } catch (error) {
+        console.error('Failed to initialize audio analysis:', error);
+        return false;
+    }
+
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+    // 开始分析音频
+    analyzeAudio();
+};
+
+// 分析音频并调整嘴型
+const analyzeAudio = () => {
+    if (!model || !analyser) {
+        console.warn('Model or analyser not ready, skipping audio analysis');
+        return;
+    }
+
+    analyser.getByteFrequencyData(dataArray);
+
+    // 计算平均音量
+    let sum = 0;
+    for (let i = 0; i < dataArray.length; i++) {
+        sum += dataArray[i];
+    }
+    const average = sum / dataArray.length;
+
+    // 平滑处理音量值
+    const smoothedValue = average / 255;
+
+    // 添加音量阈值，避免微小噪音触发嘴型变化
+    const threshold = 0.05;
+    const mouthOpenValue = smoothedValue > threshold ? Math.min(smoothedValue, 1) : 0;
+
+    // 设置嘴型参数
+    console.log(`Setting mouth parameter to: ${mouthOpenValue.toFixed(2)}`);
+    model.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", mouthOpenValue);
+
+    // 继续分析
+    animationId = requestAnimationFrame(analyzeAudio);
 };
 </script>
 

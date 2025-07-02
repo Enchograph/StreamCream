@@ -46,6 +46,7 @@
 
 
 import { defineComponent } from 'vue';
+import { ElMessageBox } from 'element-plus';
 import Live2DIframeContainer from '../../components/Live2DIframeContainer.vue';
 
 
@@ -86,6 +87,10 @@ export default defineComponent({
             speechSynthesizer: null,
             speechPlayer: null,
             revolutionPreference: '1920x1080',
+            wsBaseUrl: 'ws://localhost:8888',
+            wsConnection: null,
+            mediaStream: null,
+            mediaRecorder: null
         }
     },
     computed: {
@@ -200,6 +205,21 @@ export default defineComponent({
             // 停止所有音频播放
             if (this.speechPlayer) {
                 this.speechPlayer.stop();
+            }
+
+            // 停止媒体录制
+            if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
+                this.mediaRecorder.stop();
+            }
+
+            // 关闭媒体流
+            if (this.mediaStream) {
+                this.mediaStream.getTracks().forEach(track => track.stop());
+            }
+
+            // 关闭WebSocket连接
+            if (this.wsConnection && this.wsConnection.readyState !== 3) {
+                this.wsConnection.close();
             }
 
             // 停止直播状态
@@ -382,14 +402,59 @@ export default defineComponent({
                 return;
             }
 
-            this.isBroadcasting = true;
-            this.hasStartedBroadcasting = true;
-            this.speechPlayer.isBroadcasting = true;
-            // 通知父组件直播状态变更
-            this.$emit('broadcast-status-change', true);
-            console.log('开始直播');
+            // 在新标签页打开Live2D页面，保持当前页不变
+            window.open('/live2d', '_blank', 'noopener,noreferrer');
 
-            window.addEventListener('beforeunload', this.handlePageUnload);
+            try {
+                // 获取屏幕共享流
+                this.mediaStream = await navigator.mediaDevices.getDisplayMedia({
+                    video: true,
+                    audio: true
+                });
+
+                // 建立WebSocket连接
+                this.wsConnection = new WebSocket(this.wsBaseUrl);
+
+                this.wsConnection.onopen = () => {
+                    // 发送推流信息
+                    this.wsConnection.send(JSON.stringify({
+                        action: 'start_stream',
+                        topic: this.topic
+                    }));
+
+                    // 设置媒体录制器
+                    this.mediaRecorder = new MediaRecorder(this.mediaStream, {
+                        mimeType: 'video/webm; codecs=vp8,opus'
+                    });
+
+                    this.mediaRecorder.ondataavailable = (e) => {
+                        if (this.wsConnection && this.wsConnection.readyState === 1) {
+                            this.wsConnection.send(e.data);
+                        }
+                    };
+
+                    this.mediaRecorder.start(100);
+
+                    // 设置直播状态
+                    this.isBroadcasting = true;
+                    this.hasStartedBroadcasting = true;
+                    this.speechPlayer.isBroadcasting = true;
+                    this.$emit('broadcast-status-change', true);
+                    console.log('开始直播');
+
+                    window.addEventListener('beforeunload', this.handlePageUnload);
+                };
+
+                this.wsConnection.onerror = (e) => {
+                    alert('WebSocket连接失败: ' + e.message);
+                    this.cleanupResources();
+                };
+
+            } catch (err) {
+                alert('获取屏幕共享失败: ' + err);
+                this.cleanupResources();
+                return;
+            }
 
             // 如果没有开始或已经结束，从第一个块开始
             if (this.currentBlockIndex < 0 || this.currentBlockIndex >= this.outlineBlocks.length) {
@@ -445,9 +510,17 @@ export default defineComponent({
             // 暂停语音播放
             this.speechPlayer.pause();
 
-            // 直播暂停后，移除beforeunload事件监听
-            // window.removeEventListener('beforeunload', this.handlePageUnload);
+            // 暂停媒体录制
+            if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
+                this.mediaRecorder.pause();
+            }
 
+            // 通知后端暂停推流
+            if (this.wsConnection && this.wsConnection.readyState === 1) {
+                this.wsConnection.send(JSON.stringify({
+                    action: 'pause_stream'
+                }));
+            }
         },
 
         // 清除特定章节的语音合成任务
@@ -504,9 +577,59 @@ export default defineComponent({
             }
         },
 
-        // 结束直播（功能留空）
-        endBroadcast() {
-            // TODO: 实现结束直播功能
+        // 结束直播
+        async endBroadcast() {
+            // 添加确认对话框
+            const confirmEnd = await ElMessageBox.confirm(
+                '确定要结束直播吗？',
+                '结束直播确认',
+                {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }
+            ).catch(() => false);
+
+            if (!confirmEnd) return;
+
+            // 停止所有语音合成和播放
+            this.speechSynthesizer.cancelAllRequests();
+            this.speechPlayer.stop();
+
+            // 停止媒体录制
+            if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
+                this.mediaRecorder.stop();
+            }
+
+            // 关闭媒体流
+            if (this.mediaStream) {
+                this.mediaStream.getTracks().forEach(track => track.stop());
+            }
+
+            // 关闭WebSocket连接
+            if (this.wsConnection && this.wsConnection.readyState !== 3) {
+                this.wsConnection.send(JSON.stringify({
+                    action: 'end_stream'
+                }));
+                this.wsConnection.close();
+            }
+
+            // 更新直播状态
+            this.isBroadcasting = false;
+            this.hasStartedBroadcasting = false;
+
+            // 通知父组件直播状态变更
+            this.$emit('broadcast-status-change', false);
+
+            // 移除页面卸载事件监听
+            window.removeEventListener('beforeunload', this.handlePageUnload);
+
+            // 重置当前播放状态
+            this.currentSubtitle = '';
+            this.nextSubtitle = '';
+            this.$router.push('/mainPage');
+
+            console.log('直播已结束');
         },
 
         async cleanupAudioFiles() {
@@ -1113,3 +1236,12 @@ h3 span::after {
     background-color: #d32f2f;
 }
 </style>
+
+// 在SpeechPlayer类中添加
+this.currentAudio.addEventListener('play', () => {
+window.live2DAudioElement = this.currentAudio;
+});
+
+this.currentAudio.addEventListener('ended', () => {
+window.live2DAudioElement = null;
+});

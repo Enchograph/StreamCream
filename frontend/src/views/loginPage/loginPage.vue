@@ -1,12 +1,14 @@
 <template>
+    <TopBanner />
     <div class="page-container">
+        <div class="page-bg-animated"></div>
         <div class="app-container">
             <div class="container" :class="{ active: isRegistering }">
                 <div class="toggle-container">
                     <button class="toggle-btn" @click="toggleForm">{{ isRegistering ? '登录' : '注册' }}</button>
                 </div>
 
-                <!-- 登录表单 -->
+             <!-- 登录表单 -->
                 <div class="form-container login-container">
                     <h1>登录</h1>
                     <div class="input-group">
@@ -104,10 +106,7 @@
                 </div>
             </div>
             <button class="next-step-button" @click="goToNextPage">先跳过登录部分</button>
-        
         </div>
-
-        
     </div>
 </template>
 
@@ -117,9 +116,11 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from '/src/stores/auth.js'
 import {useRoute} from 'vue-router'
 import api from '/src/api/index.js'
+import TopBanner from '/src/components/TopBanner.vue'
 
 export default {
     name: 'loginPage',
+    components: { TopBanner },
     setup() {
 
         const auth = useAuthStore();
@@ -373,7 +374,7 @@ export default {
             handleRegister,
             clearForms,
             goToNextPage,
-            showPassword: ref(false) // 添加 showPassword 状态
+            showPassword: ref(false), // 添加 showPassword 状态
         };
     },
     methods: {
@@ -394,31 +395,62 @@ export default {
 }
 
 .page-container {
+    position: relative;
+    min-height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background: transparent;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    min-height: 100vh;
-    width: 100%;
+    align-items: center;
+}
+
+/* 色彩流动背景动画 */
+.page-bg-animated {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(120deg, #667eea, #ff9a9e, #fad0c4, #764ba2, #43e97b, #38f9d7, #667eea 90%);
+    background-size: 300% 300%;
+    animation: gradientFlow 18s cubic-bezier(0.4,0.2,0.2,1) infinite alternate;
+    filter: blur(0px);
+}
+
+@keyframes gradientFlow {
+    0% {background-position: 0% 50%;}
+    25% {background-position: 50% 100%;}
+    50% {background-position: 100% 50%;}
+    75% {background-position: 50% 0%;}
+    100% {background-position: 0% 50%;}
 }
 
 .app-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
+    flex: 1;
+    min-height: 0;
 }
 
 .container {
     position: relative;
     width: 400px;
     height: 500px;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.35); /* 降低透明度 */
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     overflow: hidden;
+    /* 高斯模糊效果 */
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.3);
+    z-index: 1;
     justify-content: center;
-    /* 水平居中 */
     align-items: center;
 }
 

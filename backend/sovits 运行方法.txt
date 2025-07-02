@@ -19,4 +19,7 @@ pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-hos
 # 运行Python脚本
 cd GPT-SoVITS
 conda activate sovits
+ # Windows:
 python .\api_v2.py -a 127.0.0.1 -p 9880 -c .\GPT_SoVITS\configs\tts_infer.yaml
+ #macOS/Linux:
+python3 ./api_v2.py -a 127.0.0.1 -p 9880 -c ./GPT_SoVITS/configs/tts_infer.yaml

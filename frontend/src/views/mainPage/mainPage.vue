@@ -16,7 +16,10 @@
                         <input type="file" id="voice-model-file" accept=".mdl, .bin">
                     </div>
 
-                    <button class="btn" id="apply-voice">应用声音</button>
+                    <button class="btn primary" id="apply-voice">
+                        <span class="btn-icon">🎵</span>
+                        应用声音
+                    </button>
                 </div>
 
                 <!-- 训练新声音 -->
@@ -36,7 +39,10 @@
                         <input type="text" id="voice-name" placeholder="为你的声音模型命名">
                     </div>
 
-                    <button class="btn" id="start-training">开始训练</button>
+                    <button class="btn success" id="start-training">
+                        <span class="btn-icon">⚡</span>
+                        开始训练
+                    </button>
                     <a href="#" class="link">高级语音模型训练设置</a>
 
                     <div id="training-status" style="margin-top: 15px;">
@@ -75,7 +81,10 @@
                         <input type="file" id="live2d-model-file" accept=".model3.json" @change="handleModelUpload">
                     </div>
 
-                    <button class="btn" @click="applyCustomModel" :disabled="!customModelPath">应用自定义模型</button>
+                    <button class="btn primary" @click="applyCustomModel" :disabled="!customModelPath">
+                        <span class="btn-icon">🎭</span>
+                        应用自定义模型
+                    </button>
                     <a href="#" class="link">高级Live2D模型训练设置</a>
 
                     <div id="model-status" style="margin-top: 15px;">
@@ -102,12 +111,16 @@
                         <div>
                             状态: <span class="status-badge ready">预览就绪</span>
                         </div>
-                        <div>
-                            <button class="btn" 
-                                style="margin: 0; background-color: #95a5a6;"
-                                @click="refreshPreview">刷新预览</button>
-                        </div><button class="btn" id="test-stream" style="background-color: #27ae60;"
-                            @click="goToNextPage">开始直播</button>
+                        <div class="btn-group">
+                            <button class="btn secondary" @click="refreshPreview">
+                                <span class="btn-icon">🔄</span>
+                                刷新预览
+                            </button>
+                            <button class="btn success pulse" id="test-stream" @click="goToNextPage">
+                                <span class="btn-icon">📺</span>
+                                开始直播
+                            </button>
+                        </div>
                         <!-- !!! 这里开始直播前要先检测一下 GPT-sovits, Live 2D, 大模型API的可用性。 -->
 
                     </div>
@@ -138,10 +151,16 @@
                         </select>
                     </div>
 
-                    <button class="btn" @click="generateSpeech" :disabled="!topic || isGenerating">
+                    <div class="btn-group">
+                                            <button class="btn primary animated" @click="generateSpeech" :disabled="!topic || isGenerating">
+                        <span class="btn-icon">{{ isGenerating ? '⏳' : '🤖' }}</span>
                         {{ isGenerating ? '生成中...' : '生成讲稿' }}
                     </button>
-                    <button class="btn" @click="testSpeech" style="background-color: #e67e22;">测试讲稿</button>
+                        <button class="btn warning" @click="testSpeech">
+                            <span class="btn-icon">🎤</span>
+                            测试讲稿
+                        </button>
+                    </div>
 
                     <div class="file-upload" style="margin-top: 15px;">
                         <label>生成的讲稿:</label>
@@ -479,20 +498,253 @@ p {
 }
 
 .btn {
-    background-color: #3498db;
+    /* 基础样式 */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
+    padding: 12px 24px;
+    border-radius: 12px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    font-weight: 500;
-    margin-right: 10px;
-    margin-bottom: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    margin-right: 12px;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 120px;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
 }
 
 .btn:hover {
-    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn:disabled {
+    background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 2px 8px rgba(189, 195, 199, 0.3);
+}
+
+.btn:disabled:hover {
+    transform: none;
+    box-shadow: 0 2px 8px rgba(189, 195, 199, 0.3);
+}
+
+/* 特殊按钮样式 */
+.btn.primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn.primary:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.btn.success {
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+}
+
+.btn.success:hover {
+    background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+    box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
+}
+
+.btn.warning {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+}
+
+.btn.warning:hover {
+    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+    box-shadow: 0 8px 25px rgba(243, 156, 18, 0.4);
+}
+
+.btn.danger {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+}
+
+.btn.danger:hover {
+    background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+    box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+}
+
+.btn.secondary {
+    background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+    box-shadow: 0 4px 15px rgba(149, 165, 166, 0.3);
+}
+
+.btn.secondary:hover {
+    background: linear-gradient(135deg, #7f8c8d 0%, #6c7b7d 100%);
+    box-shadow: 0 8px 25px rgba(149, 165, 166, 0.4);
+}
+
+/* 按钮组样式 */
+.btn-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.btn-group .btn {
+    margin: 0;
+    flex: 1;
+    min-width: auto;
+}
+
+/* 按钮图标样式 */
+.btn-icon {
+    margin-right: 8px;
+    font-size: 16px;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.btn:hover .btn-icon {
+    transform: scale(1.1);
+}
+
+/* 特殊按钮样式 */
+.btn.info {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
+}
+
+.btn.info:hover {
+    background: linear-gradient(135deg, #138496 0%, #117a8b 100%);
+    box-shadow: 0 8px 25px rgba(23, 162, 184, 0.4);
+}
+
+.btn.light {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    color: #495057;
+    box-shadow: 0 4px 15px rgba(248, 249, 250, 0.3);
+}
+
+.btn.light:hover {
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+    box-shadow: 0 8px 25px rgba(248, 249, 250, 0.4);
+}
+
+.btn.dark {
+    background: linear-gradient(135deg, #343a40 0%, #212529 100%);
+    box-shadow: 0 4px 15px rgba(52, 58, 64, 0.3);
+}
+
+.btn.dark:hover {
+    background: linear-gradient(135deg, #212529 0%, #1a1d20 100%);
+    box-shadow: 0 8px 25px rgba(52, 58, 64, 0.4);
+}
+
+/* 动画按钮 */
+.btn.animated {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn.animated::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn.animated:active::after {
+    width: 300px;
+    height: 300px;
+}
+
+/* 脉冲按钮 */
+.btn.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    50% {
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.6);
+    }
+    100% {
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+}
+
+/* 响应式按钮 */
+@media (max-width: 768px) {
+    .btn {
+        padding: 10px 16px;
+        font-size: 13px;
+        min-width: 100px;
+    }
+    
+    .btn-group {
+        flex-direction: column;
+    }
+    
+    .btn-group .btn {
+        width: 100%;
+    }
+    
+    .btn-icon {
+        font-size: 14px;
+        margin-right: 6px;
+    }
+}
+
+
+
+/* 禁用状态样式 */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    animation: none !important;
+}
+
+.btn:disabled:hover {
+    transform: none !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
+}
+
+.btn:disabled .btn-icon {
+    transform: none !important;
 }
 
 .file-upload {
@@ -522,29 +774,53 @@ p {
     font-weight: 500;
 }
 
-.model-select {
+.model-select,
+select {
     width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #dcdfe6;
-    border-radius: 5px;
+    padding: 12px 16px;
+    border: 2px solid #e1e8ed;
+    border-radius: 10px;
     font-size: 14px;
-    background-color: white;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     cursor: pointer;
-    transition: border-color 0.2s;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
 }
 
-.model-select:hover {
-    border-color: #c0c4cc;
+.model-select:hover,
+select:hover {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    transform: translateY(-1px);
 }
 
-.model-select:focus {
+.model-select:focus,
+select:focus {
     outline: none;
-    border-color: #3498db;
-    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-1px);
 }
 
-.model-select option {
-    padding: 8px;
+.model-select option,
+select option {
+    padding: 12px;
+    background: white;
+    color: #333;
+    font-size: 14px;
+}
+
+.model-select option:hover,
+select option:hover {
+    background: #667eea;
+    color: white;
 }
 
 .model-item.active {
@@ -589,53 +865,168 @@ p {
 }
 
 input[type="text"],
+input[type="file"],
 textarea {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    padding: 12px 16px;
+    border: 2px solid #e1e8ed;
+    border-radius: 10px;
     margin-bottom: 15px;
     font-size: 14px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+input[type="text"]:focus,
+input[type="file"]:focus,
+textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-1px);
+}
+
+input[type="text"]:hover,
+input[type="file"]:hover,
+textarea:hover {
+    border-color: #bdc3c7;
+    background: white;
 }
 
 textarea {
     min-height: 120px;
     resize: vertical;
+    line-height: 1.6;
+}
+
+/* 文件上传按钮美化 */
+input[type="file"] {
+    position: relative;
+    cursor: pointer;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+input[type="file"]::file-selector-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    transform: translateY(-1px);
 }
 
 .link {
-    color: #3498db;
+    color: #667eea;
     text-decoration: none;
-    display: inline-block;
-    margin-top: 10px;
+    display: inline-flex;
+    align-items: center;
+    margin-top: 15px;
     font-size: 14px;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+    transition: left 0.5s;
 }
 
 .link:hover {
-    text-decoration: underline;
+    background: rgba(102, 126, 234, 0.1);
+    color: #5a6fd8;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+}
+
+.link:hover::before {
+    left: 100%;
+}
+
+.link:active {
+    transform: translateY(0);
 }
 
 .status-badge {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 20px;
     font-size: 12px;
-    font-weight: bold;
+    font-weight: 600;
     margin-left: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.status-badge::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.status-badge:hover::before {
+    left: 100%;
 }
 
 .status-badge.ready {
-    background-color: #2ecc71;
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
     color: white;
+    box-shadow: 0 2px 8px rgba(46, 204, 113, 0.3);
+}
+
+.status-badge.ready:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(46, 204, 113, 0.4);
 }
 
 .status-badge.training {
-    background-color: #f39c12;
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
     color: white;
+    box-shadow: 0 2px 8px rgba(243, 156, 18, 0.3);
+}
+
+.status-badge.training:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
 }
 
 .status-badge.not-ready {
-    background-color: #e74c3c;
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
     color: white;
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+}
+
+.status-badge.not-ready:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
 }
 </style>

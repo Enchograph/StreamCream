@@ -50,25 +50,36 @@
                 <!-- Live2D模型选择 -->
                 <div class="box box-1">
                     <h2>Live2D模型选择</h2>
-                    <p>选择或上传Live2D模型文件</p>
+                    <p>选择Live2D模型</p>
 
-                    <div class="model-list">
-                        <div class="model-item active">模型名1</div>
-                        <div class="model-item">模型名2</div>
-                        <div class="model-item">模型名3</div>
-                        <div class="model-item">模型名4</div>
+                    <div class="model-selector">
+                        <label for="live2d-model-select">选择基础模型:</label>
+                        <select 
+                            id="live2d-model-select" 
+                            v-model="live2DStore.currentModel" 
+                            @change="selectLive2DModel(live2DStore.currentModel)"
+                            class="model-select"
+                        >
+                            <option 
+                                v-for="model in live2DStore.availableModels" 
+                                :key="model.id" 
+                                :value="model.id"
+                            >
+                                {{ model.name }} - {{ model.description }}
+                            </option>
+                        </select>
                     </div>
 
                     <div class="file-upload">
                         <label>上传Live2D模型文件:</label>
-                        <input type="file" id="live2d-model-file" accept=".model3.json">
+                        <input type="file" id="live2d-model-file" accept=".model3.json" @change="handleModelUpload">
                     </div>
 
-                    <button class="btn" id="apply-model">应用模型</button>
+                    <button class="btn" @click="applyCustomModel" :disabled="!customModelPath">应用自定义模型</button>
                     <a href="#" class="link">高级Live2D模型训练设置</a>
 
                     <div id="model-status" style="margin-top: 15px;">
-                        模型状态: <span class="status-badge ready">已就绪</span>
+                        当前模型: <span class="status-badge ready">{{ getCurrentModelName() }}</span>
                     </div>
                 </div>
 
@@ -92,8 +103,9 @@
                             状态: <span class="status-badge ready">预览就绪</span>
                         </div>
                         <div>
-                            <button class="btn" id="refresh-preview"
-                                style="margin: 0; background-color: #95a5a6;">刷新预览</button>
+                            <button class="btn" 
+                                style="margin: 0; background-color: #95a5a6;"
+                                @click="refreshPreview">刷新预览</button>
                         </div><button class="btn" id="test-stream" style="background-color: #27ae60;"
                             @click="goToNextPage">开始直播</button>
                         <!-- !!! 这里开始直播前要先检测一下 GPT-sovits, Live 2D, 大模型API的可用性。 -->
@@ -148,6 +160,7 @@ import { createApp } from 'vue';
 import ModelSelector from './ModelSelector.vue';
 import Live2DIframeContainer from '../../components/Live2DIframeContainer.vue';
 import streamConfig from '../../components/streamConfig.vue';
+import { useLive2DStore } from '../../stores/live2d';
 
 
 export default {
@@ -160,11 +173,17 @@ export default {
     setup() {
         // 获取路由实例
         const router = useRouter();
+        
+        // 获取Live2D状态管理
+        const live2DStore = useLive2DStore();
 
         // 选中的模型
         const selectedModel = ref(1);
         // 分辨率设置
         const revolutionPreference = ref('1920x1080');
+        
+        // 自定义模型相关
+        const customModelPath = ref('');
 
         // AI讲稿生成相关数据
         const topic = ref('');
@@ -197,6 +216,50 @@ export default {
         const handleModelChange = (modelId) => {
             selectedModel.value = modelId;
             console.log('选中的模型已更改为:', modelId);
+        };
+
+        // Live2D模型选择相关方法
+        const selectLive2DModel = (modelId) => {
+            live2DStore.setCurrentModel(modelId);
+            console.log('Live2D模型已切换为:', modelId);
+        };
+
+        const handleModelUpload = (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                customModelPath.value = URL.createObjectURL(file);
+            }
+        };
+
+        const applyCustomModel = () => {
+            if (customModelPath.value) {
+                // 这里可以添加自定义模型的逻辑
+                alert('自定义模型功能开发中...');
+            }
+        };
+
+        const getCurrentModelName = () => {
+            const currentModel = live2DStore.availableModels.find(m => m.id === live2DStore.currentModel);
+            return currentModel ? currentModel.name : '未知模型';
+        };
+
+        // 刷新预览功能
+        const refreshPreview = () => {
+            // 直接操作iframe元素进行刷新
+            const iframe = document.querySelector('.iframe-container iframe');
+            if (iframe) {
+                // 保存当前src
+                const currentSrc = iframe.src;
+                // 清空src
+                iframe.src = '';
+                // 延迟后重新设置src，强制重新加载
+                setTimeout(() => {
+                    iframe.src = currentSrc;
+                }, 100);
+                console.log('Live2D预览已刷新');
+            } else {
+                console.warn('未找到Live2D预览iframe');
+            }
         };
 
         // 跳转到下一页
@@ -287,6 +350,15 @@ export default {
             revolutionPreference,
             handleModelChange,
             goToNextPage,
+
+            // Live2D模型选择相关
+            live2DStore,
+            customModelPath,
+            selectLive2DModel,
+            handleModelUpload,
+            applyCustomModel,
+            getCurrentModelName,
+            refreshPreview,
 
             // AI讲稿生成相关
             topic,
@@ -439,26 +511,40 @@ p {
     margin-bottom: 10px;
 }
 
-.model-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 15px;
+.model-selector {
+    margin-bottom: 15px;
 }
 
-.model-item {
-    border: 2px solid #e7eaee;
-    border-radius: 8px;
-    padding: 10px;
+.model-selector label {
+    display: block;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.model-select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #dcdfe6;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: white;
     cursor: pointer;
-    transition: all 0.2s;
-    width: calc(50% - 5px);
+    transition: border-color 0.2s;
 }
 
-.model-item:hover,
-.model-item.active {
+.model-select:hover {
+    border-color: #c0c4cc;
+}
+
+.model-select:focus {
+    outline: none;
     border-color: #3498db;
-    background-color: rgba(52, 152, 219, 0.05);
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.model-select option {
+    padding: 8px;
 }
 
 .model-item.active {

@@ -130,6 +130,14 @@ watch(() => live2DStore.resolution, () => {
     init();
 });
 
+// 监听模型变化
+watch(() => live2DStore.currentModel, () => {
+    if (app) {
+        app.destroy(true, true);
+    }
+    init();
+});
+
 // 组件挂载时初始化 PIXI 应用和 Live2D 模型
 onMounted(() => {
     live2DStore.loadState();
@@ -354,8 +362,9 @@ const init = async () => {
     canvas.style.position = 'relative';
     canvas.style.zIndex = '1';
 
-    // 加载 Live2D 模型（Haru），autoInteract 设为 false 禁用默认交互
-    model = await Live2DModel.from("live2d/Haru/Haru.model3.json", {
+    // 加载 Live2D 模型，使用状态管理中的模型路径
+    const modelPath = live2DStore.getCurrentModelPath();
+    model = await Live2DModel.from(modelPath, {
         autoHitTest: false,
         autoFocus: false
     });

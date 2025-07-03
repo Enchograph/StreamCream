@@ -73,30 +73,65 @@
                 <div class="form-container register-container">
                     <h1>注册</h1>
                     <div class="input-group">
-                        <label for="registerUsername">用户名</label>
-                        <input type="text" id="registerUsername" v-model="registerForm.username"
-                            :style="registerErrors.username ? errorInputStyle : {}" required>
+                        <!-- <label for="registerUsername">用户名</label> -->
+                        <input
+                            type="text"
+                            id="registerUsername"
+                            v-model="registerForm.username"
+                            @keyup.enter="handleRegister"
+                            :style="registerErrors.username ? errorInputStyle : {}"
+                            required
+                            placeholder="请输入用户名"
+                        >
                     </div>
                     <div class="error-message" v-if="registerErrors.username">{{ registerErrors.username }}</div>
 
                     <div class="input-group">
-                        <label for="registerEmail">邮箱</label>
-                        <input type="email" id="registerEmail" v-model="registerForm.email"
-                            :style="registerErrors.email ? errorInputStyle : {}" required>
+                        <input
+                            type="email"
+                            id="registerEmail"
+                            v-model="registerForm.email"
+                            @keyup.enter="handleRegister"
+                            :style="registerErrors.email ? errorInputStyle : {}"
+                            required
+                            placeholder="请输入邮箱"
+                        >
                     </div>
                     <div class="error-message" v-if="registerErrors.email">{{ registerErrors.email }}</div>
 
-                    <div class="input-group">
-                        <label for="registerPassword">密码</label>
-                        <input type="password" id="registerPassword" v-model="registerForm.password"
-                            :style="registerErrors.password ? errorInputStyle : {}" required>
+                    <div class="input-group" style="position: relative;">
+                        <input
+                            :type="showPassword ? 'text' : 'password'"
+                            id="registerPassword"
+                            v-model="registerForm.password"
+                            @keyup.enter="handleRegister"
+                            :style="registerErrors.password ? errorInputStyle : {}"
+                            required
+                            placeholder="请输入密码"
+                        >
+                        <button
+                            type="button"
+                            class="toggle-password-btn"
+                            @click="showPassword = !showPassword"
+                            :aria-label="showPassword ? '隐藏密码' : '显示密码'"
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer;"
+                        >
+                            <span v-if="showPassword">👁️</span>
+                            <span v-else>🙈</span>
+                        </button>
                     </div>
                     <div class="error-message" v-if="registerErrors.password">{{ registerErrors.password }}</div>
 
                     <div class="input-group">
-                        <label for="confirmPassword">确认密码</label>
-                        <input type="password" id="confirmPassword" v-model="registerForm.confirmPassword"
-                            :style="registerErrors.confirmPassword ? errorInputStyle : {}" required>
+                        <input
+                            :type="showPassword ? 'text' : 'password'"
+                            id="confirmPassword"
+                            v-model="registerForm.confirmPassword"
+                            @keyup.enter="handleRegister"
+                            :style="registerErrors.confirmPassword ? errorInputStyle : {}"
+                            required
+                            placeholder="请确认密码"
+                        >
                     </div>
                     <div class="error-message" v-if="registerErrors.confirmPassword">
                         {{ registerErrors.confirmPassword }}
@@ -105,7 +140,6 @@
                     <button class="btn" @click="handleRegister">注册</button>
                 </div>
             </div>
-            <button class="next-step-button" @click="goToNextPage">先跳过登录部分</button>
         </div>
     </div>
 </template>

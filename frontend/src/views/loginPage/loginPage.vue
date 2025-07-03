@@ -170,6 +170,9 @@
                 </div>
             </div>
         </div>
+        <footer class="footer">
+            <p>© 2025 Made by DeepSleep. All rights reserved.</p>
+        </footer>
     </div>
 </template>
 
@@ -561,7 +564,7 @@ defineExpose({
     background: transparent;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between; /* 修改为space-between以确保footer在底部 */
     align-items: center;
 }
 
@@ -1006,5 +1009,23 @@ h1 {
     opacity: 0.9;
     transform: translateY(-4px);
     transition: all 0.3s ease;
+}
+
+.footer {
+    width: 100%;
+    padding: 20px 0;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    z-index: 1;
+    margin-top: auto; /* 确保footer始终在底部 */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.footer p {
+    margin: 0;
+    padding: 0;
 }
 </style>

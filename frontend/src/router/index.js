@@ -6,7 +6,7 @@ import streamingPage from '../views/streamingPage/streamingPage.vue'
 import Live2DViewer from '../views/Live2DModel.vue'
 import { useAuthStore } from '../stores/auth'
 
-const protectedPaths = ['/mainPage', 'settingPage', '/streamingPage', '/live2d']
+const protectedPaths = ['/mainPage', '/settingPage', '/streamingPage', '/live2d']
 
 const routes = [
     {

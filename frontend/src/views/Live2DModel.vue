@@ -1,29 +1,28 @@
 <template>
     <div class="live-preview">
         <!-- 嘴型变换按钮，点击后调用 mouthFn 方法 -->
-        <button @click="mouthFn">嘴型变换</button>
+        <!-- <button @click="mouthFn">嘴型变换</button> -->
         <!-- 随机动作按钮，点击后调用 randomMotionFn 方法 -->
-        <button @click="randomMotionFn">随机动作</button>
+        <!-- <button @click="randomMotionFn">随机动作</button> -->
         <!-- 音频同步控制 -->
-        <button @click="toggleAudioSync" :class="{ active: isAudioSyncActive }">
+        <!-- <button @click="toggleAudioSync" :class="{ active: isAudioSyncActive }">
             {{ isAudioSyncActive ? '停止音频同步' : '开始音频同步' }}
-        </button>
+        </button> -->
         <!-- 音频文件上传 -->
         <input type="file" ref="audioFileInput" @change="loadAudioFile" accept="audio/*" style="display: none">
-        <button @click="$refs.audioFileInput.click()">选择音频文件</button>
+        <!-- <button @click="$refs.audioFileInput.click()">选择音频文件</button> -->
         <!-- 表情选择下拉框，绑定 selectedExpression，切换时调用 applyExpression 方法 -->
-        <label for="expression-select">表情:</label>
+        <!-- <label for="expression-select">表情:</label>
         <select v-model="selectedExpression" @change="applyExpression" id="expression-select">
-            <!-- 遍历 expressionNames 数组生成选项 -->
             <option v-for="name in expressionNames" :key="name" :value="name">{{ name }}</option>
-        </select>
+        </select> -->
 
         <!-- 画布容器 -->
         <div class="canvasWrap" :style="aspectRatioStyle">
             <!-- 用于渲染 Live2D 模型的 canvas -->
             <canvas id="myCanvas" />
         </div>
-        <button @click="resetModel">重置模型位置</button>
+        <!-- <button @click="resetModel">重置模型位置</button> -->
     </div>
 </template>
 
@@ -38,11 +37,8 @@ import { Live2DModel } from "pixi-live2d-display-lipsyncpatch";
 import { useLive2DStore } from "../stores/live2d";
 
 // 添加音频分析相关变量
-let audioContext;
-let analyser;
 let microphone;
 let dataArray;
-let animationId;
 
 
 // 组件属性
@@ -84,11 +80,8 @@ const live2DStore = useLive2DStore();
 const isIframe = ref(window.self !== window.top);
 
 // 音频相关变量
-let audioContext;
-let analyser;
 let audioSource;
 let isAudioSyncActive = ref(false);
-let animationId;
 let audioElement;
 let lastAudioActivity = 0; // 记录上次音频活动时间
 let audioActivityThreshold = 0.05; // 音频活动阈值
@@ -131,6 +124,14 @@ const selectedExpression = ref(expressionNames[0]);
 
 // 监听分辨率变化
 watch(() => live2DStore.resolution, () => {
+    if (app) {
+        app.destroy(true, true);
+    }
+    init();
+});
+
+// 监听模型变化
+watch(() => live2DStore.currentModel, () => {
     if (app) {
         app.destroy(true, true);
     }
@@ -361,8 +362,9 @@ const init = async () => {
     canvas.style.position = 'relative';
     canvas.style.zIndex = '1';
 
-    // 加载 Live2D 模型（Haru），autoInteract 设为 false 禁用默认交互
-    model = await Live2DModel.from("live2d/Haru/Haru.model3.json", {
+    // 加载 Live2D 模型，使用状态管理中的模型路径
+    const modelPath = live2DStore.getCurrentModelPath();
+    model = await Live2DModel.from(modelPath, {
         autoHitTest: false,
         autoFocus: false
     });

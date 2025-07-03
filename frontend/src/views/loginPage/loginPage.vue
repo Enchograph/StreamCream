@@ -1,12 +1,17 @@
 <template>
+    <TopBanner />
     <div class="page-container">
+        <div class="page-bg-animated"></div>
+        <div class="welcome-message">
+            <h2>欢迎使用StreamCream</h2>
+        </div>
         <div class="app-container">
+            <!-- 表单内容 -->
             <div class="container" :class="{ active: isRegistering }">
                 <div class="toggle-container">
                     <button class="toggle-btn" @click="toggleForm">{{ isRegistering ? '登录' : '注册' }}</button>
                 </div>
-
-                <!-- 登录表单 -->
+             <!-- 登录表单 -->
                 <div class="form-container login-container">
                     <h1>登录</h1>
                     <div class="input-group">
@@ -71,30 +76,65 @@
                 <div class="form-container register-container">
                     <h1>注册</h1>
                     <div class="input-group">
-                        <label for="registerUsername">用户名</label>
-                        <input type="text" id="registerUsername" v-model="registerForm.username"
-                            :style="registerErrors.username ? errorInputStyle : {}" required>
+                        <!-- <label for="registerUsername">用户名</label> -->
+                        <input
+                            type="text"
+                            id="registerUsername"
+                            v-model="registerForm.username"
+                            @keyup.enter="handleRegister"
+                            :style="registerErrors.username ? errorInputStyle : {}"
+                            required
+                            placeholder="请输入用户名"
+                        >
                     </div>
                     <div class="error-message" v-if="registerErrors.username">{{ registerErrors.username }}</div>
 
                     <div class="input-group">
-                        <label for="registerEmail">邮箱</label>
-                        <input type="email" id="registerEmail" v-model="registerForm.email"
-                            :style="registerErrors.email ? errorInputStyle : {}" required>
+                        <input
+                            type="email"
+                            id="registerEmail"
+                            v-model="registerForm.email"
+                            @keyup.enter="handleRegister"
+                            :style="registerErrors.email ? errorInputStyle : {}"
+                            required
+                            placeholder="请输入邮箱"
+                        >
                     </div>
                     <div class="error-message" v-if="registerErrors.email">{{ registerErrors.email }}</div>
 
-                    <div class="input-group">
-                        <label for="registerPassword">密码</label>
-                        <input type="password" id="registerPassword" v-model="registerForm.password"
-                            :style="registerErrors.password ? errorInputStyle : {}" required>
+                    <div class="input-group" style="position: relative;">
+                        <input
+                            :type="showPassword ? 'text' : 'password'"
+                            id="registerPassword"
+                            v-model="registerForm.password"
+                            @keyup.enter="handleRegister"
+                            :style="registerErrors.password ? errorInputStyle : {}"
+                            required
+                            placeholder="请输入密码"
+                        >
+                        <button
+                            type="button"
+                            class="toggle-password-btn"
+                            @click="showPassword = !showPassword"
+                            :aria-label="showPassword ? '隐藏密码' : '显示密码'"
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer;"
+                        >
+                            <span v-if="showPassword">👁️</span>
+                            <span v-else>🙈</span>
+                        </button>
                     </div>
                     <div class="error-message" v-if="registerErrors.password">{{ registerErrors.password }}</div>
 
                     <div class="input-group">
-                        <label for="confirmPassword">确认密码</label>
-                        <input type="password" id="confirmPassword" v-model="registerForm.confirmPassword"
-                            :style="registerErrors.confirmPassword ? errorInputStyle : {}" required>
+                        <input
+                            :type="showPassword ? 'text' : 'password'"
+                            id="confirmPassword"
+                            v-model="registerForm.confirmPassword"
+                            @keyup.enter="handleRegister"
+                            :style="registerErrors.confirmPassword ? errorInputStyle : {}"
+                            required
+                            placeholder="请确认密码"
+                        >
                     </div>
                     <div class="error-message" v-if="registerErrors.confirmPassword">
                         {{ registerErrors.confirmPassword }}
@@ -103,11 +143,7 @@
                     <button class="btn" @click="handleRegister">注册</button>
                 </div>
             </div>
-            <button class="next-step-button" @click="goToNextPage">先跳过登录部分</button>
-        
         </div>
-
-        
     </div>
 </template>
 
@@ -117,9 +153,12 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from '/src/stores/auth.js'
 import {useRoute} from 'vue-router'
 import api from '/src/api/index.js'
+import TopBanner from '/src/components/TopBanner.vue'
+import { ElMessage } from 'element-plus';
 
 export default {
     name: 'loginPage',
+    components: { TopBanner },
     setup() {
 
         const auth = useAuthStore();
@@ -243,17 +282,17 @@ export default {
                             // 忽略偏好获取失败
                         }
                         
-                        alert('登录成功！');
+                        ElMessage.success('登录成功！');
                         // 修复重定向问题
                         const redirect = route.query.redirect || '/mainPage';
                         router.push(redirect);
                         clearForms();
                     } else {
-                        alert(response.message || '登录失败')
+                        ElMessage.error(response.message || '登录失败')
                     }
                 } catch (error) {
                     console.error('登录失败:', error)
-                    alert('登录失败: ' + (error.message || '服务器错误'))
+                    ElMessage.error('登录失败: ' + (error.message || '服务器错误'))
                 }
             }
         };
@@ -317,18 +356,18 @@ export default {
                     })
                     
                     if (response.success) {
-                        alert('注册成功！');
+                        ElMessage.success('注册成功！');
                         isRegistering.value = false;
                         clearForms();
                         
                         // 自动登录
                         await handleLogin()
                     } else {
-                        alert(response.message || '注册失败')
+                        ElMessage.error(response.message || '注册失败')
                     }
                 } catch (error) {
                     console.error('注册失败:', error)
-                    alert('注册失败: ' + (error.message || '服务器错误'))
+                    ElMessage.error('注册失败: ' + (error.message || '服务器错误'))
                 }
             }
         };
@@ -373,7 +412,7 @@ export default {
             handleRegister,
             clearForms,
             goToNextPage,
-            showPassword: ref(false) // 添加 showPassword 状态
+            showPassword: ref(false), // 添加 showPassword 状态
         };
     },
     methods: {
@@ -394,31 +433,64 @@ export default {
 }
 
 .page-container {
+    position: relative;
+    min-height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background: transparent;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    min-height: 100vh;
-    width: 100%;
+    align-items: center;
+}
+
+/* 色彩流动背景动画 */
+.page-bg-animated {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(120deg, #667eea, #ff9a9e, #fad0c4, #764ba2, #43e97b, #38f9d7, #667eea 90%);
+    background-size: 300% 300%;
+    animation: gradientFlow 18s cubic-bezier(0.4,0.2,0.2,1) infinite alternate;
+    filter: blur(0px);
+}
+
+@keyframes gradientFlow {
+    0% {background-position: 0% 50%;}
+    25% {background-position: 50% 100%;}
+    50% {background-position: 100% 50%;}
+    75% {background-position: 50% 0%;}
+    100% {background-position: 0% 50%;}
 }
 
 .app-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: flex-start; /* 顶部对齐 */
     align-items: center;
-    margin-bottom: 20px;
+    flex: 1;
+    min-height: 100vh; /* 占满整个视口高度 */
+    padding-top: 60px;  /* 可根据需要调整顶部间距 */
 }
 
 .container {
     position: relative;
     width: 400px;
     height: 500px;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.35); /* 降低透明度 */
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     overflow: hidden;
+    /* 高斯模糊效果 */
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.3);
+    z-index: 1;
     justify-content: center;
-    /* 水平居中 */
     align-items: center;
 }
 
@@ -467,6 +539,19 @@ h1 {
     position: relative;
     width: 100%;
     margin-bottom: 25px;
+}
+
+.welcome-message {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 100vw;
+    text-align: center;
+    color: #ffffff;
+    font-size: 1.8rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+    pointer-events: none;
 }
 
 .input-group input {

@@ -67,6 +67,4 @@ export default {
     savePreferences(data) {
         return api.post('/api/preferences', data)
     },
-
-    // 其他 API 方法...
 }

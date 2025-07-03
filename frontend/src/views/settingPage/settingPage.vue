@@ -1,25 +1,25 @@
 <template>
-    <v-container class="pa-4">
-        <v-card flat class="mx-auto" max-width="800">
-            <v-card-title class="text-h5 font-weight-medium">设置</v-card-title>
-
-
+    <v-container class="pa-4 setting-bg-glass">
+        <v-card flat class="mx-auto setting-card-glass" max-width="820">
+            <v-card-title class="text-h5 font-weight-medium setting-title-glass">
+                <span class="title-bar-gradient"><v-icon color="#fff" size="28">mdi-cog</v-icon></span>设置
+            </v-card-title>
             <v-row>
-
-
                 <v-col cols="12">
-                    <v-card flat class="mb-4">
-                        <v-card-title class="text-subtitle-1 font-weight-medium">调试设置</v-card-title>
+                    <v-card flat class="mb-6 section-card-glass">
+                        <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">
+                            <span class="section-bar-gradient"><v-icon color="#fff" size="20">mdi-tools</v-icon></span>调试设置
+                        </v-card-title>
                         <v-card-text>
                             <v-row>
                                 <v-col cols="12">
-                                    <v-btn color="error" variant="outlined" @click="resetPreferences">
+                                    <v-btn color="primary" variant="elevated" @click="resetPreferences" class="rounded-btn-glass">
                                         重置所有偏好设置
                                     </v-btn>
                                 </v-col>
                                 <v-col cols="12">
                                     <v-switch v-model="debugMode" label="调试模式" color="primary"
-                                        :messages="debugMode ? '已开启' : '已关闭'"></v-switch>
+                                        :messages="debugMode ? '已开启' : '已关闭'" class="rounded-switch-glass"></v-switch>
                                 </v-col>
                                 <v-col cols="12">
                                     <v-select v-model="bannerColor" :items="[
@@ -28,20 +28,17 @@
                                         { text: '蓝色', value: 'blue' },
                                         { text: '紫色', value: 'purple' }
                                     ]" item-title="text" item-value="value" label="TopBanner颜色" outlined
-                                        dense></v-select>
+                                        dense class="rounded-input-glass"></v-select>
                                 </v-col>
                             </v-row>
                         </v-card-text>
                     </v-card>
                 </v-col>
-
-
-
-
-
                 <v-col cols="12">
-                    <v-card flat class="mb-4">
-                        <v-card-title class="text-subtitle-1 font-weight-medium">AI设置</v-card-title>
+                    <v-card flat class="mb-6 section-card-glass">
+                        <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">
+                            <span class="section-bar-gradient"><v-icon color="#fff" size="20">mdi-robot</v-icon></span>AI设置
+                        </v-card-title>
                         <v-card-text>
                             <v-row>
                                 <v-col cols="12">
@@ -55,16 +52,15 @@
                                         { text: '腾讯云', value: 'https://hunyuan.cloud.tencent.com/hyllm/v1/chat/completions' },
                                         { text: 'SORUX', value: 'https://api.soruxgpt.com/v1/chat/completions' },
                                         { text: '自定义', value: 'custom' }
-                                    ]" item-title="text" item-value="value" label="模型提供商" outlined dense
-                                        @change="handleProviderChange"></v-select>
+                                    ]" item-title="text" item-value="value" label="模型提供商" outlined dense class="rounded-input-glass" @change="handleProviderChange"></v-select>
                                     <v-text-field v-if="aiSettings.provider === 'custom'"
                                         v-model="aiSettings.customProvider" label="API端点URL"
                                         placeholder="https://api.soruxgpt.com/v1/chat/completions" outlined dense
-                                        class="mt-2"></v-text-field>
+                                        class="mt-2 rounded-input-glass"></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
                                     <v-text-field v-model="aiSettings.apiKey" label="API 密钥" placeholder="输入API密钥"
-                                        type="password" outlined dense></v-text-field>
+                                        type="password" outlined dense class="rounded-input-glass"></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
                                     <v-select v-model="aiSettings.modelName" :items="[
@@ -118,38 +114,36 @@
                                         { text: 'Text Embedding Ada 002', value: 'text-embedding-ada-002', group: '其他' }
                                     ]" label="模型名称" outlined dense item-title="text" item-value="value"
                                         :filter="modelFilter" :search-input.sync="modelSearch" clearable
-                                        no-data-text="没有找到匹配的模型">
+                                        no-data-text="没有找到匹配的模型" class="rounded-input-glass">
                                         <template v-slot:prepend-item>
                                             <v-text-field v-model="modelSearch" label="搜索模型"
                                                 prepend-inner-icon="mdi-magnify" clearable hide-details
-                                                class="px-4"></v-text-field>
+                                                class="px-4 rounded-input-glass"></v-text-field>
                                         </template>
                                     </v-select>
                                 </v-col>
                                 <v-col cols="12" v-if="aiSettings.modelName === 'custom'">
                                     <v-text-field v-model="aiSettings.customModelName" label="自定义模型名称"
-                                        placeholder="输入自定义模型名称" outlined dense></v-text-field>
+                                        placeholder="输入自定义模型名称" outlined dense class="rounded-input-glass"></v-text-field>
                                 </v-col>
                             </v-row>
                         </v-card-text>
                     </v-card>
                 </v-col>
             </v-row>
-
-
-
-            <v-row class="mt-4">
+            <v-row class="mt-6">
                 <v-col cols="12" class="text-center">
-                    <!-- <v-btn color="primary" variant="flat" @click="saveSettings">
+                    <!-- <v-btn color="primary" variant="flat" @click="saveSettings" class="rounded-btn-glass">
                         保存
                     </v-btn> -->
                 </v-col>
             </v-row>
-
             <v-row>
                 <v-col cols="12">
-                    <v-card flat class="mb-4">
-                        <v-card-title class="text-subtitle-1 font-weight-medium">直播设置</v-card-title>
+                    <v-card flat class="mb-6 section-card-glass">
+                        <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">
+                            <span class="section-bar-gradient"><v-icon color="#fff" size="20">mdi-video-wireless</v-icon></span>直播设置
+                        </v-card-title>
                         <v-card-text>
                             <v-row>
                                 <v-col cols="12" md="6">
@@ -158,24 +152,23 @@
                                         { text: '1280×720 (16:9)', value: '1280x720' },
                                         { text: '2048×1080 (≈17:9)', value: '2048x1080' },
                                         { text: '1080×1920 (=9:16)', value: '1080x1920' }
-
-                                    ]" item-title="text" item-value="value" label="直播分辨率" outlined dense></v-select>
+                                    ]" item-title="text" item-value="value" label="直播分辨率" outlined dense class="rounded-input-glass"></v-select>
                                 </v-col>
                                 <v-col cols="12" md="6">
                                     <v-select v-model="fpsPreference" :items="[
                                         { text: '30fps', value: '30' },
                                         { text: '60fps', value: '60' }
-                                    ]" item-title="text" item-value="value" label="直播帧率" outlined dense></v-select>
+                                    ]" item-title="text" item-value="value" label="直播帧率" outlined dense class="rounded-input-glass"></v-select>
                                 </v-col>
                                 <v-col cols="12" md="6">
                                     <v-select v-model="bgPreference" :items="[
                                         { text: '默认', value: 'default' },
                                         ...customBackgrounds.map(bg => ({ text: bg, value: bg }))
-                                    ]" item-title="text" item-value="value" label="直播背景" outlined dense></v-select>
+                                    ]" item-title="text" item-value="value" label="直播背景" outlined dense class="rounded-input-glass"></v-select>
                                 </v-col>
                                 <v-col cols="12" md="6">
-                                    <v-btn color="primary" variant="outlined" block height="40"
-                                        @click="$refs.bgUpload.click()">
+                                    <v-btn color="primary" variant="elevated" block height="44"
+                                        @click="$refs.bgUpload.click()" class="rounded-btn-glass">
                                         上传背景
                                     </v-btn>
                                     <input type="file" ref="bgUpload" @change="handleBgUpload" accept="image/*"
@@ -189,21 +182,20 @@
                                         { text: '虎牙', value: 'huya' },
                                         { text: '斗鱼', value: 'douyu' },
                                         { text: 'YY直播', value: 'yy' }
-                                    ]" item-title="text" item-value="value" label="直播平台" outlined dense></v-select>
+                                    ]" item-title="text" item-value="value" label="直播平台" outlined dense class="rounded-input-glass"></v-select>
                                 </v-col>
-
                                 <v-col cols="12" md="6">
-                                    <v-btn color="secondary" variant="outlined" block height="40" class="mb-4">
+                                    <v-btn color="secondary" variant="elevated" block height="44" class="mb-4 rounded-btn-glass">
                                         获取推流码
                                     </v-btn>
                                 </v-col>
                                 <v-col cols="12" md="6">
                                     <v-text-field v-model="streamDomain" label="推流地址" placeholder="请输入推流地址" outlined
-                                        dense></v-text-field>
+                                        dense class="rounded-input-glass"></v-text-field>
                                 </v-col>
                                 <v-col cols="12" md="6">
                                     <v-text-field v-model="streamKey" label="推流码" placeholder="请输入推流码" outlined
-                                        dense></v-text-field>
+                                        dense class="rounded-input-glass"></v-text-field>
                                 </v-col>
                                 <v-col cols="12" class="text-center">
                                     <v-btn color="primary" class="mr-4" @click="testStreamConnection">
@@ -238,11 +230,14 @@
                         </v-card-text>
                     </v-card>
                 </v-col>
-            </v-row> </v-card>
+            </v-row>
+            <div class="finish-btn-wrapper">
+                <v-btn color="primary" variant="elevated" @click="completeSetting" class="rounded-btn-glass">
+                    完成
+                </v-btn>
+            </div>
+        </v-card>
     </v-container>
-    <v-btn color="primary" variant="text" fixed bottom right @click="completeSetting">
-        完成
-    </v-btn>
 </template>
 
 <script>
@@ -467,6 +462,9 @@ export default {
             );
         },
         async completeSetting() {
+            // 保存AI设置到localStorage（兼容streamingPage.vue的读取方式）
+            localStorage.setItem('aiSettings', JSON.stringify(this.aiSettings));
+            
             // 先自动测试LLM连接
             // const llmOk = await this.testLLMConnection(false);
             // if (!llmOk) {
@@ -479,7 +477,8 @@ export default {
                 await api.savePreferences({
                     debugMode: this.debugMode,
                     bannerColor: this.bannerColor,
-                    resolution: this.resolution
+                    resolution: this.resolution,
+                    aiSettings: this.aiSettings  // 添加AI设置保存
                 })
             } catch (e) {
                 // 可选：提示保存失败
@@ -616,98 +615,125 @@ export default {
 </script>
 
 <style scoped>
-.plain-container {
-    background: #fff;
-    color: #222;
-    max-width: 600px;
-    margin: 40px auto;
-    padding: 32px 16px;
-    font-size: 16px;
-    font-family: system-ui, Arial, sans-serif;
+.setting-bg-glass {
+    min-height: 100vh;
+    width: 100vw;
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100vw !important;
+    background: linear-gradient(270deg, #e0e7ff, #86a8e7, #91eac9, #f5f7fa, #e0e7ff);
+    background-size: 200% 200%;
+    animation: gradientFlow 8s ease-in-out infinite;
+}
+@keyframes gradientFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+.setting-content {
     position: relative;
+    z-index: 1;
 }
-
-hr {
-    margin: 18px 0 28px 0;
-    border: none;
-    border-top: 1px solid #e0e0e0;
+.setting-card-glass {
+    border-radius: 32px;
+    padding: 40px 32px 32px 32px;
+    background: rgba(255,255,255,0.55);
+    border: 1.5px solid #e3e8f7;
 }
-
-.plain-section {
+.setting-title-glass {
+    display: flex;
+    align-items: center;
+    font-size: 2.4rem;
     margin-bottom: 28px;
+    letter-spacing: 2px;
+    font-weight: 700;
 }
-
-.plain-section label {
-    margin-right: 8px;
+.title-bar-gradient {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #7f7fd5 0%, #86a8e7 50%, #91eac9 100%);
+    border-radius: 16px;
+    margin-right: 18px;
 }
-
-.plain-section input[type="text"],
-.plain-section input[type="password"],
-.plain-section input[type="number"],
-.plain-section select {
-    margin: 4px 0 12px 0;
-    padding: 4px 8px;
-    font-size: 15px;
-    border: 1px solid #ccc;
-    border-radius: 2px;
-    background: #fff;
+.section-card-glass {
+    background: rgba(245, 247, 250, 0.45);
+    border-radius: 24px;
+    margin-bottom: 36px;
+    padding-bottom: 12px;
+    border: 1px solid #e3e8f7;
 }
-
-.plain-section button {
-    margin-right: 10px;
-    margin-top: 8px;
-    padding: 4px 16px;
-    font-size: 15px;
-    border: 1px solid #bbb;
-    border-radius: 2px;
-    background: #fafafa;
-    color: #222;
-    cursor: pointer;
+.section-title-glass {
+    display: flex;
+    align-items: center;
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+    font-weight: 600;
 }
-
-.plain-section button:hover {
-    background: #f0f0f0;
+.section-bar-gradient {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #7f7fd5 0%, #86a8e7 50%, #91eac9 100%);
+    border-radius: 10px;
+    margin-right: 12px;
 }
-
-h2,
-h3 {
-    font-weight: normal;
-    color: #222;
-    margin: 18px 0 10px 0;
+.rounded-btn-glass {
+    border-radius: 28px !important;
+    font-size: 1.08rem;
+    padding: 10px 32px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    line-height: 1;
+    letter-spacing: 2px;
 }
-
-.floating-finish-btn {
-    position: fixed;
-    right: 36px;
-    bottom: 36px;
-    z-index: 100;
-    padding: 14px 36px;
-    font-size: 18px;
+.rounded-btn-glass:hover {
+    background: linear-gradient(90deg, #7f7fd5 0%, #86a8e7 100%);
     color: #fff;
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(64, 158, 255, 0.12);
-    cursor: pointer;
-    transition: background 0.2s, box-shadow 0.2s;
 }
-
-.floating-finish-btn:hover {
-    filter: brightness(1.08);
-    box-shadow: 0 6px 24px rgba(64, 158, 255, 0.18);
+.rounded-input-glass .v-input__control,
+.rounded-input-glass .v-field {
+    border-radius: 22px !important;
+    background: rgba(255,255,255,0.7) !important;
+    border: 1px solid #e3e8f7;
 }
-
+.rounded-switch-glass .v-input__control {
+    border-radius: 22px !important;
+    background: rgba(255,255,255,0.7) !important;
+    border: 1px solid #e3e8f7;
+}
+.finish-btn-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 32px;
+    margin-bottom: 8px;
+}
 @media (max-width: 700px) {
-    .plain-container {
-        padding-left: 2vw;
-        padding-right: 2vw;
+    .setting-card-glass {
+        padding: 12px 2vw 12px 2vw;
         max-width: 100vw;
     }
-
-    .floating-finish-btn {
-        right: 10px;
+    .floating-finish-btn-glass {
+        left: 50%;
         bottom: 10px;
         padding: 10px 18px;
         font-size: 15px;
+        transform: translateX(-50%);
     }
 }
 </style>

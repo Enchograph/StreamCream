@@ -406,20 +406,48 @@ export default defineComponent({
             window.open('/live2d', '_blank', 'noopener,noreferrer');
 
             try {
-                // 获取屏幕共享流
-                this.mediaStream = await navigator.mediaDevices.getDisplayMedia({
+                // 获取屏幕视频流
+                const screenStream = await navigator.mediaDevices.getDisplayMedia({
                     video: true,
-                    audio: true
+                    audio: false  // 不采集屏幕音频
+                });
+
+                // 获取系统音频流（通过 getUserMedia）
+                const audioStream = await navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        echoCancellation: false,
+                        noiseSuppression: false,
+                        autoGainControl: false
+                    },
+                    video: false
+                });
+
+                // 组合视频和音频流
+                this.mediaStream = new MediaStream();
+                
+                // 添加视频轨道
+                screenStream.getVideoTracks().forEach(track => {
+                    this.mediaStream.addTrack(track);
+                });
+                
+                // 添加音频轨道
+                audioStream.getAudioTracks().forEach(track => {
+                    this.mediaStream.addTrack(track);
                 });
 
                 // 建立WebSocket连接
                 this.wsConnection = new WebSocket(this.wsBaseUrl);
 
                 this.wsConnection.onopen = () => {
-                    // 发送推流信息
+                    // 发送推流信息 - 添加推流地址和推流码
+                    const rtmpUrl = localStorage.getItem('rtmp_url') || '';
+                    const streamKey = localStorage.getItem('stream_key') || '';
+                    
                     this.wsConnection.send(JSON.stringify({
                         action: 'start_stream',
-                        topic: this.topic
+                        topic: this.topic,
+                        rtmp_url: rtmpUrl,
+                        stream_key: streamKey
                     }));
 
                     // 设置媒体录制器

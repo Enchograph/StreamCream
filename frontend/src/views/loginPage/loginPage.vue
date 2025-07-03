@@ -9,7 +9,9 @@
             <!-- 表单内容 -->
             <div class="container" :class="{ active: isRegistering }">
                 <div class="toggle-container">
-                    <button class="toggle-btn" @click="toggleForm">{{ isRegistering ? '登录' : '注册' }}</button>
+                    <button class="toggle-btn" @click="toggleForm" :disabled="isLoading">
+                        {{ isRegistering ? '登录' : '注册' }}
+                    </button>
                 </div>
              <!-- 登录表单 -->
                 <div class="form-container login-container">
@@ -20,10 +22,11 @@
                             type="text"
                             id="loginUsername"
                             v-model="loginForm.username"
-                            @keyup.enter="handleLogin"
+                            @keyup.enter="!isLoading && handleLogin()"
                             :style="loginErrors.username ? errorInputStyle : {}"
                             required
                             placeholder="请输入用户名"
+                            :disabled="isLoading"
                         >
                     </div>
                     <div class="error-message" v-if="loginErrors.username">{{ loginErrors.username }}</div>
@@ -33,10 +36,11 @@
                             :type="showPassword ? 'text' : 'password'"
                             id="loginPassword"
                             v-model="loginForm.password"
-                            @keyup.enter="handleLogin"
+                            @keyup.enter="!isLoading && handleLogin()"
                             :style="loginErrors.password ? errorInputStyle : {}"
                             required
                             placeholder="请输入密码"
+                            :disabled="isLoading"
                         >
                         <button
                             type="button"
@@ -44,6 +48,7 @@
                             @click="showPassword = !showPassword"
                             :aria-label="showPassword ? '隐藏密码' : '显示密码'"
                             style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer;"
+                            :disabled="isLoading"
                         >
                             <span v-if="showPassword">👁️</span>
                             <span v-else>🙈</span>
@@ -51,7 +56,10 @@
                     </div>
                     <div class="error-message" v-if="loginErrors.password">{{ loginErrors.password }}</div>
 
-                    <button class="btn" @click="handleLogin">登录</button>
+                    <button class="btn" @click="handleLogin" :disabled="isLoading">
+                        <span v-if="isLoading" class="loading-spinner"></span>
+                        {{ isLoading ? '登录中...' : '登录' }}
+                    </button>
 
                     <div class="forgot-password">
                         <a href="#">忘记密码?</a>
@@ -107,6 +115,7 @@
                             :type="showPassword ? 'text' : 'password'"
                             id="registerPassword"
                             v-model="registerForm.password"
+                            @input="checkPasswordStrength"
                             @keyup.enter="handleRegister"
                             :style="registerErrors.password ? errorInputStyle : {}"
                             required
@@ -122,6 +131,23 @@
                             <span v-if="showPassword">👁️</span>
                             <span v-else>🙈</span>
                         </button>
+                        <!-- 添加密码强度指示器 -->
+                        <div v-if="registerForm.password" class="password-strength">
+                            <div class="strength-bars">
+                                <div 
+                                    v-for="n in 4" 
+                                    :key="n"
+                                    class="strength-bar"
+                                    :class="[
+                                        { active: passwordStrength.score >= n },
+                                        passwordStrength.score >= n ? passwordStrength.className : ''
+                                    ]"
+                                ></div>
+                            </div>
+                            <span class="strength-text" :class="passwordStrength.className">
+                                {{ passwordStrength.message }}
+                            </span>
+                        </div>
                     </div>
                     <div class="error-message" v-if="registerErrors.password">{{ registerErrors.password }}</div>
 
@@ -147,281 +173,376 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { ref, reactive, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '/src/stores/auth.js'
 import {useRoute} from 'vue-router'
 import api from '/src/api/index.js'
 import TopBanner from '/src/components/TopBanner.vue'
-import { ElMessage } from 'element-plus';
+import { ElMessage } from 'element-plus'
 
-export default {
-    name: 'loginPage',
-    components: { TopBanner },
-    setup() {
+const auth = useAuthStore();
+const router = useRouter();
+const route = useRoute();
+// 定义响应式状态
+const isRegistering = ref(false);
+const backgroundStyle = computed(() => {
+    return isRegistering.value
+        ? 'linear-gradient(135deg, #ff9a9e, #fad0c4)'
+        : 'linear-gradient(135deg, #667eea, #764ba2)';
+});
 
-        const auth = useAuthStore();
-        const router = useRouter();
-        const route = useRoute();
-        // 定义响应式状态
-        const isRegistering = ref(false);
-        const backgroundStyle = computed(() => {
-            return isRegistering.value
-                ? 'linear-gradient(135deg, #ff9a9e, #fad0c4)'
-                : 'linear-gradient(135deg, #667eea, #764ba2)';
-        });
+// 监听状态变化，更新背景样式
+watch(isRegistering, (newValue) => {
+    document.body.style.background = backgroundStyle.value;
+});
 
-        // 监听状态变化，更新背景样式
-        watch(isRegistering, (newValue) => {
-            document.body.style.background = backgroundStyle.value;
-        });
+// 错误样式
+const errorInputStyle = {
+    boxShadow: '0 2px 5px rgba(231, 76, 60, 0.3)',
+    border: '1px solid #e74c3c'
+};
 
-        // 错误样式
-        const errorInputStyle = {
-            boxShadow: '0 2px 5px rgba(231, 76, 60, 0.3)',
-            border: '1px solid #e74c3c'
-        };
+// 登录表单数据
+const loginForm = reactive({
+    username: '',
+    password: ''
+});
 
-        // 登录表单数据
-        const loginForm = reactive({
-            username: '',
-            password: ''
-        });
+// 注册表单数据
+const registerForm = reactive({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+});
 
-        // 注册表单数据
-        const registerForm = reactive({
-            username: '',
-            email: '',
-            password: '',
-            confirmPassword: ''
-        });
+// 表单错误信息
+const loginErrors = reactive({
+    username: '',
+    password: ''
+});
 
-        // 表单错误信息
-        const loginErrors = reactive({
-            username: '',
-            password: ''
-        });
+const registerErrors = reactive({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+});
 
-        const registerErrors = reactive({
-            username: '',
-            email: '',
-            password: '',
-            confirmPassword: ''
-        });
+// 密码强度状态
+const passwordStrength = reactive({
+    score: 0,
+    message: '',
+    className: ''
+});
 
-        // 切换表单方法
-        const toggleForm = () => {
-            isRegistering.value = !isRegistering.value;
-            // 清除表单和错误提示
-            clearForms();
-        };
+// 切换表单方法
+const toggleForm = () => {
+    isRegistering.value = !isRegistering.value;
+    // 清除表单和错误提示
+    clearForms();
+};
 
-        // 登录处理
-        const handleLogin = async () => {
-            let isValid = true;
+const isLoading = ref(false);
 
-            // 验证用户名
-            if (loginForm.username.trim() === '') {
-                loginErrors.username = '请输入用户名';
-                isValid = false;
-            } else {
-                loginErrors.username = '';
-            }
+// 登录处理
+const handleLogin = async () => {
+    if (isLoading.value) return;
+    
+    let isValid = true;
 
-            // 验证密码
-            if (loginForm.password.trim() === '') {
-                loginErrors.password = '请输入密码';
-                isValid = false;
-            } else {
-                loginErrors.password = '';
-            }
+    // 验证用户名
+    if (loginForm.username.trim() === '') {
+        loginErrors.username = '请输入用户名';
+        isValid = false;
+    } else {
+        loginErrors.username = '';
+    }
 
-            if (isValid) {
-                try {
-                    // 发送登录请求
-                    const response = await api.login({
-                        username: loginForm.username,
-                        password: loginForm.password
-                    })
-                    
-                    if (response.success) {
-                        // 保存 token
-                        localStorage.setItem('token', response.token)
-                        auth.login(response.token)
-                        
-                        // 获取用户信息
-                        const userResponse = await api.getProtectedData()
-                        if (userResponse.success) {
-                            auth.setUser(userResponse.user)
-                        }
+    // 验证密码
+    if (loginForm.password.trim() === '') {
+        loginErrors.password = '请输入密码';
+        isValid = false;
+    } else {
+        loginErrors.password = '';
+    }
 
-                        // 获取用户偏好
-                        try {
-                            const prefRes = await api.getPreferences()
-                            if (prefRes && typeof prefRes === 'object') {
-                                // aiSettings
-                                if ('aiSettings' in prefRes) {
-                                    localStorage.setItem('aiSettings', JSON.stringify(prefRes.aiSettings));
-                                }
-                                // debugMode
-                                if ('debugMode' in prefRes) {
-                                    localStorage.setItem('debugMode', prefRes.debugMode)
-                                }
-                                // bannerColor
-                                if ('bannerColor' in prefRes) {
-                                    localStorage.setItem('bannerColor', prefRes.bannerColor)
-                                }
-                                // resolution
-                                if ('resolution' in prefRes) {
-                                    localStorage.setItem('resolution', prefRes.resolution)
-                                }
-                                // 可扩展更多设置项
-                            }
-                        } catch (e) {
-                            // 忽略偏好获取失败
-                        }
-                        
-                        ElMessage.success('登录成功！');
-                        // 修复重定向问题
-                        const redirect = route.query.redirect || '/mainPage';
-                        router.push(redirect);
-                        clearForms();
-                    } else {
-                        ElMessage.error(response.message || '登录失败')
-                    }
-                } catch (error) {
-                    console.error('登录失败:', error)
-                    ElMessage.error('登录失败: ' + (error.message || '服务器错误'))
+    if (isValid) {
+        isLoading.value = true;
+        try {
+            // 发送登录请求
+            const response = await api.login({
+                username: loginForm.username,
+                password: loginForm.password
+            })
+            
+            if (response.success) {
+                // 保存 token
+                localStorage.setItem('token', response.token)
+                auth.login(response.token)
+                
+                // 获取用户信息
+                const userResponse = await api.getProtectedData()
+                if (userResponse.success) {
+                    auth.setUser(userResponse.user)
                 }
-            }
-        };
 
-        // 注册处理
-        const handleRegister = async () => {
-            let isValid = true;
-
-            // 验证用户名
-            if (registerForm.username.trim() === '') {
-                registerErrors.username = '请输入用户名';
-                isValid = false;
-            } else if (registerForm.username.length < 3) {
-                registerErrors.username = '用户名长度至少为3个字符';
-                isValid = false;
-            } else {
-                registerErrors.username = '';
-            }
-
-            // 验证邮箱
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (registerForm.email.trim() === '') {
-                registerErrors.email = '请输入邮箱';
-                isValid = false;
-            } else if (!emailRegex.test(registerForm.email)) {
-                registerErrors.email = '请输入有效的邮箱地址';
-                isValid = false;
-            } else {
-                registerErrors.email = '';
-            }
-
-            // 验证密码
-            if (registerForm.password.trim() === '') {
-                registerErrors.password = '请输入密码';
-                isValid = false;
-            } else if (registerForm.password.length < 6) {
-                registerErrors.password = '密码长度至少为6个字符';
-                isValid = false;
-            } else {
-                registerErrors.password = '';
-            }
-
-            // 验证确认密码
-            if (registerForm.confirmPassword.trim() === '') {
-                registerErrors.confirmPassword = '请确认密码';
-                isValid = false;
-            } else if (registerForm.confirmPassword !== registerForm.password) {
-                registerErrors.confirmPassword = '两次输入的密码不一致';
-                isValid = false;
-            } else {
-                registerErrors.confirmPassword = '';
-            }
-
-            if (isValid) {
+                // 获取用户偏好
                 try {
-                    // 发送注册请求
-                    const response = await api.register({
-                        username: registerForm.username,
-                        email: registerForm.email,
-                        password: registerForm.password
-                    })
-                    
-                    if (response.success) {
-                        ElMessage.success('注册成功！');
-                        isRegistering.value = false;
-                        clearForms();
-                        
-                        // 自动登录
-                        await handleLogin()
-                    } else {
-                        ElMessage.error(response.message || '注册失败')
+                    const prefRes = await api.getPreferences()
+                    if (prefRes && typeof prefRes === 'object') {
+                        // aiSettings
+                        if ('aiSettings' in prefRes) {
+                            localStorage.setItem('aiSettings', JSON.stringify(prefRes.aiSettings));
+                        }
+                        // debugMode
+                        if ('debugMode' in prefRes) {
+                            localStorage.setItem('debugMode', prefRes.debugMode)
+                        }
+                        // bannerColor
+                        if ('bannerColor' in prefRes) {
+                            localStorage.setItem('bannerColor', prefRes.bannerColor)
+                        }
+                        // resolution
+                        if ('resolution' in prefRes) {
+                            localStorage.setItem('resolution', prefRes.resolution)
+                        }
+                        // 可扩展更多设置项
                     }
-                } catch (error) {
-                    console.error('注册失败:', error)
-                    ElMessage.error('注册失败: ' + (error.message || '服务器错误'))
+                } catch (e) {
+                    // 忽略偏好获取失败
                 }
+                
+                ElMessage.success({
+                    message: '登录成功！',
+                    duration: 2500,
+                    type: 'success'
+                });
+                // 修复重定向问题
+                const redirect = route.query.redirect || '/mainPage';
+                router.push(redirect);
+                clearForms();
+            } else {
+                ElMessage.error({
+                    message: response.message || '登录失败',
+                    duration: 3500,
+                    type: 'error'
+                });
             }
-        };
-
-        // 清除表单和错误提示
-        const clearForms = () => {
-            // 清除登录表单
-            loginForm.username = '';
-            loginForm.password = '';
-            loginErrors.username = '';
-            loginErrors.password = '';
-
-            // 清除注册表单
-            registerForm.username = '';
-            registerForm.email = '';
-            registerForm.password = '';
-            registerForm.confirmPassword = '';
-            registerErrors.username = '';
-            registerErrors.email = '';
-            registerErrors.password = '';
-            registerErrors.confirmPassword = '';
-        };
-
-        // 保留原有路由功能
-        const goToNextPage = function () {
-            this.$router.push('/mainPage');
-        };
-
-        // 组件挂载时设置初始背景
-        document.body.style.background = backgroundStyle.value;
-
-        return {
-            isRegistering,
-            backgroundStyle,
-            errorInputStyle,
-            loginForm,
-            registerForm,
-            loginErrors,
-            registerErrors,
-            toggleForm,
-            handleLogin,
-            handleRegister,
-            clearForms,
-            goToNextPage,
-            showPassword: ref(false), // 添加 showPassword 状态
-        };
-    },
-    methods: {
-        // 保留原有方法作为备份，这部分可以和setup中的方法合并
-        goToNextPage() {
-            this.$router.push('/mainPage');
+        } catch (error) {
+            console.error('登录失败:', error)
+            ElMessage({
+                message: '登录失败: ' + (error.message || '服务器错误'),
+                type: 'error',
+                duration: 3000
+            });
+        } finally {
+            isLoading.value = false;
         }
     }
-}
+};
+
+// 检查密码强度
+const checkPasswordStrength = () => {
+    const password = registerForm.password;
+    
+    // 如果密码为空，重置强度
+    if (!password) {
+        passwordStrength.score = 0;
+        passwordStrength.message = '';
+        passwordStrength.className = '';
+        return;
+    }
+
+    // 定义检查规则
+    const hasLower = /[a-z]/.test(password);
+    const hasUpper = /[A-Z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    const length = password.length;
+
+    // 计算强度分数
+    let score = 0;
+    if (length >= 6) score++;
+    if (length >= 8) score++;
+    if (hasLower && hasUpper) score++;
+    if (hasNumber) score++;
+    if (hasSpecial) score++;
+    if (length >= 12) score++;
+
+    // 根据分数设置强度等级
+    let message = '';
+    let className = '';
+    
+    if (length < 6) {
+        score = 1;
+        message = '密码太短';
+        className = 'very-weak';
+    } else if (score <= 2) {
+        message = '弱';
+        className = 'weak';
+    } else if (score <= 3) {
+        message = '中等';
+        className = 'medium';
+    } else if (score <= 4) {
+        message = '强';
+        className = 'strong';
+    } else {
+        message = '非常强';
+        className = 'very-strong';
+    }
+
+    // 更新密码强度状态
+    passwordStrength.score = Math.min(4, score);
+    passwordStrength.message = message;
+    passwordStrength.className = className;
+};
+
+// 注册处理
+const handleRegister = async () => {
+    if (isLoading.value) return;
+    
+    let isValid = true;
+
+    // 验证用户名
+    if (registerForm.username.trim() === '') {
+        registerErrors.username = '请输入用户名';
+        isValid = false;
+    } else if (registerForm.username.length < 3) {
+        registerErrors.username = '用户名长度至少为3个字符';
+        isValid = false;
+    } else {
+        registerErrors.username = '';
+    }
+
+    // 验证邮箱
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (registerForm.email.trim() === '') {
+        registerErrors.email = '请输入邮箱';
+        isValid = false;
+    } else if (!emailRegex.test(registerForm.email)) {
+        registerErrors.email = '请输入有效的邮箱地址';
+        isValid = false;
+    } else {
+        registerErrors.email = '';
+    }
+
+    // 验证密码
+    if (registerForm.password.trim() === '') {
+        registerErrors.password = '请输入密码';
+        isValid = false;
+    } else if (registerForm.password.length < 6) {
+        registerErrors.password = '密码长度至少为6个字符';
+        isValid = false;
+    } else {
+        registerErrors.password = '';
+    }
+
+    // 添加密码强度验证
+    if (passwordStrength.score < 2) {
+        registerErrors.password = '密码强度太弱，请使用更复杂的密码';
+        isValid = false;
+    }
+
+    // 验证确认密码
+    if (registerForm.confirmPassword.trim() === '') {
+        registerErrors.confirmPassword = '请确认密码';
+        isValid = false;
+    } else if (registerForm.confirmPassword !== registerForm.password) {
+        registerErrors.confirmPassword = '两次输入的密码不一致';
+        isValid = false;
+    } else {
+        registerErrors.confirmPassword = '';
+    }
+
+    if (isValid) {
+        isLoading.value = true;
+        try {
+            // 发送注册请求
+            const response = await api.register({
+                username: registerForm.username,
+                email: registerForm.email,
+                password: registerForm.password
+            })
+            
+            if (response.success) {
+                ElMessage.success({
+                    message: '注册成功！',
+                    duration: 2500,
+                    type: 'success'
+                });
+                isRegistering.value = false;
+                clearForms();
+                
+                // 自动登录
+                await handleLogin()
+            } else {
+                ElMessage.error({
+                    message: response.message || '注册失败',
+                    duration: 3500,
+                    type: 'error'
+                });
+            }
+        } catch (error) {
+            console.error('注册失败:', error)
+            ElMessage({
+                message: '注册失败: ' + (error.message || '服务器错误'),
+                type: 'error',
+                duration: 3000
+            });
+        } finally {
+            isLoading.value = false;
+        }
+    }
+};
+
+// 清除表单和错误提示
+const clearForms = () => {
+    // 清除登录表单
+    loginForm.username = '';
+    loginForm.password = '';
+    loginErrors.username = '';
+    loginErrors.password = '';
+
+    // 清除注册表单
+    registerForm.username = '';
+    registerForm.email = '';
+    registerForm.password = '';
+    registerForm.confirmPassword = '';
+    registerErrors.username = '';
+    registerErrors.email = '';
+    registerErrors.password = '';
+    registerErrors.confirmPassword = '';
+};
+
+// 保留原有路由功能
+const goToNextPage = () => {
+    router.push('/mainPage');
+};
+
+// 组件挂载时设置初始背景
+document.body.style.background = backgroundStyle.value;
+
+// 暴露方法给模板使用
+defineExpose({
+    isRegistering,
+    backgroundStyle,
+    errorInputStyle,
+    loginForm,
+    registerForm,
+    loginErrors,
+    registerErrors,
+    toggleForm,
+    handleLogin,
+    handleRegister,
+    clearForms,
+    goToNextPage,
+    showPassword: ref(false),
+    isLoading
+});
+
 </script>
 
 <style scoped>
@@ -732,5 +853,158 @@ h1 {
     margin-top: 10px;   /* 缩小上间距 */
     margin-bottom: 6px; /* 缩小下间距 */
     letter-spacing: 1px;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    margin-right: 8px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.btn:disabled {
+    background: #a5a5a5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.input-group input:disabled {
+    background: #f5f5f5;
+    cursor: not-allowed;
+}
+
+.toggle-password-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* 添加输入框聚焦效果 */
+.input-group input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2);
+    background: #fff;
+}
+
+/* 添加按钮点击效果 */
+.btn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+/* 优化错误消息显示 */
+.error-message {
+    color: #e74c3c;
+    font-size: 14px;
+    margin-top: -15px;
+    margin-bottom: 15px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+.error-message:not(:empty) {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 添加表单切换动画 */
+.container {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.form-container {
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 密码强度指示器样式 */
+.password-strength {
+    margin-top: 8px;
+    font-size: 12px;
+}
+
+.strength-bars {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.strength-bar {
+    height: 4px;
+    flex: 1;
+    background-color: #e0e0e0;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.strength-bar.active {
+    transform: scaleY(1.2);
+}
+
+.strength-bar.very-weak {
+    background-color: #ff4d4d;
+}
+
+.strength-bar.weak {
+    background-color: #ffa64d;
+}
+
+.strength-bar.medium {
+    background-color: #ffff4d;
+}
+
+.strength-bar.strong {
+    background-color: #4dff4d;
+}
+
+.strength-bar.very-strong {
+    background-color: #00cc00;
+}
+
+.strength-text {
+    font-size: 12px;
+    transition: all 0.3s ease;
+}
+
+.strength-text.very-weak {
+    color: #ff4d4d;
+}
+
+.strength-text.weak {
+    color: #ffa64d;
+}
+
+.strength-text.medium {
+    color: #999900;
+}
+
+.strength-text.strong {
+    color: #00b300;
+}
+
+.strength-text.very-strong {
+    color: #008000;
+}
+
+/* 密码输入框获得焦点时的提示 */
+.input-group:focus-within .password-strength {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 添加密码框的过渡动画 */
+.password-strength {
+    opacity: 0.9;
+    transform: translateY(-4px);
+    transition: all 0.3s ease;
 }
 </style>

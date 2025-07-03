@@ -31,9 +31,9 @@
                     </div>
                     <div class="error-message" v-if="loginErrors.username">{{ loginErrors.username }}</div>
 
-                    <div class="input-group" style="position: relative;">
-                        <input
-                            :type="showPassword ? 'text' : 'password'"
+                    <div class="input-group">
+                        <el-input
+                            type="password"
                             id="loginPassword"
                             v-model="loginForm.password"
                             @keyup.enter="!isLoading && handleLogin()"
@@ -41,18 +41,8 @@
                             required
                             placeholder="请输入密码"
                             :disabled="isLoading"
-                        >
-                        <button
-                            type="button"
-                            class="toggle-password-btn"
-                            @click="showPassword = !showPassword"
-                            :aria-label="showPassword ? '隐藏密码' : '显示密码'"
-                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer;"
-                            :disabled="isLoading"
-                        >
-                            <span v-if="showPassword">👁️</span>
-                            <span v-else>🙈</span>
-                        </button>
+                            show-password
+                        />
                     </div>
                     <div class="error-message" v-if="loginErrors.password">{{ loginErrors.password }}</div>
 
@@ -110,57 +100,33 @@
                     </div>
                     <div class="error-message" v-if="registerErrors.email">{{ registerErrors.email }}</div>
 
-                    <div class="input-group" style="position: relative;">
-                        <input
-                            :type="showPassword ? 'text' : 'password'"
+                    <div class="input-group">
+                        <el-input
+                            type="password"
                             id="registerPassword"
                             v-model="registerForm.password"
-                            @input="checkPasswordStrength"
-                            @keyup.enter="handleRegister"
+                            @keyup.enter="!isLoading && handleRegister()"
                             :style="registerErrors.password ? errorInputStyle : {}"
                             required
                             placeholder="请输入密码"
-                        >
-                        <button
-                            type="button"
-                            class="toggle-password-btn"
-                            @click="showPassword = !showPassword"
-                            :aria-label="showPassword ? '隐藏密码' : '显示密码'"
-                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer;"
-                        >
-                            <span v-if="showPassword">👁️</span>
-                            <span v-else>🙈</span>
-                        </button>
-                        <!-- 添加密码强度指示器 -->
-                        <div v-if="registerForm.password" class="password-strength">
-                            <div class="strength-bars">
-                                <div 
-                                    v-for="n in 4" 
-                                    :key="n"
-                                    class="strength-bar"
-                                    :class="[
-                                        { active: passwordStrength.score >= n },
-                                        passwordStrength.score >= n ? passwordStrength.className : ''
-                                    ]"
-                                ></div>
-                            </div>
-                            <span class="strength-text" :class="passwordStrength.className">
-                                {{ passwordStrength.message }}
-                            </span>
-                        </div>
+                            :disabled="isLoading"
+                            show-password
+                        />
                     </div>
                     <div class="error-message" v-if="registerErrors.password">{{ registerErrors.password }}</div>
 
                     <div class="input-group">
-                        <input
-                            :type="showPassword ? 'text' : 'password'"
+                        <el-input
+                            type="password"
                             id="confirmPassword"
                             v-model="registerForm.confirmPassword"
-                            @keyup.enter="handleRegister"
+                            @keyup.enter="!isLoading && handleRegister()"
                             :style="registerErrors.confirmPassword ? errorInputStyle : {}"
                             required
                             placeholder="请确认密码"
-                        >
+                            :disabled="isLoading"
+                            show-password
+                        />
                     </div>
                     <div class="error-message" v-if="registerErrors.confirmPassword">
                         {{ registerErrors.confirmPassword }}
@@ -184,6 +150,7 @@ import {useRoute} from 'vue-router'
 import api from '/src/api/index.js'
 import TopBanner from '/src/components/TopBanner.vue'
 import { ElMessage } from 'element-plus'
+import { ElInput } from 'element-plus'
 
 const auth = useAuthStore();
 const router = useRouter();
@@ -244,7 +211,6 @@ const passwordStrength = reactive({
 // 切换表单方法
 const toggleForm = () => {
     isRegistering.value = !isRegistering.value;
-    // 清除表单和错误提示
     clearForms();
 };
 
@@ -541,9 +507,7 @@ defineExpose({
     handleLogin,
     handleRegister,
     clearForms,
-    goToNextPage,
-    showPassword: ref(false),
-    isLoading
+    goToNextPage
 });
 
 </script>
@@ -662,12 +626,12 @@ h1 {
 .input-group {
     position: relative;
     width: 100%;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 .welcome-message {
-    position: fixed;
-    top: 60px;
+    position: absolute;
+    top: -10px;
     left: 0;
     width: 100vw;
     text-align: center;
@@ -929,7 +893,6 @@ h1 {
     transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 密码强度指示器样式 */
 .password-strength {
     margin-top: 8px;
     font-size: 12px;
@@ -1020,12 +983,59 @@ h1 {
     font-weight: 300;
     letter-spacing: 0.5px;
     z-index: 1;
-    margin-top: auto; /* 确保footer始终在底部 */
+    margin-top: auto;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .footer p {
     margin: 0;
     padding: 0;
+}
+
+/* 添加密码切换按钮的悬停效果 */
+.toggle-password-btn {
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.toggle-password-btn:hover:not(:disabled) {
+    opacity: 1;
+}
+
+.toggle-password-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* 覆盖 Element Plus 的默认样式以匹配我们的设计 */
+.el-input {
+    --el-input-border-radius: 8px;
+}
+
+.el-input :deep(.el-input__wrapper) {
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 12px 15px;
+    border: none;
+}
+
+.el-input :deep(.el-input__wrapper.is-focus) {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.el-input :deep(.el-input__inner) {
+    font-size: 16px;
+    color: #333;
+}
+
+.el-input :deep(.el-input__inner::placeholder) {
+    color: #999;
+}
+
+/* 禁用状态样式 */
+.el-input.is-disabled :deep(.el-input__wrapper) {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
 }
 </style>

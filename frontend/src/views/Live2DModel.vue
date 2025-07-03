@@ -38,11 +38,8 @@ import { Live2DModel } from "pixi-live2d-display-lipsyncpatch";
 import { useLive2DStore } from "../stores/live2d";
 
 // 添加音频分析相关变量
-let audioContext;
-let analyser;
 let microphone;
 let dataArray;
-let animationId;
 
 
 // 组件属性

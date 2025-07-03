@@ -617,7 +617,10 @@ export default {
 <style scoped>
 .setting-bg-glass {
     min-height: 100vh;
-    /* 动态流动渐变背景 */
+    width: 100vw;
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100vw !important;
     background: linear-gradient(270deg, #e0e7ff, #86a8e7, #91eac9, #f5f7fa, #e0e7ff);
     background-size: 200% 200%;
     animation: gradientFlow 8s ease-in-out infinite;
@@ -632,6 +635,10 @@ export default {
     100% {
         background-position: 0% 50%;
     }
+}
+.setting-content {
+    position: relative;
+    z-index: 1;
 }
 .setting-card-glass {
     border-radius: 32px;

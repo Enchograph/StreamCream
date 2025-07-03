@@ -8,7 +8,7 @@
                 </div>
             </div>
             
-            <nav class="nav-links">
+        <nav class="nav-links">
                 <a href="#" class="nav-link" title="查看文档">
                     <span class="nav-text">文档</span>
                 </a>
@@ -18,7 +18,7 @@
                 <button v-if="showLogout" class="logout-btn" @click="handleLogout" title="退出登录">
                     <span class="btn-text">登出</span>
                 </button>
-            </nav>
+        </nav>
         </div>
         
         <!-- 装饰性元素 -->
@@ -67,7 +67,6 @@
                 <span></span>
                 <span></span>
                 <span></span>
-                <span></span>
             </div>
         </div>
     </header>
@@ -77,6 +76,7 @@
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js'
 import { computed, ref, onMounted } from 'vue'
+import { ElMessageBox, ElMessage } from 'element-plus'
 
 const router = useRouter()
 const auth = useAuthStore()
@@ -129,11 +129,24 @@ function goToSettings() {
     });
 }
 
-function handleLogout() {
-    if (window.confirm('确定要登出吗？')) {
+async function handleLogout() {
+    try {
+        await ElMessageBox.confirm(
+            '确定要登出吗？',
+            '提示',
+            {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+                center: true,
+                customClass: 'logout-messagebox'
+            }
+        )
         auth.logout()
-        alert('已成功登出！')
+        ElMessage.success('已成功登出！')
         router.push('/loginPage')
+    } catch (e) {
+        // 用户取消，无需处理
     }
 }
 
@@ -749,5 +762,28 @@ function goToHome() {
     .nav-links {
         gap: 4px;
     }
+}
+</style>
+
+<style>
+.logout-messagebox .el-message-box {
+    border-radius: 16px;
+    font-size: 1.1rem;
+    padding: 24px 32px;
+}
+.logout-messagebox .el-message-box__title {
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #7c3aed;
+}
+.logout-messagebox .el-message-box__btns .el-button--primary {
+    background: linear-gradient(90deg, #7c3aed 0%, #86a8e7 100%);
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 8px;
+}
+.logout-messagebox .el-message-box__btns .el-button--default {
+    border-radius: 8px;
 }
 </style>

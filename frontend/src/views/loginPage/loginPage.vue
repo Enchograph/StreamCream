@@ -2,12 +2,15 @@
     <TopBanner />
     <div class="page-container">
         <div class="page-bg-animated"></div>
+        <div class="welcome-message">
+            <h2>欢迎使用StreamCream</h2>
+        </div>
         <div class="app-container">
+            <!-- 表单内容 -->
             <div class="container" :class="{ active: isRegistering }">
                 <div class="toggle-container">
                     <button class="toggle-btn" @click="toggleForm">{{ isRegistering ? '登录' : '注册' }}</button>
                 </div>
-
              <!-- 登录表单 -->
                 <div class="form-container login-container">
                     <h1>登录</h1>
@@ -465,10 +468,12 @@ export default {
 
 .app-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: flex-start; /* 顶部对齐 */
     align-items: center;
     flex: 1;
-    min-height: 0;
+    min-height: 100vh; /* 占满整个视口高度 */
+    padding-top: 60px;  /* 可根据需要调整顶部间距 */
 }
 
 .container {
@@ -533,6 +538,19 @@ h1 {
     position: relative;
     width: 100%;
     margin-bottom: 25px;
+}
+
+.welcome-message {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 100vw;
+    text-align: center;
+    color: #ffffff;
+    font-size: 1.8rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+    pointer-events: none;
 }
 
 .input-group input {

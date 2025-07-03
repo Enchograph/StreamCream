@@ -154,6 +154,7 @@ import { useAuthStore } from '/src/stores/auth.js'
 import {useRoute} from 'vue-router'
 import api from '/src/api/index.js'
 import TopBanner from '/src/components/TopBanner.vue'
+import { ElMessage } from 'element-plus';
 
 export default {
     name: 'loginPage',
@@ -281,17 +282,17 @@ export default {
                             // 忽略偏好获取失败
                         }
                         
-                        alert('登录成功！');
+                        ElMessage.success('登录成功！');
                         // 修复重定向问题
                         const redirect = route.query.redirect || '/mainPage';
                         router.push(redirect);
                         clearForms();
                     } else {
-                        alert(response.message || '登录失败')
+                        ElMessage.error(response.message || '登录失败')
                     }
                 } catch (error) {
                     console.error('登录失败:', error)
-                    alert('登录失败: ' + (error.message || '服务器错误'))
+                    ElMessage.error('登录失败: ' + (error.message || '服务器错误'))
                 }
             }
         };
@@ -355,18 +356,18 @@ export default {
                     })
                     
                     if (response.success) {
-                        alert('注册成功！');
+                        ElMessage.success('注册成功！');
                         isRegistering.value = false;
                         clearForms();
                         
                         // 自动登录
                         await handleLogin()
                     } else {
-                        alert(response.message || '注册失败')
+                        ElMessage.error(response.message || '注册失败')
                     }
                 } catch (error) {
                     console.error('注册失败:', error)
-                    alert('注册失败: ' + (error.message || '服务器错误'))
+                    ElMessage.error('注册失败: ' + (error.message || '服务器错误'))
                 }
             }
         };

@@ -4,6 +4,8 @@ import App from './App.vue'
 import router from './router'
 import 'font-awesome/css/font-awesome.min.css'
 import api from './api'
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
 
 // Vuetify
 import 'vuetify/styles'

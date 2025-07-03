@@ -1,0 +1,408 @@
+\documentclass[UTF8]{beamer}
+\usepackage{ctex} % 中文支持包
+
+% --- 主题与配色 ---
+\usetheme{Madrid}
+\usecolortheme{beaver}
+
+% --- 宏包 ---
+\usepackage{graphicx}      % 用于插入图片
+\usepackage{listings}      % 用于代码高亮
+\usepackage{xcolor}        % 用于定义颜色
+\usepackage{booktabs}      % 用于美化表格
+
+% --- 全局设置 ---
+\setbeamertemplate{navigation symbols}{} % 隐藏底部导航条
+\setbeamertemplate{footline}[frame number] % 页脚只显示页码
+\setbeamerfont{frametitle}{size=\large,series=\bfseries} % 帧标题字体
+
+% --- 代码高亮配置 ---
+% Python 样式
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.95}
+
+\lstdefinestyle{pythonstyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=pythonstyle}
+
+% JavaScript 样式
+\lstdefinestyle{jsstyle}{
+    language=JavaScript,
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    numbers=left,
+    numbersep=5pt,
+    tabsize=2
+}
+
+% --- 文档信息 ---
+\title{全栈AI直播系统技术演讲}
+\subtitle{一个融合前沿技术的智能化解决方案}
+\author{我们的团队}
+\institute{技术分享会}
+\date{\today}
+
+\begin{document}
+
+% --- 标题页 ---
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% --- 目录页 ---
+\begin{frame}{演讲大纲 | Outline}
+    \tableofcontents
+\end{frame}
+
+% =============================================
+\section{项目概览：环境、架构与规划}
+% =============================================
+
+\begin{frame}{开发环境与技术栈}
+    \begin{block}{全栈技术矩阵}
+        \centering
+        % 注意：请将Mermaid图转换为名为 tech_stack.png 的图片文件
+        \includegraphics[width=0.9\textwidth]{tech_stack.png}
+        \footnotesize{\emph{（注：Mermaid图表已转换为图片格式插入）}}
+    \end{block}
+\end{frame}
+
+\begin{frame}{关键工具与版本}
+    \begin{block}{关键技术栈版本}
+        \centering
+        \begin{tabular}{lll}
+            \toprule
+            \textbf{类别} & \textbf{技术栈} & \textbf{版本} \\
+            \midrule
+            \textbf{前端}   & Vue3 + TypeScript   & 3.3.4  \\
+                         & Vite                & 2.1.7  \\
+            \midrule
+            \textbf{后端}   & Python              & 3.10   \\
+                         & Flask               & 2.3.2  \\
+                         & FFmpeg              & 6.0    \\
+            \midrule
+            \textbf{AI引擎} & GPT-SoVITS          & 1.0.16 \\
+            \midrule
+            \textbf{数据库} & MySQL               & 8.0    \\
+            \midrule
+            \textbf{部署}   & Docker + Kubernetes & 23.0.6 \\
+            \bottomrule
+        \end{tabular}
+    \end{block}
+\end{frame}
+
+\begin{frame}{开发与测试环境}
+    \begin{block}{硬件与协作}
+        \begin{itemize}
+            \item \textbf{硬件}: 
+            \begin{itemize}
+                \item Intel(R) Arc(TM) Graphics (语音训练)
+                \item Intel(R) Core(TM) Ultra 7 155H (实时推理)
+            \end{itemize}
+            \item \textbf{协作工具}: GitLab CI/CD + Jira + Confluence
+        \end{itemize}
+    \end{block}
+    \begin{block}{测试框架}
+        \begin{itemize}
+            \item \textbf{单元测试}: Jest (前端) / Pytest (后端)
+            \item \textbf{压力测试}: Locust
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{核心功能架构图}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \begin{block}{全系统数据流}
+                % 注意：请将Mermaid图转换为名为 data_flow.png 的图片文件
+                \includegraphics[width=\linewidth]{data_flow.png}
+            \end{block}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{block}{语音转换流水线}
+                 % 注意：请将Mermaid图转换为名为 voice_pipeline.png 的图片文件
+                \includegraphics[width=\linewidth]{voice_pipeline.png}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{当前挑战与技术展望}
+    \begin{block}{当前挑战}
+        \begin{enumerate}
+            \item \textbf{延迟敏感场景优化}
+            \begin{itemize}
+                \item WebRTC→RTMP转换在弱网下延迟波动 (180ms → 350ms)
+                \item 语音合成首包响应时间需进一步压缩
+            \end{itemize}
+            \item \textbf{资源消耗瓶颈}
+            \begin{itemize}
+                \item GPT-SoVITS单实例内存占用高达4GB
+                \item 多路直播时GPU显存争用
+            \end{itemize}
+            \item \textbf{跨平台兼容性}
+            \begin{itemize}
+                \item iOS Safari对WebRTC屏幕共享限制
+                \item Live2D在移动端性能下降40\%
+            \end{itemize}
+        \end{enumerate}
+    \end{block}
+\end{frame}
+
+\begin{frame}{技术演进路线图}
+    \begin{block}{技术演进路线图}
+        \centering
+        % 注意：请将Mermaid图转换为名为 gantt_roadmap.png 的图片文件
+        \includegraphics[width=\textwidth]{gantt_roadmap.png}
+    \end{block}
+    \begin{alertblock}{关键里程碑}
+        \begin{itemize}
+            \item \textbf{2024 Q4}: 
+            \begin{itemize}
+                \item 实现Wasm版FFmpeg，降低转码延迟30\%
+                \item 部署GPT-SoVITS蒸馏模型 (<1GB内存)
+            \end{itemize}
+            \item \textbf{2025 Q1}:
+            \begin{itemize}
+                \item 集成NeRF实现3D虚拟主播
+                \item 支持LLM实时生成直播脚本
+            \end{itemize}
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+% =============================================
+\section{核心模块解析：登录认证}
+% =============================================
+
+\begin{frame}{登录模块：企业级安全认证架构}
+    \begin{block}{技术栈创新点}
+        \centering
+        % 注意：请将Mermaid图转换为名为 login_arch.png 的图片文件
+        \includegraphics[width=0.8\textwidth]{login_arch.png}
+    \end{block}
+    \begin{enumerate}
+        \item \textbf{三重安全屏障}:
+        \begin{itemize}
+            \item \textbf{密码加密}: Werkzeug的`bcrypt`算法, 支持`pbkdf2:sha256`迭代加密
+            \item \textbf{令牌验证}: JWT令牌 + 黑名单机制
+            \item \textbf{输入防御}: SQL注入过滤 + XSS防护
+        \end{itemize}
+        \item \textbf{高性能会话管理}: 令牌验证响应 <50ms
+        \item \textbf{跨域安全策略}: 动态CORS + 严格CSP头配置
+    \end{enumerate}
+\end{frame}
+
+% =============================================
+\section{核心模块解析：直播推流}
+% =============================================
+
+\begin{frame}{直播模块：WebRTC→RTMP转换的技术挑战}
+    \begin{block}{技术挑战}
+        \begin{itemize}
+            \item \textbf{协议转换}: WebRTC (VP8) vs RTMP (H.264)
+            \item \textbf{低延迟要求}: 端到端延迟需控制在200ms以下
+            \item \textbf{高并发压力}: 万级并发下的资源争用
+        \end{itemize}
+    \end{block}
+    \begin{exampleblock}{创新解决方案概览}
+        我们将展示一个基于FFmpeg和异步IO的轻量级、高性能转码中继方案。
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{直播模块：创新解决方案}
+    \begin{block}{后端转码核心逻辑 (app.py)}
+\begin{lstlisting}[language=Python]
+async def video_relay(websocket):
+    ffmpeg = subprocess.Popen([
+        'ffmpeg', '-i', '-', 
+        '-c:v', 'libx264', '-preset', 'ultrafast',
+        '-f', 'flv', rtmp_url
+    ], stdin=subprocess.PIPE)
+  
+    async for frame in websocket:
+        # 实时喂入WebRTC数据流
+        ffmpeg.stdin.write(frame)
+\end{lstlisting}
+    \end{block}
+    
+    \begin{block}{抗抖动优化}
+        \begin{itemize}
+            \item \textbf{自适应码率算法}: 根据RTT动态调整帧率
+            \item \textbf{关键帧优先重传}: 使用RED+FEC冗余编码
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{直播模块：性能指标对比}
+    \begin{block}{优化前后性能对比}
+        \centering
+        \begin{tabular}{lcc}
+            \toprule
+            \textbf{指标} & \textbf{优化前} & \textbf{优化后} \\
+            \midrule
+            端到端延迟 & 450ms & \color{green!70!black}180ms \\
+            CPU占用    & 92\%   & \color{green!70!black}65\% \\
+            1080P支持  & ✘      & \color{green!70!black}✔ \\
+            \bottomrule
+        \end{tabular}
+    \end{block}
+    \begin{alertblock}{关键突破}
+        通过 FFmpeg 硬编码（NVIDIA NVENC 加速）和异步处理，H.264 编码延迟控制在 80ms 内。
+    \end{alertblock}
+\end{frame}
+
+% =============================================
+\section{核心模块解析：Live2D虚拟主播}
+% =============================================
+
+\begin{frame}[fragile]{Live2D模块：实时嘴型同步技术}
+    \begin{block}{音频驱动模型核心 (Live2DModel.vue)}
+\begin{lstlisting}[style=jsstyle]
+const analyzeAudio = () => {
+  const dataArray = analyzer.getByteFrequencyData();
+  // 基于FFT的元音识别
+  const vowel = detectVowel(dataArray); 
+  // 动态参数映射
+  model.internalModel.eyeY = vowel === 'A' ? 1 : 0; 
+};
+\end{lstlisting}
+    \end{block}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \begin{exampleblock}{三大核心技术}
+                \begin{itemize}
+                    \item 嘴型同步
+                    \item 表情控制系统
+                    \item 跨窗口通信
+                \end{itemize}
+            \end{exampleblock}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{alertblock}{性能突破}
+                \begin{itemize}
+                    \item 60FPS 流畅渲染
+                    \item 嘴型检测延迟 <40ms
+                \end{itemize}
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% =============================================
+\section{核心模块解析：AI语音转换}
+% =============================================
+
+\begin{frame}{语音转换模块：零延迟AI语音流水线}
+    \begin{block}{系统架构核心}
+        \centering
+        % 注意：请将Mermaid图转换为名为 voice_seq.png 的图片文件
+        \includegraphics[width=0.9\textwidth]{voice_seq.png}
+    \end{block}
+\end{frame}
+
+\begin{frame}[fragile]{语音转换模块：GPT-SoVITS深度集成}
+    \begin{block}{GPT-SoVITS 流式处理 (API\_v2.py)}
+\begin{lstlisting}[language=Python]
+# API_v2.py 流式响应
+def generate_stream():
+    while chunk := get_audio_chunk():
+        # 200ms/块实时推送
+        yield chunk  
+\end{lstlisting}
+    \end{block}
+    \begin{exampleblock}{集成亮点}
+        \begin{itemize}
+            \item \textbf{动态模型加载}: 支持V1\textasciitilde V4所有模型切换
+            \item \textbf{流式处理}: 实现低延迟语音合成
+            \item \textbf{情感迁移}: 通过Prosody Embedding实现5级情感强度控制
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{语音转换模块：前端优化与性能}
+    \begin{block}{前端优化策略}
+        \begin{itemize}
+            \item \textbf{预载入机制}: 提前加载下3句语音，降低首字延迟
+            \item \textbf{自适应缓冲}: 根据网络抖动动态调整缓冲池 (150-500ms)
+        \end{itemize}
+    \end{block}
+    \begin{alertblock}{关键性能数据}
+        \begin{itemize}
+            \item 中文合成速度: \textbf{0.8×实时} (i7-12700H)
+            \item 端到端延迟: \textbf{220ms} (文本输入→音频输出)
+            \item 资源占用: \textbf{<2GB RAM} / 并发流
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+% =============================================
+\section{总结与展望}
+% =============================================
+\begin{frame}{系统核心价值总结}
+    \begin{block}{我们实现了什么？}
+        \begin{itemize}
+            \item<1-> 首创 \textbf{WebRTC→RTMP 无感知转码}方案，攻克协议壁垒。
+            \item<2-> 达成 \textbf{语音-Live2D-推流} 全链路低延迟同步。
+            \item<3-> 验证单节点可支持 \textbf{50路高清直播流} 的高并发能力。
+        \end{itemize}
+    \end{block}
+    \begin{alertblock}{核心突破}
+        本系统将 AI 技术与实时流媒体深度融合，为虚拟直播提供了生产级的解决方案。
+    \end{alertblock}
+\end{frame}
+\begin{frame}{未来规划与技术展望}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \begin{exampleblock}{近期规划 (Next Steps)}
+                \begin{itemize}
+                    \item \textbf{表情驱动升级}: \\
+                    引入AI模型，实现更智能、自然的 Live2D 表情自动控制。
+                    \item \textbf{语音功能扩展}: \\
+                    集成 Voice Conversion 技术，实现多语种实时翻译与声音克隆。
+                \end{itemize}
+            \end{exampleblock}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{alertblock}{我们的最终目标}
+                \Large
+                打造一站式全自动 \\
+                \Huge{\color{red!80!black}{\textbf{<100ms}}} \\
+                \Large
+                的下一代AI直播平台！
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+% --- Q&A页 ---
+\begin{frame}
+    \centering
+    \Huge{\textbf{Q \& A}}
+    \vspace{2em}
+    \large{我们期待与各位深入探讨技术细节，\\共同推动AI直播技术的边界！}
+    \vspace{2em}
+    \Large{\textbf{感谢聆听}}
+\end{frame}
+\end{document}

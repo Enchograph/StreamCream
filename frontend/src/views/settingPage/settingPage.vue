@@ -462,6 +462,9 @@ export default {
             );
         },
         async completeSetting() {
+            // 保存AI设置到localStorage（兼容streamingPage.vue的读取方式）
+            localStorage.setItem('aiSettings', JSON.stringify(this.aiSettings));
+            
             // 先自动测试LLM连接
             // const llmOk = await this.testLLMConnection(false);
             // if (!llmOk) {
@@ -474,7 +477,8 @@ export default {
                 await api.savePreferences({
                     debugMode: this.debugMode,
                     bannerColor: this.bannerColor,
-                    resolution: this.resolution
+                    resolution: this.resolution,
+                    aiSettings: this.aiSettings  // 添加AI设置保存
                 })
             } catch (e) {
                 // 可选：提示保存失败

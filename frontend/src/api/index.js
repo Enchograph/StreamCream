@@ -43,6 +43,12 @@ export default {
     register(userData) {
         return api.post('/api/register', userData)
     },
+    verifyEmail(data) {
+        return api.post('/api/verify-email', data)
+    },
+    resendVerification(data) {
+        return api.post('/api/resend-verification', data)
+    },
     verifyToken() {
         return api.post('/api/verify-token')
     },

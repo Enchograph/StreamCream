@@ -166,7 +166,33 @@
                         {{ registerErrors.confirmPassword }}
                     </div>
 
-                    <button class="btn" @click="handleRegister">注册</button>
+                    <!-- 邮箱验证码输入框 -->
+                    <div class="input-group verification-group" v-if="showVerificationCode">
+                        <input
+                            type="text"
+                            id="verificationCode"
+                            v-model="registerForm.verificationCode"
+                            @keyup.enter="handleVerifyEmail"
+                            :style="registerErrors.verificationCode ? errorInputStyle : {}"
+                            required
+                            placeholder="请输入邮箱验证码"
+                            maxlength="6"
+                        >
+                        <button 
+                            type="button" 
+                            class="resend-btn" 
+                            @click="handleResendVerification"
+                            :disabled="resendCooldown > 0"
+                        >
+                            {{ resendCooldown > 0 ? `${resendCooldown}s` : '重新发送' }}
+                        </button>
+                    </div>
+                    <div class="error-message" v-if="registerErrors.verificationCode">
+                        {{ registerErrors.verificationCode }}
+                    </div>
+
+                    <button class="btn" @click="handleRegister" v-if="!showVerificationCode">注册</button>
+                    <button class="btn" @click="handleVerifyEmail" v-if="showVerificationCode">验证邮箱</button>
                 </div>
             </div>
         </div>
@@ -215,7 +241,8 @@ const registerForm = reactive({
     username: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    verificationCode: ''
 });
 
 // 表单错误信息
@@ -228,7 +255,8 @@ const registerErrors = reactive({
     username: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    verificationCode: ''
 });
 
 // 密码强度状态
@@ -469,15 +497,23 @@ const handleRegister = async () => {
             
             if (response.success) {
                 ElMessage.success({
-                    message: '注册成功！',
-                    duration: 2500,
+                    message: response.message || '验证码已发送，请查收邮箱！',
+                    duration: 3500,
                     type: 'success'
                 });
-                isRegistering.value = false;
-                clearForms();
                 
-                // 自动登录
-                await handleLogin()
+                // 保存邮箱并显示验证码输入框
+                currentEmail.value = response.email;
+                showVerificationCode.value = true;
+                
+                // 开始重新发送验证码的倒计时
+                resendCooldown.value = 60;
+                const timer = setInterval(() => {
+                    resendCooldown.value--;
+                    if (resendCooldown.value <= 0) {
+                        clearInterval(timer);
+                    }
+                }, 1000);
             } else {
                 ElMessage.error({
                     message: response.message || '注册失败',
@@ -498,6 +534,116 @@ const handleRegister = async () => {
     }
 };
 
+// 邮箱验证处理
+const handleVerifyEmail = async () => {
+    if (isLoading.value) return;
+    
+    // 验证验证码
+    if (registerForm.verificationCode.trim() === '') {
+        registerErrors.verificationCode = '请输入验证码';
+        return;
+    } else if (registerForm.verificationCode.length !== 6) {
+        registerErrors.verificationCode = '验证码应为6位数字';
+        return;
+    } else {
+        registerErrors.verificationCode = '';
+    }
+    
+    isLoading.value = true;
+    try {
+        const response = await api.verifyEmail({
+            email: currentEmail.value,
+            code: registerForm.verificationCode
+        });
+        
+        if (response.success) {
+            ElMessage.success({
+                message: '注册成功！',
+                duration: 2500,
+                type: 'success'
+            });
+            
+            // 保存token并登录
+            localStorage.setItem('token', response.token);
+            auth.login(response.token);
+            
+            // 获取用户信息
+            const userResponse = await api.getProtectedData();
+            if (userResponse.success) {
+                auth.setUser(userResponse.user);
+            }
+            
+            // 跳转到主页面
+            router.push('/mainPage');
+            clearForms();
+            showVerificationCode.value = false;
+        } else {
+            ElMessage.error({
+                message: response.message || '验证失败',
+                duration: 3500,
+                type: 'error'
+            });
+        }
+    } catch (error) {
+        console.error('邮箱验证失败:', error);
+        ElMessage({
+            message: '验证失败: ' + (error.message || '服务器错误'),
+            type: 'error',
+            duration: 3000
+        });
+    } finally {
+        isLoading.value = false;
+    }
+};
+
+// 重新发送验证码
+const handleResendVerification = async () => {
+    if (resendCooldown.value > 0) return;
+    
+    try {
+        const response = await api.resendVerification({
+            email: currentEmail.value
+        });
+        
+        if (response.success) {
+            ElMessage.success({
+                message: '验证码已重新发送',
+                duration: 2500,
+                type: 'success'
+            });
+            
+            // 开始倒计时
+            resendCooldown.value = 60;
+            const timer = setInterval(() => {
+                resendCooldown.value--;
+                if (resendCooldown.value <= 0) {
+                    clearInterval(timer);
+                }
+            }, 1000);
+        } else {
+            ElMessage.error({
+                message: response.message || '发送失败',
+                duration: 3500,
+                type: 'error'
+            });
+        }
+    } catch (error) {
+        console.error('重新发送验证码失败:', error);
+        ElMessage({
+            message: '发送失败: ' + (error.message || '服务器错误'),
+            type: 'error',
+            duration: 3000
+        });
+    }
+};
+
+// 当前邮箱（用于邮箱验证）
+const currentEmail = ref(null);
+
+// 邮箱验证相关状态
+const showVerificationCode = ref(false);
+const resendCooldown = ref(0);
+
 // 清除表单和错误提示
 const clearForms = () => {
     // 清除登录表单
@@ -511,10 +657,12 @@ const clearForms = () => {
     registerForm.email = '';
     registerForm.password = '';
     registerForm.confirmPassword = '';
+    registerForm.verificationCode = '';
     registerErrors.username = '';
     registerErrors.email = '';
     registerErrors.password = '';
     registerErrors.confirmPassword = '';
+    registerErrors.verificationCode = '';
 };
 
 // 保留原有路由功能
@@ -537,10 +685,14 @@ defineExpose({
     toggleForm,
     handleLogin,
     handleRegister,
+    handleVerifyEmail,
+    handleResendVerification,
     clearForms,
     goToNextPage,
     showPassword: ref(false),
-    isLoading
+    isLoading,
+    showVerificationCode,
+    resendCooldown
 });
 
 </script>
@@ -1006,5 +1158,45 @@ h1 {
     opacity: 0.9;
     transform: translateY(-4px);
     transition: all 0.3s ease;
+}
+
+/* 验证码输入框样式 */
+.verification-group {
+    position: relative;
+    display: flex;
+    gap: 10px;
+}
+
+.verification-group input {
+    flex: 1;
+}
+
+.resend-btn {
+    padding: 12px 16px;
+    background: #6c63ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    min-width: 100px;
+}
+
+.resend-btn:hover:not(:disabled) {
+    background: #5a52e0;
+    transform: translateY(-1px);
+}
+
+.resend-btn:disabled {
+    background: #a5a5a5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.resend-btn:active:not(:disabled) {
+    transform: scale(0.98);
 }
 </style>

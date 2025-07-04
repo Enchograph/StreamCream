@@ -7,13 +7,17 @@
         </div>
         <div class="app-container">
             <!-- 表单内容 -->
-            <div class="container" :class="{ active: isRegistering, 'forgot-active': isForgotPassword }">
+            <div class="container"
+                 :class="[
+                     { active: isRegistering, 'forgot-active': isForgotPassword },
+                     transitionDirection
+                 ]">
                 <div class="toggle-container">
                     <button class="toggle-btn" @click="toggleForm" :disabled="isLoading" v-if="!isForgotPassword">
                         {{ isRegistering ? '登录' : '注册' }}
                     </button>
                     <button class="toggle-btn" @click="backToLogin" :disabled="isLoading" v-if="isForgotPassword">
-                        返回登录
+                        登录
                     </button>
                 </div>
              <!-- 登录表单 -->
@@ -306,6 +310,8 @@ const router = useRouter();
 const route = useRoute();
 // 定义响应式状态
 const isRegistering = ref(false);
+const isForgotPassword = ref(false);
+const transitionDirection = ref(''); // 新增切换方向
 const backgroundStyle = computed(() => {
     return isRegistering.value
         ? 'linear-gradient(135deg, #ff9a9e, #fad0c4)'
@@ -401,8 +407,9 @@ const checkPasswordStrength = (value, targetObj = passwordStrength) => {
 
 // 切换表单方法
 const toggleForm = () => {
+    transitionDirection.value = 'left'; // 注册切换为左滑
     isRegistering.value = !isRegistering.value;
-    // 清除表单和错误提示
+    isForgotPassword.value = false;
     clearForms();
 };
 
@@ -722,7 +729,6 @@ const showVerificationCode = ref(false);
 const resendCooldown = ref(0);
 
 // 找回密码相关状态
-const isForgotPassword = ref(false);
 const forgotPasswordStep = ref(1);
 const forgotPasswordForm = reactive({
     username: '',
@@ -767,14 +773,23 @@ const goToNextPage = () => {
 
 // 显示找回密码表单
 const showForgotPasswordPanel = () => {
+    transitionDirection.value = 'right'; // 忘记密码切换为右滑
     isForgotPassword.value = true;
+    isRegistering.value = false;
     forgotPasswordStep.value = 1;
     clearForgotPasswordForm();
 };
 
 // 返回登录表单
 const backToLogin = () => {
+    // 判断从哪个页面返回
+    if (isRegistering.value) {
+        transitionDirection.value = 'right'; // 注册返回登录右滑
+    } else if (isForgotPassword.value) {
+        transitionDirection.value = 'left'; // 忘记密码返回登录左滑
+    }
     isForgotPassword.value = false;
+    isRegistering.value = false;
     forgotPasswordStep.value = 1;
     clearForgotPasswordForm();
 };
@@ -1078,6 +1093,8 @@ defineExpose({
     z-index: 1;
     justify-content: center;
     align-items: center;
+    will-change: transform;
+    transition: transform 0.25s cubic-bezier(0.77, 0, 0.175, 1);
 }
 
 .form-container {
@@ -1091,7 +1108,8 @@ defineExpose({
     justify-content: center;
     align-items: center;
     padding: 40px;
-    transition: transform 0.6s ease-in-out;
+    will-change: transform;
+    transition: transform 0.25s cubic-bezier(0.77, 0, 0.175, 1);
 }
 
 .login-container {
@@ -1104,14 +1122,49 @@ defineExpose({
     z-index: 0;
 }
 
-.container.active .login-container {
+.forgot-password-container {
     transform: translateX(-100%);
     z-index: 0;
 }
 
-.container.active .register-container {
+.container.active.left .login-container {
+    transform: translateX(-100%);
+    z-index: 0;
+}
+
+.container.active.left .register-container {
     transform: translateX(0);
     z-index: 1;
+}
+
+.container.right:not(.active):not(.forgot-active) .login-container {
+    transform: translateX(0);
+    z-index: 1;
+}
+
+.container.right:not(.active):not(.forgot-active) .register-container {
+    transform: translateX(100%);
+    z-index: 0;
+}
+
+.container.forgot-active.right .login-container {
+    transform: translateX(100%);
+    z-index: 0;
+}
+
+.container.forgot-active.right .forgot-password-container {
+    transform: translateX(0);
+    z-index: 1;
+}
+
+.container.left:not(.active):not(.forgot-active) .login-container {
+    transform: translateX(0);
+    z-index: 1;
+}
+
+.container.left:not(.active):not(.forgot-active) .forgot-password-container {
+    transform: translateX(-100%);
+    z-index: 0;
 }
 
 h1 {
@@ -1348,69 +1401,6 @@ h1 {
     cursor: not-allowed;
 }
 
-/* 找回密码表单样式 */
-.forgot-password-container {
-    transform: translateX(200%);
-    z-index: 0;
-}
-
-.container.forgot-active .login-container {
-    transform: translateX(-200%);
-    z-index: 0;
-}
-
-.container.forgot-active .register-container {
-    transform: translateX(-200%);
-    z-index: 0;
-}
-
-.container.forgot-active .forgot-password-container {
-    transform: translateX(0);
-    z-index: 1;
-}
-
-.toggle-password-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-/* 添加输入框聚焦效果 */
-.input-group input:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2);
-    background: #fff;
-}
-
-/* 添加按钮点击效果 */
-.btn:active:not(:disabled) {
-    transform: scale(0.98);
-}
-
-/* 优化错误消息显示 */
-.error-message {
-    color: #e74c3c;
-    font-size: 14px;
-    margin-top: -15px;
-    margin-bottom: 15px;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: all 0.3s ease;
-}
-
-.error-message:not(:empty) {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* 添加表单切换动画 */
-.container {
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.form-container {
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 /* 密码强度指示器样式 */
 .password-strength {
     margin-top: 8px;
@@ -1478,19 +1468,6 @@ h1 {
 
 .strength-text.very-strong {
     color: #008000;
-}
-
-/* 密码输入框获得焦点时的提示 */
-.input-group:focus-within .password-strength {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* 添加密码框的过渡动画 */
-.password-strength {
-    opacity: 0.9;
-    transform: translateY(-4px);
-    transition: all 0.3s ease;
 }
 
 /* 验证码输入框样式 */

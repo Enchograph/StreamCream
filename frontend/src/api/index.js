@@ -43,6 +43,22 @@ export default {
     register(userData) {
         return api.post('/api/register', userData)
     },
+    verifyEmail(data) {
+        return api.post('/api/verify-email', data)
+    },
+    resendVerification(data) {
+        return api.post('/api/resend-verification', data)
+    },
+    // 找回密码相关API
+    forgotPassword(data) {
+        return api.post('/api/forgot-password', data)
+    },
+    verifyResetCode(data) {
+        return api.post('/api/verify-reset-code', data)
+    },
+    resetPassword(data) {
+        return api.post('/api/reset-password', data)
+    },
     verifyToken() {
         return api.post('/api/verify-token')
     },

@@ -122,7 +122,6 @@ function getStreamKey() {
 async function testStream() {
     // 先打开Live2D页面
     window.open('/live2d', '_blank');
-
     let stream;
     try {
         stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
@@ -246,21 +245,48 @@ p {
     transform: translateY(-1px) scale(1.03);
 }
 
+.platform-select {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.platform-item {
+    border: 2px solid #e7eaee;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    width: 80px;
+}
+
+.platform-item:hover,
+.platform-item.active {
+    border-color: #3498db;
+    background-color: rgba(52, 152, 219, 0.05);
+}
+
+.platform-item.active {
+    font-weight: bold;
+}
+
 .file-upload {
     display: flex;
     flex-direction: column;
     margin-bottom: 15px;
 }
 
-.file-upload label {
+label {
     margin-bottom: 8px;
     color: #2c3e50;
     font-weight: 500;
 }
 
-.file-upload input {
+input {
     margin-bottom: 10px;
 }
+
 
 input[type="text"] {
     width: 100%;
@@ -346,5 +372,9 @@ input[type="text"] {
 .test-connect-btn:active {
     transform: translateY(0) scale(0.98);
     box-shadow: 0 4px 15px rgba(16, 185, 129, 0.18);
+}
+
+.btn:hover {
+    background-color: #2980b9;
 }
 </style>

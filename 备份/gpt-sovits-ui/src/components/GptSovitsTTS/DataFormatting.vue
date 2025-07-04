@@ -1,242 +1,281 @@
 <template>
-    <div class="gap" style="min-width: min(0px, 100%);">
+    <div class="data-formatting-container">
         <!-- 提示信息 -->
-        <div class="block padded hide-container"
-            style="border-style: solid; overflow: visible; min-width: min(0px, 100%);">
-            <div>
-                <div class="prose" data-testid="markdown" dir="ltr">
-                    <span class="md">
-                        <p>输出logs/实验名目录下应有23456开头的文件和文件夹</p>
-                    </span>
+        <div class="info-section">
+            <div class="info-card">
+                <div class="info-content">
+                    <span class="info-icon">ℹ️</span>
+                    <span class="info-text">输出logs/实验名目录下应有23456开头的文件和文件夹</span>
                 </div>
             </div>
         </div>
 
         <!-- 基础配置 -->
-        <div class="stretch">
-            <div class="stretch">
-                <div class="form" style="flex-grow: 10; min-width: min(160px, 100%);">
-                    <div class="block padded"
-                        style="border-style: solid; overflow: hidden; flex-grow: 10; min-width: min(160px, 100%);">
-                        <label class="container">
-                            <span data-testid="block-info">*文本标注文件</span>
-                            <textarea data-testid="textbox" class="scroll-hide" dir="ltr" placeholder="" rows="1"
-                                style="overflow-y: scroll; height: 42px;" v-model="textAnnotationFile"></textarea>
-                        </label>
-                    </div>
-                </div>
+        <div class="config-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="icon">⚙️</span>
+                    基础配置
+                </h2>
             </div>
-            <div class="stretch">
-                <div class="form" style="flex-grow: 10; min-width: min(160px, 100%);">
-                    <div class="block padded"
-                        style="border-style: solid; overflow: hidden; flex-grow: 10; min-width: min(160px, 100%);">
-                        <label class="container">
-                            <span data-testid="block-info">*训练集音频文件目录</span>
-                            <textarea data-testid="textbox" class="scroll-hide" dir="ltr"
-                                placeholder="填切割后音频所在目录！读取的音频文件完整路径=该目录-拼接-list文件里波形对应的文件名（不是全路径）。如果留空则使用.list文件里的绝对全路径。"
-                                rows="1" style="overflow-y: scroll; height: 62px;" v-model="audioDir"></textarea>
+            
+            <div class="config-card">
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label class="form-label">
+                            <span class="label-icon">📄</span>
+                            文本标注文件
                         </label>
+                        <textarea 
+                            class="form-input" 
+                            placeholder="选择文本标注文件路径"
+                            rows="1"
+                            v-model="textAnnotationFile"
+                        ></textarea>
+                    </div>
+                    
+                    <div class="form-group flex-1">
+                        <label class="form-label">
+                            <span class="label-icon">🎵</span>
+                            训练集音频文件目录
+                        </label>
+                        <textarea 
+                            class="form-input" 
+                            placeholder="填切割后音频所在目录！读取的音频文件完整路径=该目录-拼接-list文件里波形对应的文件名（不是全路径）。如果留空则使用.list文件里的绝对全路径。"
+                            rows="2"
+                            v-model="audioDir"
+                        ></textarea>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- 文本内容处理部分 -->
-        <div class="block padded hide-container"
-            style="border-style: solid; overflow: visible; min-width: min(0px, 100%);">
-            <div>
-                <div class="prose" data-testid="markdown" dir="ltr">
-                    <span class="md">
-                        <p>1Aa-文本内容</p>
-                    </span>
-                </div>
+        <div class="tool-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="icon">📝</span>
+                    文本内容处理
+                </h2>
+                <p class="section-description">使用BERT模型进行文本特征提取</p>
             </div>
-        </div>
-
-        <div class="stretch">
-            <div class="stretch">
-                <div class="form" style="flex-grow: 1; min-width: min(160px, 100%);">
-                    <div class="block padded"
-                        style="border-style: solid; overflow: hidden; min-width: min(160px, 100%);">
-                        <label class="container">
-                            <span data-testid="block-info">GPU卡号以-分割，每个卡号一个进程</span>
-                            <textarea data-testid="textbox" class="scroll-hide" dir="ltr" placeholder="" rows="1"
-                                style="overflow-y: scroll; height: 42px;" v-model="gpuIds"></textarea>
+            
+            <div class="tool-card">
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label class="form-label">
+                            <span class="label-icon">🖥️</span>
+                            GPU卡号以-分割，每个卡号一个进程
                         </label>
+                        <textarea 
+                            class="form-input" 
+                            placeholder="例如：0-1-2"
+                            rows="1"
+                            v-model="gpuIds"
+                        ></textarea>
+                    </div>
+                    
+                    <div class="form-group flex-1">
+                        <label class="form-label">
+                            <span class="label-icon">🤖</span>
+                            预训练的中文BERT模型路径
+                        </label>
+                        <textarea 
+                            class="form-input disabled" 
+                            placeholder="自动检测BERT模型路径..."
+                            rows="2"
+                            disabled
+                            v-model="bertModelPath"
+                        ></textarea>
                     </div>
                 </div>
-            </div>
-            <div class="stretch">
-                <div class="form" style="flex-grow: 1; min-width: min(160px, 100%);">
-                    <div class="block padded"
-                        style="border-style: solid; overflow: hidden; min-width: min(160px, 100%);">
-                        <label class="container">
-                            <span data-testid="block-info">预训练的中文BERT模型路径</span>
-                            <textarea data-testid="textbox" class="scroll-hide" dir="ltr" placeholder="" rows="2"
-                                disabled style="overflow-y: scroll; height: 63px;" v-model="bertModelPath"></textarea>
-                        </label>
+                
+                <div class="action-section">
+                    <div class="action-buttons">
+                        <button 
+                            class="action-button primary" 
+                            @click="startTextExtraction" 
+                            v-if="!textExtractionRunning"
+                        >
+                            <span class="button-icon">▶️</span>
+                            开启文本获取
+                        </button>
+                        <button 
+                            class="action-button warning" 
+                            @click="stopTextExtraction" 
+                            v-else
+                        >
+                            <span class="button-icon">⏹️</span>
+                            终止文本获取进程
+                        </button>
                     </div>
-                </div>
-            </div>
-            <div class="stretch">
-                <button class="lg primary" @click="startTextExtraction" v-if="!textExtractionRunning"> 开启文本获取</button>
-                <button class="lg primary hidden" @click="stopTextExtraction" v-else> 终止文本获取进程</button>
-            </div>
-            <div class="stretch">
-                <div class="form" style="flex-grow: 1; min-width: min(160px, 100%);">
-                    <div class="block padded"
-                        style="border-style: solid; overflow: hidden; min-width: min(160px, 100%);">
-                        <label class="container">
-                            <span data-testid="block-info">文本进程输出信息</span>
-                            <textarea data-testid="textbox" class="scroll-hide" dir="ltr" placeholder="" rows="1"
-                                disabled style="overflow-y: scroll; height: 42px;"
-                                v-model="textProcessOutput"></textarea>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="label-icon">📋</span>
+                            文本进程输出信息
                         </label>
+                        <textarea 
+                            class="form-input disabled" 
+                            placeholder="文本处理进程的实时输出信息..."
+                            rows="3"
+                            disabled
+                            v-model="textProcessOutput"
+                        ></textarea>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- SSL自监督特征提取 -->
-        <div class="block padded hide-container"
-            style="border-style: solid; overflow: visible; min-width: min(0px, 100%);">
-            <div>
-                <div class="prose" data-testid="markdown" dir="ltr">
-                    <span class="md">
-                        <p>1Ab-SSL自监督特征提取</p>
-                    </span>
-                </div>
+        <div class="tool-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="icon">🔍</span>
+                    SSL自监督特征提取
+                </h2>
+                <p class="section-description">使用SSL模型进行音频特征提取</p>
             </div>
-        </div>
-
-        <div class="stretch">
-            <div class="stretch">
-                <div class="form" style="flex-grow: 1; min-width: min(160px, 100%);">
-                    <div class="block padded"
-                        style="border-style: solid; overflow: hidden; min-width: min(160px, 100%);">
-                        <label class="container">
-                            <span data-testid="block-info">GPU卡号以-分割，每个卡号一个进程</span>
-                            <textarea data-testid="textbox" class="scroll-hide" dir="ltr" placeholder="" rows="1"
-                                style="overflow-y: scroll; height: 42px;" v-model="sslGpuIds"></textarea>
+            
+            <div class="tool-card">
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label class="form-label">
+                            <span class="label-icon">🖥️</span>
+                            GPU卡号以-分割，每个卡号一个进程
                         </label>
+                        <textarea 
+                            class="form-input" 
+                            placeholder="例如：0-1-2"
+                            rows="1"
+                            v-model="sslGpuIds"
+                        ></textarea>
+                    </div>
+                    
+                    <div class="form-group flex-1">
+                        <label class="form-label">
+                            <span class="label-icon">🎯</span>
+                            预训练的SSL模型路径
+                        </label>
+                        <textarea 
+                            class="form-input disabled" 
+                            placeholder="自动检测SSL模型路径..."
+                            rows="2"
+                            disabled
+                            v-model="sslModelPath"
+                        ></textarea>
                     </div>
                 </div>
-            </div>
-            <div class="stretch">
-                <div class="form" style="flex-grow: 1; min-width: min(160px, 100%);">
-                    <div class="block padded"
-                        style="border-style: solid; overflow: hidden; min-width: min(160px, 100%);">
-                        <label class="container">
-                            <span data-testid="block-info">预训练的SSL模型路径</span>
-                            <textarea data-testid="textbox" class="scroll-hide" dir="ltr" placeholder="" rows="2"
-                                disabled style="overflow-y: scroll; height: 63px;" v-model="sslModelPath"></textarea>
-                        </label>
+                
+                <div class="action-section">
+                    <div class="action-buttons">
+                        <button 
+                            class="action-button primary" 
+                            @click="startSSL" 
+                            v-if="!sslRunning"
+                        >
+                            <span class="button-icon">▶️</span>
+                            开启SSL提取
+                        </button>
+                        <button 
+                            class="action-button warning" 
+                            @click="stopSSL" 
+                            v-else
+                        >
+                            <span class="button-icon">⏹️</span>
+                            终止SSL提取进程
+                        </button>
                     </div>
-                </div>
-            </div>
-            <div class="stretch">
-                <button class="lg primary" @click="startSSL" v-if="!sslRunning"> 开启SSL提取</button>
-                <button class="lg primary hidden" @click="stopSSL" v-else> 终止SSL提取进程</button>
-            </div>
-            <div class="stretch">
-                <div class="form" style="flex-grow: 1; min-width: min(160px, 100%);">
-                    <div class="block padded"
-                        style="border-style: solid; overflow: hidden; min-width: min(160px, 100%);">
-                        <label class="container">
-                            <span data-testid="block-info">SSL进程输出信息</span>
-                            <textarea data-testid="textbox" class="scroll-hide" dir="ltr" placeholder="" rows="1"
-                                disabled style="overflow-y: scroll; height: 42px;"
-                                v-model="sslProcessOutput"></textarea>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="label-icon">📋</span>
+                            SSL进程输出信息
                         </label>
+                        <textarea 
+                            class="form-input disabled" 
+                            placeholder="SSL处理进程的实时输出信息..."
+                            rows="3"
+                            disabled
+                            v-model="sslProcessOutput"
+                        ></textarea>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- 语义token提取 -->
-        <div class="block padded hide-container"
-            style="border-style: solid; overflow: visible; min-width: min(0px, 100%);">
-            <div>
-                <div class="prose" data-testid="markdown" dir="ltr">
-                    <span class="md">
-                        <p>1Ac-语义token提取</p>
-                    </span>
-                </div>
+        <div class="tool-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="icon">🎵</span>
+                    语义token提取
+                </h2>
+                <p class="section-description">使用SoVITS模型进行语义token提取</p>
             </div>
-        </div>
-
-        <div class="stretch">
-            <div class="stretch">
-                <div class="form" style="flex-grow: 1; min-width: min(160px, 100%);">
-                    <div class="block padded"
-                        style="border-style: solid; overflow: hidden; min-width: min(160px, 100%);">
-                        <label class="container">
-                            <span data-testid="block-info">GPU卡号以-分割，每个卡号一个进程</span>
-                            <textarea data-testid="textbox" class="scroll-hide" dir="ltr" placeholder="" rows="1"
-                                style="overflow-y: scroll; height: 42px;" v-model="tokenGpuIds"></textarea>
+            
+            <div class="tool-card">
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label class="form-label">
+                            <span class="label-icon">🖥️</span>
+                            GPU卡号以-分割，每个卡号一个进程
                         </label>
+                        <textarea 
+                            class="form-input" 
+                            placeholder="例如：0-1-2"
+                            rows="1"
+                            v-model="tokenGpuIds"
+                        ></textarea>
+                    </div>
+                    
+                    <div class="form-group flex-1">
+                        <label class="form-label">
+                            <span class="label-icon">🎵</span>
+                            预训练的SoVITS-G模型路径
+                        </label>
+                        <textarea 
+                            class="form-input disabled" 
+                            placeholder="自动检测SoVITS-G模型路径..."
+                            rows="2"
+                            disabled
+                            v-model="tokenModelPath"
+                        ></textarea>
                     </div>
                 </div>
-            </div>
-            <div class="stretch">
-                <div class="form" style="flex-grow: 1; min-width: min(160px, 100%);">
-                    <div class="block padded"
-                        style="border-style: solid; overflow: hidden; min-width: min(160px, 100%);">
-                        <label class="container">
-                            <span data-testid="block-info">预训练的SoVITS-G模型路径</span>
-                            <textarea data-testid="textbox" class="scroll-hide" dir="ltr" placeholder="" rows="2"
-                                disabled style="overflow-y: scroll; height: 63px;" v-model="tokenModelPath"></textarea>
-                        </label>
+                
+                <div class="action-section">
+                    <div class="action-buttons">
+                        <button 
+                            class="action-button primary" 
+                            @click="startTokenExtraction" 
+                            v-if="!tokenExtractionRunning"
+                        >
+                            <span class="button-icon">▶️</span>
+                            开启语义token提取
+                        </button>
+                        <button 
+                            class="action-button warning" 
+                            @click="stopTokenExtraction" 
+                            v-else
+                        >
+                            <span class="button-icon">⏹️</span>
+                            终止语义token提取进程
+                        </button>
                     </div>
-                </div>
-            </div>
-            <div class="stretch">
-                <button class="lg primary" @click="startTokenExtraction" v-if="!tokenExtractionRunning">
-                    开启语义token提取</button>
-                <button class="lg primary hidden" @click="stopTokenExtraction" v-else> 终止语义token提取进程</button>
-            </div>
-            <div class="stretch">
-                <div class="form" style="flex-grow: 1; min-width: min(160px, 100%);">
-                    <div class="block padded"
-                        style="border-style: solid; overflow: hidden; min-width: min(160px, 100%);">
-                        <label class="container">
-                            <span data-testid="block-info">语义token提取进程输出信息</span>
-                            <textarea data-testid="textbox" class="scroll-hide" dir="ltr" placeholder="" rows="1"
-                                disabled style="overflow-y: scroll; height: 42px;"
-                                v-model="tokenProcessOutput"></textarea>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="label-icon">📋</span>
+                            语义token提取进程输出信息
                         </label>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 训练集格式化一键三连 -->
-        <div class="block padded hide-container"
-            style="border-style: solid; overflow: visible; min-width: min(0px, 100%);">
-            <div>
-                <div class="prose" data-testid="markdown" dir="ltr">
-                    <span class="md">
-                        <p>1Aabc-训练集格式化一键三连</p>
-                    </span>
-                </div>
-            </div>
-        </div>
-
-        <div class="stretch">
-            <div class="stretch">
-                <button class="lg primary" @click="startAllProcess" v-if="!allProcessRunning"> 开启一键三连</button>
-                <button class="lg primary hidden" @click="stopAllProcess" v-else> 终止一键三连</button>
-            </div>
-            <div class="stretch">
-                <div class="form" style="flex-grow: 1; min-width: min(160px, 100%);">
-                    <div class="block padded"
-                        style="border-style: solid; overflow: hidden; min-width: min(160px, 100%);">
-                        <label class="container">
-                            <span data-testid="block-info">一键三连进程输出信息</span>
-                            <textarea data-testid="textbox" class="scroll-hide" dir="ltr" placeholder="" rows="1"
-                                disabled style="overflow-y: scroll; height: 42px;"
-                                v-model="allProcessOutput"></textarea>
-                        </label>
+                        <textarea 
+                            class="form-input disabled" 
+                            placeholder="语义token提取进程的实时输出信息..."
+                            rows="3"
+                            disabled
+                            v-model="tokenProcessOutput"
+                        ></textarea>
                     </div>
                 </div>
             </div>
@@ -253,19 +292,19 @@ const audioDir = ref('');
 
 // 文本内容相关
 const gpuIds = ref('0');
-const bertModelPath = ref('/path/to/bert/model.pth');
+const bertModelPath = ref('pretrained_models/bert/chinese-bert-wwm-ext');
 const textExtractionRunning = ref(false);
 const textProcessOutput = ref('');
 
 // SSL相关
 const sslGpuIds = ref('0');
-const sslModelPath = ref('/path/to/ssl/model.pth');
+const sslModelPath = ref('pretrained_models/ssl/wavlm-base-plus');
 const sslRunning = ref(false);
 const sslProcessOutput = ref('');
 
 // 语义token相关
 const tokenGpuIds = ref('0');
-const tokenModelPath = ref('/path/to/sovits/g/model.pth');
+const tokenModelPath = ref('pretrained_models/sovits/sovits_g.pth');
 const tokenExtractionRunning = ref(false);
 const tokenProcessOutput = ref('');
 
@@ -403,3 +442,214 @@ onMounted(() => {
     tokenModelPath.value = 'pretrained_models/sovits/sovits_g.pth';
 });
 </script>
+
+<style scoped>
+.data-formatting-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.info-section {
+    margin-bottom: 1rem;
+}
+
+.info-card {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border: 1px solid #93c5fd;
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.info-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.info-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.info-text {
+    color: #1e40af;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.config-section,
+.tool-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.section-title .icon {
+    font-size: 1.3rem;
+}
+
+.section-description {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.config-card,
+.tool-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+}
+
+.config-card:hover,
+.tool-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.form-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.label-icon {
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+.form-input {
+    width: 100%;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    padding: 0.875rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    background: var(--surface-color);
+    color: var(--text-primary);
+    resize: vertical;
+    min-height: 2.5rem;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgb(99 102 241 / 0.1);
+}
+
+.form-input.disabled {
+    background-color: #f8fafc;
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+.action-section {
+    margin-top: 2rem;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.action-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.action-button.primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+    color: white;
+}
+
+.action-button.warning {
+    background: linear-gradient(135deg, var(--warning-color) 0%, #d97706 100%);
+    color: white;
+}
+
+.action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.button-icon {
+    font-size: 1.1rem;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .config-card,
+    .tool-card {
+        padding: 1.5rem;
+    }
+    
+    .section-title {
+        font-size: 1.3rem;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .action-button {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+}
+</style>

@@ -7,10 +7,13 @@
         </div>
         <div class="app-container">
             <!-- 表单内容 -->
-            <div class="container" :class="{ active: isRegistering }">
+            <div class="container" :class="{ active: isRegistering, 'forgot-active': isForgotPassword }">
                 <div class="toggle-container">
-                    <button class="toggle-btn" @click="toggleForm" :disabled="isLoading">
+                    <button class="toggle-btn" @click="toggleForm" :disabled="isLoading" v-if="!isForgotPassword">
                         {{ isRegistering ? '登录' : '注册' }}
+                    </button>
+                    <button class="toggle-btn" @click="backToLogin" :disabled="isLoading" v-if="isForgotPassword">
+                        返回登录
                     </button>
                 </div>
              <!-- 登录表单 -->
@@ -62,7 +65,7 @@
                     </button>
 
                     <div class="forgot-password">
-                        <a href="#">忘记密码?</a>
+                        <a href="#" @click.prevent="showForgotPasswordPanel">忘记密码?</a>
                     </div>
                     <hr class="divider" />
                     <div class="other-login-tip">其他方式登录</div>
@@ -115,7 +118,7 @@
                             :type="showPassword ? 'text' : 'password'"
                             id="registerPassword"
                             v-model="registerForm.password"
-                            @input="checkPasswordStrength"
+                            @input="e => checkPasswordStrength(registerForm.password, passwordStrength)"
                             @keyup.enter="handleRegister"
                             :style="registerErrors.password ? errorInputStyle : {}"
                             required
@@ -194,6 +197,130 @@
                     <button class="btn" @click="handleRegister" v-if="!showVerificationCode">注册</button>
                     <button class="btn" @click="handleVerifyEmail" v-if="showVerificationCode">验证邮箱</button>
                 </div>
+
+                <!-- 找回密码表单 -->
+                <div class="form-container forgot-password-container">
+                    <h1>找回密码</h1>
+                    
+                    <!-- 第一步：输入用户名和邮箱 -->
+                    <div v-if="forgotPasswordStep === 1">
+                        <div class="input-group">
+                            <input
+                                type="text"
+                                id="forgotUsername"
+                                v-model="forgotPasswordForm.username"
+                                :style="forgotPasswordErrors.username ? errorInputStyle : {}"
+                                required
+                                placeholder="请输入用户名"
+                                :disabled="isLoading"
+                            >
+                        </div>
+                        <div class="error-message" v-if="forgotPasswordErrors.username">{{ forgotPasswordErrors.username }}</div>
+
+                        <div class="input-group">
+                            <input
+                                type="email"
+                                id="forgotEmail"
+                                v-model="forgotPasswordForm.email"
+                                :style="forgotPasswordErrors.email ? errorInputStyle : {}"
+                                required
+                                placeholder="请输入邮箱"
+                                :disabled="isLoading"
+                            >
+                        </div>
+                        <div class="error-message" v-if="forgotPasswordErrors.email">{{ forgotPasswordErrors.email }}</div>
+
+                        <button class="btn" @click="handleForgotPassword" :disabled="isLoading">
+                            <span v-if="isLoading" class="loading-spinner"></span>
+                            {{ isLoading ? '发送中...' : '发送验证码' }}
+                        </button>
+                    </div>
+
+                    <!-- 第二步：输入验证码 -->
+                    <div v-if="forgotPasswordStep === 2">
+                        <div class="input-group">
+                            <input
+                                type="text"
+                                id="resetCode"
+                                v-model="forgotPasswordForm.code"
+                                :style="forgotPasswordErrors.code ? errorInputStyle : {}"
+                                required
+                                placeholder="请输入验证码"
+                                maxlength="6"
+                                :disabled="isLoading"
+                            >
+                        </div>
+                        <div class="error-message" v-if="forgotPasswordErrors.code">{{ forgotPasswordErrors.code }}</div>
+
+                        <button class="btn" @click="handleVerifyResetCode" :disabled="isLoading">
+                            <span v-if="isLoading" class="loading-spinner"></span>
+                            {{ isLoading ? '验证中...' : '验证验证码' }}
+                        </button>
+                    </div>
+
+                    <!-- 第三步：输入新密码 -->
+                    <div v-if="forgotPasswordStep === 3">
+                        <div class="input-group" style="position: relative;">
+                            <input
+                                :type="showForgotPassword ? 'text' : 'password'"
+                                id="newPassword"
+                                v-model="forgotPasswordForm.newPassword"
+                                @input="e => checkPasswordStrength(forgotPasswordForm.newPassword, forgotPasswordStrength)"
+                                :style="forgotPasswordErrors.newPassword ? errorInputStyle : {}"
+                                required
+                                placeholder="请输入新密码"
+                                :disabled="isLoading"
+                            >
+                            <button
+                                type="button"
+                                class="toggle-password-btn"
+                                @click="showForgotPassword = !showForgotPassword"
+                                :aria-label="showForgotPassword ? '隐藏密码' : '显示密码'"
+                                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer;"
+                                :disabled="isLoading"
+                            >
+                                <span v-if="showForgotPassword">👁️</span>
+                                <span v-else>🙈</span>
+                            </button>
+                            <!-- 添加密码强度指示器 -->
+                            <div v-if="forgotPasswordForm.newPassword" class="password-strength">
+                                <div class="strength-bars">
+                                    <div 
+                                        v-for="n in 4" 
+                                        :key="n"
+                                        class="strength-bar"
+                                        :class="[
+                                            { active: forgotPasswordStrength.score >= n },
+                                            forgotPasswordStrength.score >= n ? forgotPasswordStrength.className : ''
+                                        ]"
+                                    ></div>
+                                </div>
+                                <span class="strength-text" :class="forgotPasswordStrength.className">
+                                    {{ forgotPasswordStrength.message }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="error-message" v-if="forgotPasswordErrors.newPassword">{{ forgotPasswordErrors.newPassword }}</div>
+
+                        <div class="input-group">
+                            <input
+                                :type="showForgotPassword ? 'text' : 'password'"
+                                id="confirmNewPassword"
+                                v-model="forgotPasswordForm.confirmNewPassword"
+                                :style="forgotPasswordErrors.confirmNewPassword ? errorInputStyle : {}"
+                                required
+                                placeholder="请确认新密码"
+                                :disabled="isLoading"
+                            >
+                        </div>
+                        <div class="error-message" v-if="forgotPasswordErrors.confirmNewPassword">{{ forgotPasswordErrors.confirmNewPassword }}</div>
+
+                        <button class="btn" @click="handleResetPassword" :disabled="isLoading">
+                            <span v-if="isLoading" class="loading-spinner"></span>
+                            {{ isLoading ? '重置中...' : '重置密码' }}
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -259,12 +386,52 @@ const registerErrors = reactive({
     verificationCode: ''
 });
 
-// 密码强度状态
+// 密码强度相关
 const passwordStrength = reactive({
     score: 0,
     message: '',
     className: ''
 });
+const forgotPasswordStrength = reactive({
+    score: 0,
+    message: '',
+    className: ''
+});
+
+// 密码可见性相关
+const showPassword = ref(false); // 注册/登录用
+const showForgotPassword = ref(false); // 找回密码用
+
+// 密码强度检测函数，支持传参
+const checkPasswordStrength = (value, targetObj = passwordStrength) => {
+    value = value || '';
+    let score = 0;
+    let message = '非常弱';
+    let className = 'very-weak';
+
+    if (value.length >= 6) score++;
+    if (/[A-Z]/.test(value)) score++;
+    if (/[0-9]/.test(value)) score++;
+    if (/[^A-Za-z0-9]/.test(value)) score++;
+
+    if (score === 1) {
+        message = '弱';
+        className = 'weak';
+    } else if (score === 2) {
+        message = '中等';
+        className = 'medium';
+    } else if (score === 3) {
+        message = '强';
+        className = 'strong';
+    } else if (score === 4) {
+        message = '非常强';
+        className = 'very-strong';
+    }
+
+    targetObj.score = score;
+    targetObj.message = message;
+    targetObj.className = className;
+};
 
 // 切换表单方法
 const toggleForm = () => {
@@ -370,62 +537,6 @@ const handleLogin = async () => {
             isLoading.value = false;
         }
     }
-};
-
-// 检查密码强度
-const checkPasswordStrength = () => {
-    const password = registerForm.password;
-    
-    // 如果密码为空，重置强度
-    if (!password) {
-        passwordStrength.score = 0;
-        passwordStrength.message = '';
-        passwordStrength.className = '';
-        return;
-    }
-
-    // 定义检查规则
-    const hasLower = /[a-z]/.test(password);
-    const hasUpper = /[A-Z]/.test(password);
-    const hasNumber = /\d/.test(password);
-    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    const length = password.length;
-
-    // 计算强度分数
-    let score = 0;
-    if (length >= 6) score++;
-    if (length >= 8) score++;
-    if (hasLower && hasUpper) score++;
-    if (hasNumber) score++;
-    if (hasSpecial) score++;
-    if (length >= 12) score++;
-
-    // 根据分数设置强度等级
-    let message = '';
-    let className = '';
-    
-    if (length < 6) {
-        score = 1;
-        message = '密码太短';
-        className = 'very-weak';
-    } else if (score <= 2) {
-        message = '弱';
-        className = 'weak';
-    } else if (score <= 3) {
-        message = '中等';
-        className = 'medium';
-    } else if (score <= 4) {
-        message = '强';
-        className = 'strong';
-    } else {
-        message = '非常强';
-        className = 'very-strong';
-    }
-
-    // 更新密码强度状态
-    passwordStrength.score = Math.min(4, score);
-    passwordStrength.message = message;
-    passwordStrength.className = className;
 };
 
 // 注册处理
@@ -644,6 +755,24 @@ const currentEmail = ref(null);
 const showVerificationCode = ref(false);
 const resendCooldown = ref(0);
 
+// 找回密码相关状态
+const isForgotPassword = ref(false);
+const forgotPasswordStep = ref(1);
+const forgotPasswordForm = reactive({
+    username: '',
+    email: '',
+    code: '',
+    newPassword: '',
+    confirmNewPassword: ''
+});
+const forgotPasswordErrors = reactive({
+    username: '',
+    email: '',
+    code: '',
+    newPassword: '',
+    confirmNewPassword: ''
+});
+
 // 清除表单和错误提示
 const clearForms = () => {
     // 清除登录表单
@@ -670,6 +799,212 @@ const goToNextPage = () => {
     router.push('/mainPage');
 };
 
+// 显示找回密码表单
+const showForgotPasswordPanel = () => {
+    isForgotPassword.value = true;
+    forgotPasswordStep.value = 1;
+    clearForgotPasswordForm();
+};
+
+// 返回登录表单
+const backToLogin = () => {
+    isForgotPassword.value = false;
+    forgotPasswordStep.value = 1;
+    clearForgotPasswordForm();
+};
+
+// 清除找回密码表单
+const clearForgotPasswordForm = () => {
+    forgotPasswordForm.username = '';
+    forgotPasswordForm.email = '';
+    forgotPasswordForm.code = '';
+    forgotPasswordForm.newPassword = '';
+    forgotPasswordForm.confirmNewPassword = '';
+    forgotPasswordErrors.username = '';
+    forgotPasswordErrors.email = '';
+    forgotPasswordErrors.code = '';
+    forgotPasswordErrors.newPassword = '';
+    forgotPasswordErrors.confirmNewPassword = '';
+};
+
+// 处理找回密码第一步：发送验证码
+const handleForgotPassword = async () => {
+    if (isLoading.value) return;
+    
+    // 验证输入
+    let isValid = true;
+    
+    if (forgotPasswordForm.username.trim() === '') {
+        forgotPasswordErrors.username = '请输入用户名';
+        isValid = false;
+    } else {
+        forgotPasswordErrors.username = '';
+    }
+    
+    if (forgotPasswordForm.email.trim() === '') {
+        forgotPasswordErrors.email = '请输入邮箱';
+        isValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(forgotPasswordForm.email)) {
+        forgotPasswordErrors.email = '请输入有效的邮箱地址';
+        isValid = false;
+    } else {
+        forgotPasswordErrors.email = '';
+    }
+    
+    if (isValid) {
+        isLoading.value = true;
+        try {
+            const response = await api.forgotPassword({
+                username: forgotPasswordForm.username,
+                email: forgotPasswordForm.email
+            });
+            
+            if (response.success) {
+                ElMessage.success({
+                    message: response.message || '验证码已发送，请查收邮箱！',
+                    duration: 3500,
+                    type: 'success'
+                });
+                forgotPasswordStep.value = 2;
+            } else {
+                ElMessage.error({
+                    message: response.message || '发送失败',
+                    duration: 3500,
+                    type: 'error'
+                });
+            }
+        } catch (error) {
+            console.error('发送找回密码验证码失败:', error);
+            ElMessage({
+                message: '发送失败: ' + (error.message || '服务器错误'),
+                type: 'error',
+                duration: 3000
+            });
+        } finally {
+            isLoading.value = false;
+        }
+    }
+};
+
+// 处理找回密码第二步：验证验证码
+const handleVerifyResetCode = async () => {
+    if (isLoading.value) return;
+    
+    if (forgotPasswordForm.code.trim() === '') {
+        forgotPasswordErrors.code = '请输入验证码';
+        return;
+    } else if (forgotPasswordForm.code.length !== 6) {
+        forgotPasswordErrors.code = '验证码应为6位数字';
+        return;
+    } else {
+        forgotPasswordErrors.code = '';
+    }
+    
+    isLoading.value = true;
+    try {
+        const response = await api.verifyResetCode({
+            username: forgotPasswordForm.username,
+            email: forgotPasswordForm.email,
+            code: forgotPasswordForm.code
+        });
+        
+        if (response.success) {
+            ElMessage.success({
+                message: response.message || '验证码验证成功！',
+                duration: 2500,
+                type: 'success'
+            });
+            forgotPasswordStep.value = 3;
+        } else {
+            ElMessage.error({
+                message: response.message || '验证失败',
+                duration: 3500,
+                type: 'error'
+            });
+        }
+    } catch (error) {
+        console.error('验证找回密码验证码失败:', error);
+        ElMessage({
+            message: '验证失败: ' + (error.message || '服务器错误'),
+            type: 'error',
+            duration: 3000
+        });
+    } finally {
+        isLoading.value = false;
+    }
+};
+
+// 处理找回密码第三步：重置密码
+const handleResetPassword = async () => {
+    if (isLoading.value) return;
+    
+    // 验证新密码
+    let isValid = true;
+    
+    if (forgotPasswordForm.newPassword.trim() === '') {
+        forgotPasswordErrors.newPassword = '请输入新密码';
+        isValid = false;
+    } else if (forgotPasswordForm.newPassword.length < 6) {
+        forgotPasswordErrors.newPassword = '密码长度至少6位';
+        isValid = false;
+    } else if (forgotPasswordStrength.score < 2) {
+        forgotPasswordErrors.newPassword = '密码强度太弱，请使用更复杂的密码';
+        isValid = false;
+    } else {
+        forgotPasswordErrors.newPassword = '';
+    }
+    
+    if (forgotPasswordForm.confirmNewPassword.trim() === '') {
+        forgotPasswordErrors.confirmNewPassword = '请确认新密码';
+        isValid = false;
+    } else if (forgotPasswordForm.confirmNewPassword !== forgotPasswordForm.newPassword) {
+        forgotPasswordErrors.confirmNewPassword = '两次输入的密码不一致';
+        isValid = false;
+    } else {
+        forgotPasswordErrors.confirmNewPassword = '';
+    }
+    
+    if (isValid) {
+        isLoading.value = true;
+        try {
+            const response = await api.resetPassword({
+                username: forgotPasswordForm.username,
+                email: forgotPasswordForm.email,
+                code: forgotPasswordForm.code,
+                new_password: forgotPasswordForm.newPassword
+            });
+            
+            if (response.success) {
+                ElMessage.success({
+                    message: response.message || '密码重置成功！',
+                    duration: 2500,
+                    type: 'success'
+                });
+                
+                // 重置表单并返回登录
+                clearForgotPasswordForm();
+                isForgotPassword.value = false;
+                forgotPasswordStep.value = 1;
+            } else {
+                ElMessage.error({
+                    message: response.message || '重置失败',
+                    duration: 3500,
+                    type: 'error'
+                });
+            }
+        } catch (error) {
+            console.error('重置密码失败:', error);
+            ElMessage({
+                message: '重置失败: ' + (error.message || '服务器错误'),
+                type: 'error',
+                duration: 3000
+            });
+        } finally {
+            isLoading.value = false;
+        }
+    }
+};
+
 // 组件挂载时设置初始背景
 document.body.style.background = backgroundStyle.value;
 
@@ -689,10 +1024,20 @@ defineExpose({
     handleResendVerification,
     clearForms,
     goToNextPage,
-    showPassword: ref(false),
+    showPassword,
     isLoading,
     showVerificationCode,
-    resendCooldown
+    resendCooldown,
+    // 找回密码相关
+    isForgotPassword,
+    forgotPasswordStep,
+    forgotPasswordForm,
+    forgotPasswordErrors,
+    showForgotPasswordPanel,
+    backToLogin,
+    handleForgotPassword,
+    handleVerifyResetCode,
+    handleResetPassword
 });
 
 </script>
@@ -1034,6 +1379,27 @@ h1 {
 .input-group input:disabled {
     background: #f5f5f5;
     cursor: not-allowed;
+}
+
+/* 找回密码表单样式 */
+.forgot-password-container {
+    transform: translateX(200%);
+    z-index: 0;
+}
+
+.container.forgot-active .login-container {
+    transform: translateX(-200%);
+    z-index: 0;
+}
+
+.container.forgot-active .register-container {
+    transform: translateX(-200%);
+    z-index: 0;
+}
+
+.container.forgot-active .forgot-password-container {
+    transform: translateX(0);
+    z-index: 1;
 }
 
 .toggle-password-btn:disabled {

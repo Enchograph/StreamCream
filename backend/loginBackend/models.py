@@ -17,6 +17,8 @@ class User(db.Model):
     email_verified = db.Column(db.Boolean, default=False)  # 邮箱是否已验证
     email_verification_code = db.Column(db.String(6))  # 邮箱验证码
     email_verification_expires = db.Column(db.DateTime)  # 验证码过期时间
+    reset_password_code = db.Column(db.String(6))  # 重置密码验证码
+    reset_password_expires = db.Column(db.DateTime)  # 重置密码验证码过期时间
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # 关系
@@ -46,6 +48,17 @@ class User(db.Model):
             self.email_verification_expires = None
             return True
         return False
+    
+    def generate_reset_password_code(self):
+        """生成重置密码验证码"""
+        self.reset_password_code = ''.join(random.choices(string.digits, k=6))
+        self.reset_password_expires = datetime.utcnow() + timedelta(minutes=10)
+    
+    def verify_reset_password_code(self, code):
+        """验证重置密码验证码（不清空验证码，仅返回校验结果）"""
+        return (self.reset_password_code == code and 
+                self.reset_password_expires and 
+                datetime.utcnow() < self.reset_password_expires)
     
     @staticmethod
     def is_valid_username(username):

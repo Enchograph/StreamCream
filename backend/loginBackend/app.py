@@ -262,6 +262,47 @@ def send_verification_email(email, code):
             return
         raise e
 
+def send_reset_password_email(email, code):
+    """发送重置密码验证码邮件"""
+    # 邮件配置（这里使用QQ邮箱作为示例）
+    smtp_server = "smtp.qq.com"
+    smtp_port = 465  # 使用SSL
+    sender_email = os.getenv("EMAIL_USER", "your_email@qq.com")  # 发件人邮箱
+    sender_password = os.getenv("EMAIL_PASSWORD", "your_password")  # 邮箱授权码
+    
+    # 创建邮件内容
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = email
+    msg['Subject'] = "StreamCream 重置密码验证码"
+    
+    body = f"""
+    <html>
+    <body>
+        <h2>StreamCream 重置密码</h2>
+        <p>您正在重置密码，验证码是：<strong style="color: #007bff; font-size: 24px;">{code}</strong></p>
+        <p>验证码有效期为10分钟，请尽快使用。</p>
+        <p>如果这不是您的操作，请忽略此邮件。</p>
+        <br>
+        <p>StreamCream 团队</p>
+    </body>
+    </html>
+    """
+    
+    msg.attach(MIMEText(body, 'html'))
+    
+    # 发送邮件
+    try:
+        with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
+            server.login(sender_email, sender_password)
+            server.send_message(msg)
+            return
+    except smtplib.SMTPException as e:
+        # 如果邮件已经发送成功，忽略连接关闭错误
+        if "(-1, b'\\x00\\x00\\x00')" in str(e):
+            return
+        raise e
+
 # 验证邮箱验证码
 @app.route('/api/verify-email', methods=['POST'])
 def verify_email():
@@ -341,6 +382,84 @@ def resend_verification():
         return jsonify({'success': True, 'message': '验证码已重新发送'}), 200
     except Exception as e:
         return jsonify({'success': False, 'message': '邮件发送失败，请稍后重试'}), 500
+
+# 发送重置密码验证码
+@app.route('/api/forgot-password', methods=['POST'])
+def forgot_password():
+    data = request.get_json()
+    username = data.get('username')
+    email = data.get('email')
+    
+    if not all([username, email]):
+        return jsonify({'success': False, 'message': '用户名和邮箱都是必填的'}), 400
+    
+    # 查找用户
+    user = User.query.filter_by(username=username, email=email).first()
+    if not user:
+        return jsonify({'success': False, 'message': '用户名或邮箱不存在'}), 404
+    
+    # 生成重置密码验证码
+    user.generate_reset_password_code()
+    db.session.commit()
+    
+    # 发送验证码邮件
+    try:
+        send_reset_password_email(email, user.reset_password_code)
+        return jsonify({'success': True, 'message': '重置密码验证码已发送到您的邮箱'}), 200
+    except Exception as e:
+        return jsonify({'success': False, 'message': '邮件发送失败，请稍后重试'}), 500
+
+# 验证重置密码验证码
+@app.route('/api/verify-reset-code', methods=['POST'])
+def verify_reset_code():
+    data = request.get_json()
+    username = data.get('username')
+    email = data.get('email')
+    code = data.get('code')
+    
+    if not all([username, email, code]):
+        return jsonify({'success': False, 'message': '用户名、邮箱和验证码都是必填的'}), 400
+    
+    # 查找用户
+    user = User.query.filter_by(username=username, email=email).first()
+    if not user:
+        return jsonify({'success': False, 'message': '用户名或邮箱不存在'}), 404
+    
+    # 验证验证码
+    if user.verify_reset_password_code(code):
+        db.session.commit()
+        return jsonify({'success': True, 'message': '验证码验证成功'}), 200
+    else:
+        return jsonify({'success': False, 'message': '验证码错误或已过期'}), 400
+
+# 重置密码
+@app.route('/api/reset-password', methods=['POST'])
+def reset_password():
+    data = request.get_json()
+    username = data.get('username')
+    email = data.get('email')
+    code = data.get('code')
+    new_password = data.get('new_password')
+    
+    if not all([username, email, code, new_password]):
+        return jsonify({'success': False, 'message': '所有字段都是必填的'}), 400
+    
+    # 查找用户
+    user = User.query.filter_by(username=username, email=email).first()
+    if not user:
+        return jsonify({'success': False, 'message': '用户名或邮箱不存在'}), 404
+    
+    # 验证验证码
+    if not user.verify_reset_password_code(code):
+        return jsonify({'success': False, 'message': '验证码错误或已过期'}), 400
+    
+    # 设置新密码，并清空验证码
+    user.set_password(new_password)
+    user.reset_password_code = None
+    user.reset_password_expires = None
+    db.session.commit()
+    
+    return jsonify({'success': True, 'message': '密码重置成功'}), 200
 
 # 用户登录
 @app.route('/api/login', methods=['POST'])

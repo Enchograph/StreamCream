@@ -172,6 +172,7 @@ import ModelSelector from './ModelSelector.vue';
 import Live2DIframeContainer from '../../components/Live2DIframeContainer.vue';
 import streamConfig from './streamConfig.vue';
 import { useLive2DStore } from '../../stores/live2d';
+import { ElMessage } from 'element-plus'
 
 
 export default {
@@ -243,11 +244,8 @@ export default {
         };
 
         const applyCustomModel = () => {
-            if (customModelPath.value) {
-                // 这里可以添加自定义模型的逻辑
-                alert('自定义模型功能开发中...');
-            }
-        };
+            ElMessage.info('自定义模型功能开发中...')
+        }
 
         const getCurrentModelName = () => {
             const currentModel = live2DStore.availableModels.find(m => m.id === live2DStore.currentModel);
@@ -284,7 +282,7 @@ export default {
         // AI讲稿生成相关方法
         const callOpenAI = async (prompt) => {
             if (!apiKey.value) {
-                alert('请先配置API Key');
+                ElMessage.warning('请先配置API Key')
                 return '';
             }
 
@@ -331,7 +329,7 @@ export default {
                 generatedSpeech.value = await callOpenAI(prompt);
             } catch (error) {
                 console.error('生成讲稿出错:', error);
-                alert('生成讲稿失败，请重试');
+                ElMessage.error('生成讲稿失败，请重试')
             } finally {
                 isGenerating.value = false;
             }
@@ -339,12 +337,12 @@ export default {
 
         const testSpeech = () => {
             if (!generatedSpeech.value) {
-                alert('请先生成讲稿');
+                ElMessage.warning('请先生成讲稿')
                 return;
             }
 
             // 这里可以添加讲稿测试逻辑
-            alert('讲稿测试功能将在后续实现');
+            ElMessage.info('讲稿测试功能将在后续实现')
         };
 
         // 动态挂载ModelSelector到html容器

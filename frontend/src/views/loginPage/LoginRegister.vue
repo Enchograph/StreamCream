@@ -78,6 +78,7 @@
 
 <script setup>
 import { ref, reactive, computed, watch } from 'vue';
+import { ElMessage } from 'element-plus'
 
 // 定义响应式状态
 const isRegistering = ref(false);
@@ -154,7 +155,7 @@ const handleLogin = () => {
 
     if (isValid) {
         // 这里添加登录逻辑，通常是发送到服务器验证
-        alert('登录成功！');
+        ElMessage.success('登录成功！')
         clearForms();
     }
 };
@@ -210,7 +211,7 @@ const handleRegister = () => {
 
     if (isValid) {
         // 这里添加注册逻辑，通常是发送到服务器进行注册
-        alert('注册成功！');
+        ElMessage.success('注册成功！')
         isRegistering.value = false;
         clearForms();
     }

@@ -59,6 +59,7 @@
   
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue';
+import { ElMessage } from 'element-plus'
   
 const API_BASE = 'http://localhost:9880';
   
@@ -100,7 +101,7 @@ const onSwitchAudio = async () => {
   await fetch(`${API_BASE}/set_refer_audio?refer_audio_path=${encodeURIComponent(selectedAudio.value)}`);
   currentAudio.value = selectedAudio.value;
   audioLoading.value = false;
-  alert('参考音频切换成功！');
+  ElMessage.success('参考音频切换成功！')
   await fetchAudioList();
   await fetchModelStatus();
 };
@@ -135,12 +136,12 @@ const onGroupChange = () => {
   
 const onSwitch = async () => {
   if (!selectedPair.value) {
-    alert('请选择模型');
-    return;
+    ElMessage.warning('请选择模型')
+    return
   }
   await fetch(`${API_BASE}/set_gpt_weights?weights_path=${encodeURIComponent(selectedPair.value.gpt_path)}`);
   await fetch(`${API_BASE}/set_sovits_weights?weights_path=${encodeURIComponent(selectedPair.value.sovits_path)}`);
-  alert('模型切换成功！');
+  ElMessage.success('模型切换成功！')
   await fetchModelStatus();
 };
 

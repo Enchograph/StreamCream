@@ -31,6 +31,7 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue';
 import api from '/src/api/index.js'
+import { ElMessage } from 'element-plus'
 
 const selectedPlatform = ref('抖音');
 const streamUrl = ref('');
@@ -127,7 +128,7 @@ async function testStream() {
     try {
         stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
     } catch (err) {
-        alert('用户取消了采集或浏览器不支持: ' + err);
+        ElMessage.error('用户取消了采集或浏览器不支持: ' + err)
         return;
     }
 
@@ -153,7 +154,7 @@ async function testStream() {
     };
 
     ws.onerror = (e) => {
-        alert('WebSocket 连接失败: ' + e.message);
+        ElMessage.error('WebSocket 连接失败: ' + e.message)
     };
 }
 </script>

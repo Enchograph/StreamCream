@@ -60,17 +60,9 @@
 
                     <div class="model-selector">
                         <label for="live2d-model-select">选择基础模型:</label>
-                        <select 
-                            id="live2d-model-select" 
-                            v-model="live2DStore.currentModel" 
-                            @change="selectLive2DModel(live2DStore.currentModel)"
-                            class="model-select"
-                        >
-                            <option 
-                                v-for="model in live2DStore.availableModels" 
-                                :key="model.id" 
-                                :value="model.id"
-                            >
+                        <select id="live2d-model-select" v-model="live2DStore.currentModel"
+                            @change="selectLive2DModel(live2DStore.currentModel)" class="model-select">
+                            <option v-for="model in live2DStore.availableModels" :key="model.id" :value="model.id">
                                 {{ model.name }} - {{ model.description }}
                             </option>
                         </select>
@@ -152,10 +144,10 @@
                     </div>
 
                     <div class="btn-group">
-                                            <button class="btn primary animated" @click="generateSpeech" :disabled="!topic || isGenerating">
-                        <span class="btn-icon">{{ isGenerating ? '⏳' : '🤖' }}</span>
-                        {{ isGenerating ? '生成中...' : '生成讲稿' }}
-                    </button>
+                        <button class="btn primary animated" @click="generateSpeech" :disabled="!topic || isGenerating">
+                            <span class="btn-icon">{{ isGenerating ? '⏳' : '🤖' }}</span>
+                            {{ isGenerating ? '生成中...' : '生成讲稿' }}
+                        </button>
                         <button class="btn warning" @click="testSpeech">
                             <span class="btn-icon">🎤</span>
                             测试讲稿
@@ -178,7 +170,7 @@ import { useRouter } from 'vue-router';
 import { createApp } from 'vue';
 import ModelSelector from './ModelSelector.vue';
 import Live2DIframeContainer from '../../components/Live2DIframeContainer.vue';
-import streamConfig from '../../components/streamConfig.vue';
+import streamConfig from './streamConfig.vue';
 import { useLive2DStore } from '../../stores/live2d';
 
 
@@ -192,7 +184,7 @@ export default {
     setup() {
         // 获取路由实例
         const router = useRouter();
-        
+
         // 获取Live2D状态管理
         const live2DStore = useLive2DStore();
 
@@ -200,7 +192,7 @@ export default {
         const selectedModel = ref(1);
         // 分辨率设置
         const revolutionPreference = ref('1920x1080');
-        
+
         // 自定义模型相关
         const customModelPath = ref('');
 
@@ -698,9 +690,11 @@ p {
     0% {
         box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
     }
+
     50% {
         box-shadow: 0 4px 15px rgba(102, 126, 234, 0.6);
     }
+
     100% {
         box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
     }
@@ -713,15 +707,15 @@ p {
         font-size: 13px;
         min-width: 100px;
     }
-    
+
     .btn-group {
         flex-direction: column;
     }
-    
+
     .btn-group .btn {
         width: 100%;
     }
-    
+
     .btn-icon {
         font-size: 14px;
         margin-right: 6px;

@@ -57,7 +57,7 @@ async def handle_stream(websocket, path):
                 pass
         print("连接断开，推流结束")
 
-if __name__ == "__main__":
+def main():
     print(f"WebSocket推流服务启动，监听端口 {PORT}")
 
     print(f"asyncio 版本: {asyncio.__version__ if hasattr(asyncio, '__version__') else '内置'}")
@@ -66,4 +66,7 @@ if __name__ == "__main__":
     start_server = websockets.serve(handle_stream, '0.0.0.0', PORT, max_size=None, max_queue=None, read_limit=2**24, write_limit=2**24)
     asyncio.get_event_loop().run_until_complete(start_server)
     asyncio.get_event_loop().run_forever() 
+
+if __name__ == "__main__":
+    main()
 

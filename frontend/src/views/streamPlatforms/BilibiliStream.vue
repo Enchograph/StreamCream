@@ -550,6 +550,13 @@ async function loadLogs() {
 watch(currentTab, async (newTab) => {
     if (newTab === 'live') {
         await loadPartitionData();
+    } else if (newTab === 'result' && !isLiveActive.value) {
+        // 如果切换到推流信息页，但没有直播，则切回直播设置页
+        setTimeout(() => {
+            if (!isLiveActive.value) {
+                currentTab.value = 'live';
+            }
+        }, 100);
     }
 });
 
@@ -564,8 +571,8 @@ onMounted(async () => {
         loadLogs()
     ]);
 
-    // 每60秒刷新一次日志（减少频率）
-    setInterval(loadLogs, 60000);
+    // 每30秒刷新一次日志
+    setInterval(loadLogs, 30000);
 });
 </script>
 
@@ -578,7 +585,7 @@ onMounted(async () => {
     max-width: 100vw !important;
     background: linear-gradient(270deg, #e0e7ff, #86a8e7, #91eac9, #f5f7fa, #e0e7ff);
     background-size: 200% 200%;
-    animation: gradientFlow 15s ease-in-out infinite;
+    animation: gradientFlow 8s ease-in-out infinite;
     display: flex;
     justify-content: center;
     align-items: center;

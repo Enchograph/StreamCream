@@ -1339,59 +1339,104 @@ h3 span::after {
 .broadcast-controls button {
     flex: 1;
     padding: 12px 20px;
-    background-color: #4CAF50;
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 12px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    font-size: 16px;
+    font-size: 14px;
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
 }
 
-.broadcast-controls button:not(.skip-to-next-chapter):not(.skip-to-next-sentence):hover {
-    background-color: #45a049;
+.broadcast-controls button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.broadcast-controls button:hover {
+    transform: translateY(-2px);
+}
+
+.broadcast-controls button:hover::before {
+    left: 100%;
+}
+
+.broadcast-controls button:active {
+    transform: translateY(0);
 }
 
 .broadcast-controls button:disabled {
-    background-color: #cccccc;
+    background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
     cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 2px 8px rgba(189, 195, 199, 0.3);
+    opacity: 0.6;
 }
 
-.broadcast-controls button[disabled]:hover {
-    background-color: #cccccc;
+.broadcast-controls button:disabled:hover {
+    transform: none;
+    box-shadow: 0 2px 8px rgba(189, 195, 199, 0.3);
+    opacity: 0.6;
+}
+
+/* 开始/暂停直播按钮 */
+.broadcast-controls button:not(.skip-to-next-chapter):not(.skip-to-next-sentence):not(.end-broadcast) {
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+}
+
+.broadcast-controls button:not(.skip-to-next-chapter):not(.skip-to-next-sentence):not(.end-broadcast):hover {
+    background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+    box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
 }
 
 .broadcast-controls button.active {
-    background-color: #f44336;
-}
-
-.broadcast-controls button.skip-to-next-chapter,
-.broadcast-controls button.skip-to-next-sentence {
-    background-color: #2196F3;
-}
-
-
-.broadcast-controls button.skip-to-next-chapter:hover,
-.broadcast-controls button.skip-to-next-sentence:hover {
-    background-color: #1976D2;
-}
-
-
-.broadcast-controls button.skip-to-next-chapter:disabled,
-.broadcast-controls button.skip-to-next-sentence:disabled {
-    background-color: #cccccc;
-}
-
-.broadcast-controls button.end-broadcast {
-    background-color: #f44336;
-}
-
-.broadcast-controls button.end-broadcast:disabled {
-    background-color: #cccccc;
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
 }
 
 .broadcast-controls button.active:hover {
-    background-color: #d32f2f;
+    background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+    box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+}
+
+/* 跳转按钮 */
+.broadcast-controls button.skip-to-next-chapter,
+.broadcast-controls button.skip-to-next-sentence {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.broadcast-controls button.skip-to-next-chapter:hover,
+.broadcast-controls button.skip-to-next-sentence:hover {
+    background: linear-gradient(135deg, #2980b9 0%, #21618c 100%);
+    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+}
+
+/* 结束直播按钮 */
+.broadcast-controls button.end-broadcast {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+}
+
+.broadcast-controls button.end-broadcast:hover {
+    background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+    box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
 }
 </style>
 

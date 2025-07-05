@@ -20,13 +20,15 @@
         <label>推流码:</label>
         <input type="text" v-model="streamKey" placeholder="输入推流码">
     </div>
-    <button class="btn test-connect-btn" @click="testStream">
-        <span class="btn-icon">🔗</span>测试连接
-    </button>
-    <button class="btn get-streamkey-btn" @click="getStreamKey">
-        <span class="btn-icon">🔑</span>{{ platformToolNames[selectedPlatform] || '获取推流码工具' }}
-    </button>
-    <button class="btn stop-stream-btn" @click="stopLive" :disabled="!isLiveActive">
+    <div class="button-row">
+        <button class="btn test-connect-btn" @click="testStream">
+            <span class="btn-icon">🔗</span>测试连接
+        </button>
+        <button class="btn primary" @click="getStreamKey">
+            <span class="btn-icon">🔑</span>{{ platformToolNames[selectedPlatform] || '获取推流码工具' }}
+        </button>
+    </div>
+    <button class="btn danger" @click="stopLive" :disabled="!isLiveActive">
         <span class="btn-icon">⏹️</span>停止直播
     </button>
 </template>
@@ -359,79 +361,122 @@ input[type="text"] {
 }
 
 .btn {
-    background-color: #3498db;
+    /* 基础样式 */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
+    padding: 12px 24px;
+    border-radius: 12px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    font-weight: 500;
-    margin-right: 10px;
-    margin-bottom: 10px;
-}
-
-.btn:hover {
-    background-color: #2980b9;
-}
-
-.test-connect-btn {
-    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
-    color: #fff;
-    border: none;
-    padding: 11px 26px 11px 18px;
-    border-radius: 14px;
-    font-weight: 700;
-    font-size: 15px;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    box-shadow: 0 4px 18px rgba(16, 185, 129, 0.18), 0 0 0 2px #d1fae5 inset;
-    letter-spacing: 0.7px;
-    min-width: 120px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    margin-right: 12px;
+    margin-bottom: 12px;
     position: relative;
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.test-connect-btn .btn-icon {
-    font-size: 1.25em;
-    margin-right: 6px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.13);
-    padding: 3px 6px;
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.08);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 120px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
+    white-space: nowrap;
 }
 
-.test-connect-btn::before {
+.btn::before {
     content: '';
     position: absolute;
     top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
     transition: left 0.5s;
 }
 
-.test-connect-btn:hover {
-    transform: translateY(-2px) scale(1.03);
-    box-shadow: 0 8px 28px rgba(16, 185, 129, 0.22), 0 0 0 2px #6ee7b7 inset;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
 }
 
-.test-connect-btn:hover::before {
+.btn:hover::before {
     left: 100%;
 }
 
-.test-connect-btn:active {
-    transform: translateY(0) scale(0.98);
-    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.18);
+.btn:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn:disabled {
+    background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 2px 8px rgba(189, 195, 199, 0.3);
+}
+
+.btn:disabled:hover {
+    transform: none;
+    box-shadow: 0 2px 8px rgba(189, 195, 199, 0.3);
+}
+
+/* 特殊按钮样式 */
+.btn.primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn.primary:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.btn.danger {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+}
+
+.btn.danger:hover {
+    background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+    box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+}
+
+/* 按钮图标样式 */
+.btn-icon {
+    margin-right: 8px;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+
+.btn:hover .btn-icon {
+    transform: scale(1.1);
+}
+
+/* 按钮行样式 */
+.button-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.button-row .btn {
+    margin: 0;
+    flex: 1;
+}
+
+.test-connect-btn {
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+}
+
+.test-connect-btn:hover {
+    background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+    box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
 }
 </style>

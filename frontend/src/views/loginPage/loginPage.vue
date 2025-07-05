@@ -291,7 +291,7 @@
             </div>
         </div>
         <div class="copyright">
-            © 2025 Made by DeepSleep. All rights reserved.
+            © 2025 Made by <a href="https://whucsgitlab.whu.edu.cn/2025se-deepsleep" target="_blank" rel="noopener" style="color: rgba(255,255,255,0.9); text-decoration: underline; transition: color 0.3s ease;">DeepSleep</a>. All rights reserved.
         </div>
     </div>
 </template>

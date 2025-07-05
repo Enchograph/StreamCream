@@ -227,6 +227,9 @@ export default defineComponent({
 
             // 通知父组件直播状态变更
             this.$emit('broadcast-status-change', false);
+            
+            // 清理localStorage中的直播相关数据
+            this.clearLive2DStorage();
         },
 
         // 预处理当前章节的语音
@@ -402,6 +405,9 @@ export default defineComponent({
                 return;
             }
 
+            // 清理之前的localStorage数据，确保没有残留
+            this.clearLive2DStorage();
+
             // 在新标签页打开Live2D页面，保持当前页不变
             window.open('/live2d', '_blank', 'noopener,noreferrer');
 
@@ -531,13 +537,30 @@ export default defineComponent({
         },
 
         pauseBroadcast() {
+            console.log('开始暂停直播...');
+            
+            // 立即停止所有语音合成
+            if (this.speechSynthesizer) {
+                this.speechSynthesizer.cancelAllRequests();
+            }
+            
+            // 立即停止语音播放
+            if (this.speechPlayer) {
+                this.speechPlayer.stop(); // 使用stop而不是pause，确保完全停止
+            }
+            
+            // 立即更新状态
             this.isBroadcasting = false;
-            this.speechPlayer.isBroadcasting = false;
-            // 通知父组件直播状态变更
+            if (this.speechPlayer) {
+                this.speechPlayer.isBroadcasting = false;
+            }
+            
+            // 立即清理localStorage中的直播相关数据
+            this.clearLive2DStorage();
+            
+            // 立即通知父组件直播状态变更
             this.$emit('broadcast-status-change', false);
-            // 暂停语音播放
-            this.speechPlayer.pause();
-
+            
             // 暂停媒体录制
             if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
                 this.mediaRecorder.pause();
@@ -549,6 +572,12 @@ export default defineComponent({
                     action: 'pause_stream'
                 }));
             }
+            
+            // 清空当前字幕显示
+            this.currentSubtitle = '';
+            this.nextSubtitle = '';
+            
+            console.log('直播已暂停');
         },
 
         // 清除特定章节的语音合成任务
@@ -655,6 +684,10 @@ export default defineComponent({
             // 重置当前播放状态
             this.currentSubtitle = '';
             this.nextSubtitle = '';
+            
+            // 清理localStorage中的直播相关数据
+            this.clearLive2DStorage();
+            
             this.$router.push('/mainPage');
 
             console.log('直播已结束');
@@ -669,6 +702,32 @@ export default defineComponent({
             } catch (error) {
                 console.error('删除音频文件出错:', error);
             }
+        },
+
+        // 清理Live2D相关的localStorage数据
+        clearLive2DStorage() {
+            console.log('立即清理Live2D相关的localStorage数据...');
+            
+            // 立即清理字幕数据
+            localStorage.removeItem('live2d_current_subtitle');
+            
+            // 立即清理TTS结果数据
+            localStorage.removeItem('live2d_tts_result');
+            
+            // 立即触发清空事件通知Live2D页面
+            window.dispatchEvent(new CustomEvent('subtitleCleared'));
+            
+            // 强制触发storage事件，确保Live2D页面立即收到通知
+            setTimeout(() => {
+                window.dispatchEvent(new StorageEvent('storage', {
+                    key: 'live2d_current_subtitle',
+                    newValue: null,
+                    oldValue: null,
+                    storageArea: localStorage
+                }));
+            }, 10);
+            
+            console.log('Live2D localStorage数据已立即清理');
         },
     },
     mounted() {
@@ -687,6 +746,8 @@ export default defineComponent({
         }
         this.cleanupResources();
         this.cleanupAudioFiles();
+        // 清理localStorage数据
+        this.clearLive2DStorage();
         // 移除事件监听
         window.removeEventListener('beforeunload', this.handlePageUnload);
     },
@@ -782,6 +843,7 @@ class SpeechSynthesizer {
             this.activeRequests = this.activeRequests.filter(controller => controller !== abortController);
 
             const data = await response.json();
+            console.log('后端返回的TTS数据:', data);
 
             if (data.audio_url) {
                 // 合成完成，更新状态
@@ -792,6 +854,11 @@ class SpeechSynthesizer {
                 if (this.onSynthesisComplete) {
                     this.onSynthesisComplete(this.currentSentence);
                 }
+
+                // TTS结果已通过字幕同步机制传递，无需额外存储
+                console.log('TTS合成完成，音频URL:', data.audio_url);
+            } else {
+                console.error('TTS合成失败，没有返回audio_url:', data);
             }
         } catch (error) {
             // 如果是取消请求导致的错误，不需要记录错误
@@ -1023,6 +1090,27 @@ class SpeechPlayer {
         if (this.onSubtitleChange) {
             this.onSubtitleChange(sentence);
         }
+        
+        // 同步字幕到localStorage，供Live2D页面使用
+        if (sentence && sentence.trim()) {
+            const subtitleData = {
+                text: sentence,
+                timestamp: Date.now(),
+                type: 'subtitle'
+            };
+            localStorage.setItem('live2d_current_subtitle', JSON.stringify(subtitleData));
+            console.log('字幕已同步到localStorage:', subtitleData);
+            
+            // 触发自定义事件通知Live2D页面
+            window.dispatchEvent(new CustomEvent('subtitleUpdated', { detail: subtitleData }));
+        } else {
+            // 清空字幕
+            localStorage.removeItem('live2d_current_subtitle');
+            console.log('字幕已清空');
+            
+            // 触发清空事件
+            window.dispatchEvent(new CustomEvent('subtitleCleared'));
+        }
     }
 
     // 停止播放并清空队列
@@ -1033,6 +1121,10 @@ class SpeechPlayer {
         }
         this.isPlaying = false;
         this.playQueue = [];
+        
+        // 清理localStorage中的字幕数据
+        localStorage.removeItem('live2d_current_subtitle');
+        window.dispatchEvent(new CustomEvent('subtitleCleared'));
     }
 
     // 获取当前播放状态

@@ -92,6 +92,25 @@
                     </div>
                 </section>
 
+                <!-- 推流码获取页面 -->
+                <section class="help-section">
+                    <h2 class="section-title">
+                        <span class="section-icon">🔑</span>
+                        推流码获取页面
+                    </h2>
+                    <div class="section-content">
+                        <div class="streaming-info">
+                            <h3>推流码获取流程</h3>
+                            <ul>
+                                <li><strong>账号设置</strong>：进入"账号设置"页面，完成Cookies导入或扫码登录。</li>
+                                <li><strong>自动获取</strong>：切换到"直播设置"页面，系统会自动获取并显示你的B站推流码和推流服务器地址。</li>
+                                <li><strong>安全提示</strong>：推流码仅用于本次直播，请勿泄露给他人。</li>
+                                <li><strong>故障排查</strong>：如推流码获取失败，请检查账号状态或重新登录。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- 设置页面 -->
                 <section class="help-section">
                     <h2 class="section-title">

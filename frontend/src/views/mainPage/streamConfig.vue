@@ -103,12 +103,12 @@ function selectPlatform(platform) {
 function getStreamKey() {
     // 根据平台调用不同的exe工具
     const toolPath = {
-        'B站': 'tools/bilibili/bilibili.exe',
-        '抖音': 'tools/douyin/douyin.exe',
-        '小红书': 'tools/xiaohongshu/xiaohongshu.exe',
-        '快手': 'tools/kuaishou/kuaishou.exe',
-        'YouTube': 'tools/youtube/youtube.exe',
-        'Twitch': 'tools/twitch/twitch.exe'
+        'B站': 'tools/bilibili/bilibili_streamkey.exe',
+        '抖音': 'tools/douyin/douyin_streamkey.exe',
+        '小红书': 'tools/xiaohongshu/xiaohongshu_streamkey.exe',
+        '快手': 'tools/kuaishou/kuaishou_streamkey.exe',
+        'YouTube': 'tools/youtube/youtube_streamkey.exe',
+        'Twitch': 'tools/twitch/twitch_streamkey.exe'
     }[selectedPlatform.value];
 
     if (toolPath) {
@@ -122,6 +122,7 @@ function getStreamKey() {
 async function testStream() {
     // 先打开Live2D页面
     window.open('/live2d', '_blank');
+
     let stream;
     try {
         stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
@@ -158,20 +159,6 @@ async function testStream() {
 </script>
 
 <style scoped>
-h2 {
-    color: #2c3e50;
-    margin-bottom: 15px;
-    font-size: 1.5rem;
-    border-bottom: 2px solid #e7eaee;
-    padding-bottom: 10px;
-}
-
-p {
-    color: #5a6a85;
-    margin-bottom: 15px;
-    line-height: 1.6;
-}
-
 .platform-select {
     display: flex;
     gap: 18px;
@@ -245,48 +232,21 @@ p {
     transform: translateY(-1px) scale(1.03);
 }
 
-.platform-select {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.platform-item {
-    border: 2px solid #e7eaee;
-    border-radius: 8px;
-    padding: 10px;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-    width: 80px;
-}
-
-.platform-item:hover,
-.platform-item.active {
-    border-color: #3498db;
-    background-color: rgba(52, 152, 219, 0.05);
-}
-
-.platform-item.active {
-    font-weight: bold;
-}
-
 .file-upload {
     display: flex;
     flex-direction: column;
     margin-bottom: 15px;
 }
 
-label {
+.file-upload label {
     margin-bottom: 8px;
     color: #2c3e50;
     font-weight: 500;
 }
 
-input {
+.file-upload input {
     margin-bottom: 10px;
 }
-
 
 input[type="text"] {
     width: 100%;
@@ -372,9 +332,5 @@ input[type="text"] {
 .test-connect-btn:active {
     transform: translateY(0) scale(0.98);
     box-shadow: 0 4px 15px rgba(16, 185, 129, 0.18);
-}
-
-.btn:hover {
-    background-color: #2980b9;
 }
 </style>

@@ -244,6 +244,7 @@
 import api from '/src/api/index.js'
 import { useRouter } from 'vue-router'
 import { useLive2DStore } from '../../stores/live2d';
+import { ElMessage } from 'element-plus';
 
 export default {
     name: 'settingPage',
@@ -464,7 +465,6 @@ export default {
         async completeSetting() {
             // 保存AI设置到localStorage（兼容streamingPage.vue的读取方式）
             localStorage.setItem('aiSettings', JSON.stringify(this.aiSettings));
-            
             // 先自动测试LLM连接
             // const llmOk = await this.testLLMConnection(false);
             // if (!llmOk) {
@@ -472,7 +472,6 @@ export default {
             //     return;
             // }
             // this.saveAISettings(false);
-
             try {
                 await api.savePreferences({
                     debugMode: this.debugMode,
@@ -483,7 +482,10 @@ export default {
             } catch (e) {
                 // 可选：提示保存失败
             }
-            alert('设置完成');
+            ElMessage.success({
+                message: '设置完成',
+                duration: 2000
+            });
             const redirectPath = this.$route.query.redirect || '/mainPage'
             this.$router.push(redirectPath).then(() => {
                 window.location.reload();

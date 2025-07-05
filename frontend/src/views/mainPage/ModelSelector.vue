@@ -22,7 +22,7 @@
   
       <button
         v-if="selectedPair"
-        class="btn"
+        class="btn primary"
         style="margin-left: 10px;"
         @click="onSwitch"
       >切换模型</button>
@@ -36,7 +36,7 @@
           {{ audio.file_name }}<span v-if="audio.is_current">（当前）</span>
         </option>
       </select>
-      <button class="btn" style="margin-left: 10px;" @click="onSwitchAudio" :disabled="audioLoading || !selectedAudio">
+      <button class="btn primary" style="margin-left: 10px;" @click="onSwitchAudio" :disabled="audioLoading || !selectedAudio">
         切换参考音频
       </button>
     </div>
@@ -45,7 +45,7 @@
     <div class="model-status">
       <div>当前模型pair：<b>{{ modelStatus.current_model_pair || '无' }}</b></div>
       <div>当前参考音频：<b>{{ modelStatus.current_ref_audio || '无' }}</b></div>
-      <button class="btn" style="margin-top: 10px;" @click="generateSample" :disabled="sampleLoading">
+      <button class="btn primary" style="margin-top: 10px;" @click="generateSample" :disabled="sampleLoading">
         生成示例语音
       </button>
       <div v-if="sampleUrl" style="margin-top: 10px;">
@@ -196,16 +196,46 @@ const generateSample = async () => {
     border-color: #409eff;
 }
 .btn {
-    padding: 8px 16px;
+    padding: 10px 22px;
     border: none;
-    border-radius: 4px;
-    background-color: #409eff;
-    color: white;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #409eff 0%, #66b1ff 100%);
+    color: #fff;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(64,158,255,0.10);
+    transition: all 0.18s cubic-bezier(0.4,0,0.2,1);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    outline: none;
 }
-.btn:hover {
-    background-color: #66b1ff;
+.btn:hover:not(:disabled) {
+    transform: scale(1.06);
+    box-shadow: 0 12px 32px rgba(102, 126, 234, 0.18);
+    filter: brightness(1.08);
+}
+.btn:active:not(:disabled) {
+    transform: scale(0.97);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+.btn:disabled {
+    background: linear-gradient(135deg, rgba(224,215,250,0.6) 0%, rgba(201,182,247,0.6) 100%) !important;
+    color: #fff !important;
+    cursor: not-allowed;
+    box-shadow: none;
+    filter: none;
+    opacity: 0.6;
+}
+.fancy-btn:hover:not(:disabled) {
+    background: linear-gradient(90deg, #66b1ff 0%, #409eff 100%);
+    box-shadow: 0 4px 16px rgba(64,158,255,0.18);
+    transform: translateY(-2px) scale(1.04);
+}
+.fancy-btn .mdi {
+    font-size: 20px;
+    vertical-align: middle;
 }
 .model-status {
     margin-top: 18px;
@@ -215,5 +245,14 @@ const generateSample = async () => {
     font-size: 15px;
     color: #333;
     box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+/* 移除.btn-icon，所有按钮主色为紫色渐变，继承.btn.primary主页面风格 */
+.btn.primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+.btn.primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%) !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
 }
 </style>

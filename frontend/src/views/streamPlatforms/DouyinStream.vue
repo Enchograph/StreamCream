@@ -1,221 +1,332 @@
 <template>
     <div class="page-container">
-        <div class="container">
-            <div class="header-section">
-                <h1 class="main-title">
-                    <span class="title-icon">
-                        <svg width="50" height="49" fill="none" xmlns="http://www.w3.org/2000/svg" class="douyin-logo">
+        <!-- 背景装饰 -->
+        <div class="bg-decoration">
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
+            <div class="floating-shape shape-4"></div>
+        </div>
+
+        <div class="main-container">
+            <!-- 顶部导航栏 -->
+            <nav class="top-nav">
+                <div class="nav-brand">
+                    <div class="logo-container">
+                        <svg width="40" height="39" fill="none" xmlns="http://www.w3.org/2000/svg" class="douyin-logo">
                             <path d="M6 14a8 8 0 0 1 8-8h20a8 8 0 0 1 8 8v20a8 8 0 0 1-8 8H14a8 8 0 0 1-8-8V14Z" fill="#000"/>
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M35 17a6 6 0 0 1-6-6h-5v18.5a3.5 3.5 0 1 1-3.5-3.5H22v-5h-1.5a8.5 8.5 0 1 0 8.5 8.5v-9.279A10.948 10.948 0 0 0 35 22h.5v-5H35Z" fill="#FA1E5C"/>
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M34 16a6 6 0 0 1-6-6h-5v18.5a3.5 3.5 0 1 1-3.5-3.5H21v-5h-1.5a8.5 8.5 0 1 0 8.5 8.5v-9.279A10.948 10.948 0 0 0 34 21h.5v-5H34Z" fill="#5FFDFF"/>
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M34.5 16.98a5.992 5.992 0 0 1-4.213-2.267A5.996 5.996 0 0 1 28.083 11H24v18.5a3.5 3.5 0 0 1-6.424 1.924A3.5 3.5 0 0 1 19.5 25H21v-4h-.5a8.5 8.5 0 0 0-6.49 13.99A8.5 8.5 0 0 0 28 28.5v-9.279A10.948 10.948 0 0 0 34 21h.5v-4.02Z" fill="#fff"/>
                         </svg>
-                    </span>
-                    抖音直播推流工具
-                </h1>
-                <p class="subtitle">专业的抖音直播推流码获取和管理工具</p>
-            </div>
+                    </div>
+                    <div class="brand-text">
+                        <h1 class="brand-title">抖音直播推流工具</h1>
+                        <p class="brand-subtitle">专业的直播推流码获取与管理平台</p>
+                    </div>
+                </div>
+                <div class="nav-actions">
+                    <button class="nav-btn" @click="showHelp">
+                        <span class="nav-btn-icon">📖</span>
+                        帮助
+                    </button>
+                    <button class="nav-btn" @click="showQuickActions = !showQuickActions">
+                        <span class="nav-btn-icon">⚡</span>
+                        快捷操作
+                    </button>
+                    <button class="nav-btn" @click="startTutorial">
+                        <span class="nav-btn-icon">🎓</span>
+                        教程
+                    </button>
+                    <button class="nav-btn" @click="resetTutorial" title="重置教程状态">
+                        <span class="nav-btn-icon">🔄</span>
+                        重置教程
+                    </button>
+                </div>
+            </nav>
 
-            <div class="tabs-container">
-                <div class="tabs">
-                    <button v-for="tab in tabs" :key="tab.id" :class="['tab-button', { active: currentTab === tab.id }]"
+            <!-- 标签页导航 -->
+            <div class="tab-navigation">
+                <div class="tab-list">
+                    <button v-for="tab in tabs" :key="tab.id" 
+                        :class="['tab-item', { active: currentTab === tab.id }]"
                         @click="currentTab = tab.id">
-                        <span class="tab-icon">{{ tab.id === 'account' ? '🔐' : tab.id === 'live' ? '📡' : '📊' }}</span>
-                        {{ tab.name }}
+                        <div class="tab-content">
+                            <span class="tab-icon">{{ tab.icon }}</span>
+                            <div class="tab-info">
+                                <span class="tab-name">{{ tab.name }}</span>
+                                <span class="tab-desc">{{ tab.description }}</span>
+                            </div>
+                        </div>
                     </button>
                 </div>
             </div>
 
-            <!-- 账号设置 Tab -->
-            <div v-if="currentTab === 'account'" class="tab-content">
-                <div class="section">
-                    <div class="cookie-auto-row">
-                        <div class="cookie-block">
-                            <h2>Cookies文件</h2>
-                            <button class="btn primary" @click="loadCookiesFile">
+            <!-- 主内容区域 -->
+            <main class="main-content">
+                <!-- 账号设置 Tab -->
+                <div v-if="currentTab === 'account'" class="content-panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">
+                            <span class="title-icon">🔐</span>
+                            账号设置
+                        </h2>
+                        <p class="panel-subtitle">配置您的抖音账号信息，支持多种登录方式</p>
+                    </div>
+
+                    <div class="panel-grid">
+                        <!-- Cookies文件导入 -->
+                        <div class="feature-card">
+                            <div class="card-header">
+                                <div class="card-icon">📂</div>
+                                <h3>Cookies文件导入</h3>
+                            </div>
+                            <p class="card-desc">从本地文件导入Cookies信息</p>
+                            <button class="card-btn primary" @click="loadCookiesFile">
                                 <span class="btn-icon">📂</span>
-                                使用Cookies文件
+                                选择文件
                             </button>
                         </div>
-                        <div class="vertical-divider"></div>
-                        <div class="auto-block">
-                            <h2>自动获取</h2>
-                            <button class="btn success" @click="autoGetAccount" :disabled="autoGetLoading">
+
+                        <!-- 自动获取 -->
+                        <div class="feature-card">
+                            <div class="card-header">
+                                <div class="card-icon">🔍</div>
+                                <h3>自动获取</h3>
+                            </div>
+                            <p class="card-desc">通过扫码自动获取账号信息</p>
+                            <button class="card-btn success" @click="autoGetAccount" :disabled="autoGetLoading">
                                 <span class="btn-icon">{{ autoGetLoading ? '⏳' : '🔍' }}</span>
-                                {{ autoGetLoading ? '获取中...' : '自动获取账号信息' }}
+                                {{ autoGetLoading ? '获取中...' : '开始获取' }}
                             </button>
-                            <p v-if="autoGetLoading" class="loading-text">获取中，请稍候...</p>
+                            <div v-if="autoGetLoading" class="loading-indicator">
+                                <div class="spinner"></div>
+                                <span>正在获取账号信息...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 手动输入表单 -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3>手动输入</h3>
+                            <p>如果您已有账号信息，可以直接输入</p>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label class="field-label">房间ID</label>
+                                <input type="password" v-model="accountInfo.room_id" 
+                                    class="field-input" placeholder="请输入房间ID" />
+                            </div>
+                            
+                            <div class="form-field">
+                                <label class="field-label">Cookies</label>
+                                <input type="password" v-model="accountInfo.cookie_str" 
+                                    class="field-input" placeholder="请输入Cookies字符串" />
+                            </div>
+                            
+                            <div class="form-field">
+                                <label class="field-label">Session ID</label>
+                                <input type="password" v-model="accountInfo.session_id" 
+                                    class="field-input" placeholder="请输入Session ID" />
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="action-btn primary" @click="saveAccountSettings">
+                                <span class="btn-icon">💾</span>
+                                保存设置
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <div class="divider"></div>
-
-                <div class="section">
-                    <h2>手动输入</h2>
-                    <div class="form-group">
-                        <label>Room ID:</label>
-                        <input type="password" v-model="accountInfo.room_id" placeholder="请输入房间ID" />
+                <!-- 直播设置 Tab -->
+                <div v-if="currentTab === 'live'" class="content-panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">
+                            <span class="title-icon">📡</span>
+                            直播设置
+                        </h2>
+                        <p class="panel-subtitle">配置直播标题、分类和互动功能</p>
                     </div>
 
-                    <div class="form-group">
-                        <label>Cookies:</label>
-                        <input type="password" v-model="accountInfo.cookie_str" placeholder="请输入Cookies字符串" />
-                    </div>
-
-                    <div class="form-group">
-                        <label>Session ID:</label>
-                        <input type="password" v-model="accountInfo.session_id" placeholder="请输入Session ID" />
-                    </div>
-
-                    <button class="btn primary" @click="saveAccountSettings">
-                        <span class="btn-icon">💾</span>
-                        保存设置
-                    </button>
-                </div>
-
-                <div class="help-section">
-                    <button class="btn secondary" @click="showHelp">
-                        <span class="btn-icon">📖</span>
-                        查看使用说明
-                    </button>
-                </div>
-            </div>
-
-            <!-- 直播设置 Tab -->
-            <div v-if="currentTab === 'live'" class="tab-content">
-                <div class="section">
-                    <h2>直播标题</h2>
-                    <div class="form-row">
-                        <label for="live-title">请输入直播标题:</label>
-                        <input id="live-title" type="text" v-model="liveSettings.live_title" class="title-input" placeholder="输入直播标题" />
-                        <button class="btn primary" @click="updateTitle">
-                            <span class="btn-icon">🔄</span>
-                            更新标题
-                        </button>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h2>直播分类</h2>
-                    <div class="form-row">
-                        <label for="main-category">选择分类:</label>
-                        <select id="main-category" v-model="liveSettings.selected_category" @change="updateSubCategories" class="model-select">
-                            <option value="">请选择分类</option>
-                            <option v-for="category in mainCategories" :key="category" :value="category">{{ category }}</option>
-                        </select>
-                        <label for="sub-category" style="margin-left:24px;">选择子分类:</label>
-                        <select id="sub-category" v-model="liveSettings.selected_sub_category" class="model-select">
-                            <option value="">请选择子分类</option>
-                            <option v-for="subCategory in subCategories" :key="subCategory" :value="subCategory">{{ subCategory }}</option>
-                        </select>
-                        <button class="btn primary" @click="updateCategory">
-                            <span class="btn-icon">✅</span>
-                            更新分类
-                        </button>
-                        <button class="btn secondary" @click="refreshCategories">
-                            <span class="btn-icon">🔄</span>
-                            刷新分类
-                        </button>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h2>发送评论</h2>
-                    <div class="form-row">
-                        <label for="comment-input">输入评论内容:</label>
-                        <input id="comment-input" type="text" v-model="commentMessage" class="comment-input" placeholder="输入评论内容" />
-                        <button class="btn success" @click="sendComment">
-                            <span class="btn-icon">📤</span>
-                            发送评论
-                        </button>
-                    </div>
-                </div>
-
-                <button class="btn success pulse" @click="startLiveAndRedirect">
-                    <span class="btn-icon">🎬</span>
-                    开始直播
-                </button>
-
-                <div class="section">
-                    <h2>操作日志</h2>
-                    <div class="log-area">
-                        <div v-for="(log, index) in logs" :key="index" :class="['log-entry', `log-${log.type}`]">
-                            <span class="log-time">{{ log.timeString }}</span>
-                            <span class="log-icon">{{ getLogIcon(log.type) }}</span>
-                            <span class="log-message">{{ log.message }}</span>
+                    <!-- 直播标题设置 -->
+                    <div class="setting-section">
+                        <div class="section-header">
+                            <h3>直播标题</h3>
+                            <p>设置您的直播标题</p>
                         </div>
-                        <div v-if="logs.length === 0" class="no-logs">
-                            暂无操作日志
+                        <div class="input-group">
+                            <input type="text" v-model="liveSettings.live_title" 
+                                class="modern-input" placeholder="输入直播标题" />
+                            <button class="action-btn primary" @click="updateTitle">
+                                <span class="btn-icon">🔄</span>
+                                更新标题
+                            </button>
                         </div>
                     </div>
-                    <div class="log-actions">
-                        <button class="btn secondary small" @click="clearLogs">
-                            <span class="btn-icon">🗑️</span>
-                            清空日志
-                        </button>
-                        <button class="btn secondary small" @click="exportLogs">
-                            <span class="btn-icon">📄</span>
-                            导出日志
+
+                    <!-- 直播分类设置 -->
+                    <div class="setting-section">
+                        <div class="section-header">
+                            <h3>直播分类</h3>
+                            <p>选择适合的直播分类</p>
+                        </div>
+                        <div class="category-grid">
+                            <div class="select-group">
+                                <label class="select-label">主分类</label>
+                                <select v-model="liveSettings.selected_category" @change="updateSubCategories" class="modern-select">
+                                    <option value="">请选择分类</option>
+                                    <option v-for="category in mainCategories" :key="category" :value="category">{{ category }}</option>
+                                </select>
+                            </div>
+                            <div class="select-group">
+                                <label class="select-label">子分类</label>
+                                <select v-model="liveSettings.selected_sub_category" class="modern-select">
+                                    <option value="">请选择子分类</option>
+                                    <option v-for="subCategory in subCategories" :key="subCategory" :value="subCategory">{{ subCategory }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="action-group">
+                            <button class="action-btn primary" @click="updateCategory">
+                                <span class="btn-icon">✅</span>
+                                更新分类
+                            </button>
+                            <button class="action-btn secondary" @click="refreshCategories">
+                                <span class="btn-icon">🔄</span>
+                                刷新分类
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 评论发送 -->
+                    <div class="setting-section">
+                        <div class="section-header">
+                            <h3>发送评论</h3>
+                            <p>与观众互动</p>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" v-model="commentMessage" 
+                                class="modern-input" placeholder="输入评论内容" />
+                            <button class="action-btn success" @click="sendComment">
+                                <span class="btn-icon">📤</span>
+                                发送评论
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 开始直播按钮 -->
+                    <div class="live-action">
+                        <button class="live-btn" @click="startLiveAndRedirect">
+                            <span class="live-icon">🎬</span>
+                            <span class="live-text">开始直播</span>
                         </button>
                     </div>
-                </div>
-            </div>
 
-            <!-- 推流信息 Tab -->
-            <div v-if="currentTab === 'stream'" class="tab-content">
-                <div class="section">
-                    <h2>推流信息</h2>
-                    <div class="stream-info">
-                        <div class="form-group">
-                            <label>推流地址:</label>
-                            <div class="input-with-copy">
-                                <input type="text" v-model="streamInfo.server" readonly class="stream-input" />
-                                <button class="btn copy-btn" @click="copyServer">
+                    <!-- 操作日志 -->
+                    <div class="log-section">
+                        <div class="section-header">
+                            <h3>操作日志</h3>
+                            <div class="log-actions">
+                                <button class="action-btn small secondary" @click="clearLogs">
+                                    <span class="btn-icon">🗑️</span>
+                                    清空
+                                </button>
+                                <button class="action-btn small secondary" @click="exportLogs">
+                                    <span class="btn-icon">📄</span>
+                                    导出
+                                </button>
+                            </div>
+                        </div>
+                        <div class="log-container">
+                            <div v-for="(log, index) in logs" :key="index" :class="['log-item', `log-${log.type}`]">
+                                <span class="log-time">{{ log.timeString }}</span>
+                                <span class="log-icon">{{ getLogIcon(log.type) }}</span>
+                                <span class="log-message">{{ log.message }}</span>
+                            </div>
+                            <div v-if="logs.length === 0" class="empty-log">
+                                <span class="empty-icon">📝</span>
+                                <span>暂无操作日志</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 推流信息 Tab -->
+                <div v-if="currentTab === 'stream'" class="content-panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">
+                            <span class="title-icon">📊</span>
+                            推流信息
+                        </h2>
+                        <p class="panel-subtitle">获取和管理您的直播推流信息</p>
+                    </div>
+
+                    <!-- 推流信息展示 -->
+                    <div class="stream-info-section">
+                        <div class="info-card">
+                            <div class="card-header">
+                                <h3>推流地址</h3>
+                                <button class="copy-btn" @click="copyServer">
                                     <span class="btn-icon">📋</span>
                                     复制
                                 </button>
                             </div>
+                            <div class="info-value">{{ streamInfo.server || '暂无推流地址' }}</div>
                         </div>
 
-                        <div class="form-group">
-                            <label>推流密钥:</label>
-                            <div class="input-with-copy">
-                                <input type="text" v-model="streamInfo.code" readonly class="stream-input" />
-                                <button class="btn copy-btn" @click="copyCode">
+                        <div class="info-card">
+                            <div class="card-header">
+                                <h3>推流密钥</h3>
+                                <button class="copy-btn" @click="copyCode">
                                     <span class="btn-icon">📋</span>
                                     复制
                                 </button>
                             </div>
+                            <div class="info-value">{{ streamInfo.code || '暂无推流密钥' }}</div>
                         </div>
+                    </div>
 
-                        <div class="export-buttons">
-                            <button class="btn secondary" @click="exportToDesktop">
+                    <!-- 导出选项 -->
+                    <div class="export-section">
+                        <div class="section-header">
+                            <h3>导出选项</h3>
+                            <p>将推流信息保存到本地</p>
+                        </div>
+                        <div class="export-actions">
+                            <button class="action-btn secondary" @click="exportToDesktop">
                                 <span class="btn-icon">💾</span>
                                 导出到桌面
                             </button>
-                            <button class="btn secondary" @click="exportToFile">
+                            <button class="action-btn secondary" @click="exportToFile">
                                 <span class="btn-icon">📄</span>
                                 导出到文件
                             </button>
                         </div>
                     </div>
-                </div>
 
-                <div class="section">
-                    <h2>直播控制</h2>
-                    <div class="control-buttons">
-                        <button class="btn danger" @click="stopLive">
-                            <span class="btn-icon">⏹️</span>
-                            停止直播
-                        </button>
-                        <button class="btn secondary" @click="refreshStreamInfo">
-                            <span class="btn-icon">🔄</span>
-                            刷新推流信息
-                        </button>
+                    <!-- 直播控制 -->
+                    <div class="control-section">
+                        <div class="section-header">
+                            <h3>直播控制</h3>
+                            <p>管理直播状态</p>
+                        </div>
+                        <div class="control-actions">
+                            <button class="action-btn danger" @click="stopLive">
+                                <span class="btn-icon">⏹️</span>
+                                停止直播
+                            </button>
+                            <button class="action-btn secondary" @click="refreshStreamInfo">
+                                <span class="btn-icon">🔄</span>
+                                刷新推流信息
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </main>
 
             <!-- 状态栏 -->
             <div class="status-bar">
@@ -224,13 +335,13 @@
                     <span class="status-text">{{ statusMessage }}</span>
                 </div>
                 <div class="status-actions">
-                    <button class="btn secondary small" @click="startTutorial" v-if="hasShownTutorial">
-                        <span class="btn-icon">🎓</span>
-                        重新教程
+                    <button class="nav-btn small" @click="startTutorial">
+                        <span class="nav-btn-icon">🎓</span>
+                        教程
                     </button>
-                    <button class="btn secondary small" @click="showQuickActions = !showQuickActions">
-                        <span class="btn-icon">⚡</span>
-                        快捷操作
+                    <button class="nav-btn small" @click="resetTutorial" title="重置教程状态">
+                        <span class="nav-btn-icon">🔄</span>
+                        重置
                     </button>
                 </div>
             </div>
@@ -282,25 +393,25 @@
                 <div class="tutorial-step" v-if="tutorialStep === 1">
                     <h3>欢迎使用抖音直播推流工具！</h3>
                     <p>让我来帮你快速上手这个工具</p>
-                    <button class="btn primary" @click="nextTutorialStep">开始教程</button>
+                    <button class="action-btn primary" @click="nextTutorialStep">开始教程</button>
                 </div>
                 <div class="tutorial-step" v-if="tutorialStep === 2">
                     <h3>第一步：账号设置</h3>
-                    <p>首先需要设置你的抖音账号信息</p>
+                    <p>首先需要设置你的抖音账号信息，支持多种登录方式</p>
                     <div class="tutorial-highlight" style="top: 120px; left: 50%; transform: translateX(-50%);">
                         <div class="highlight-arrow"></div>
                     </div>
-                    <button class="btn primary" @click="nextTutorialStep">下一步</button>
+                    <button class="action-btn primary" @click="nextTutorialStep">下一步</button>
                 </div>
                 <div class="tutorial-step" v-if="tutorialStep === 3">
                     <h3>第二步：直播设置</h3>
-                    <p>设置直播标题和分类</p>
-                    <button class="btn primary" @click="nextTutorialStep">下一步</button>
+                    <p>设置直播标题、分类和互动功能</p>
+                    <button class="action-btn primary" @click="nextTutorialStep">下一步</button>
                 </div>
                 <div class="tutorial-step" v-if="tutorialStep === 4">
                     <h3>第三步：开始直播</h3>
                     <p>获取推流信息并开始直播</p>
-                    <button class="btn primary" @click="finishTutorial">完成教程</button>
+                    <button class="action-btn primary" @click="finishTutorial">完成教程</button>
                 </div>
             </div>
         </div>
@@ -334,9 +445,24 @@ const API_BASE = 'http://localhost:9702/api';
 
 // 标签页管理
 const tabs = [
-    { id: 'account', name: '账号设置' },
-    { id: 'live', name: '直播设置' },
-    { id: 'stream', name: '推流信息' }
+    { 
+        id: 'account', 
+        name: '账号设置', 
+        icon: '🔐',
+        description: '账号登录与认证'
+    },
+    { 
+        id: 'live', 
+        name: '直播设置', 
+        icon: '📡',
+        description: '直播配置与管理'
+    },
+    { 
+        id: 'stream', 
+        name: '推流信息', 
+        icon: '📊',
+        description: '推流码获取与导出'
+    }
 ];
 const currentTab = ref('account');
 
@@ -385,6 +511,13 @@ const helpContent = `
 const showTutorial = ref(false);
 const tutorialStep = ref(1);
 const hasShownTutorial = ref(localStorage.getItem('douyin_tutorial_shown') === 'true');
+
+// 调试教程状态
+console.log('教程状态:', {
+    hasShownTutorial: hasShownTutorial.value,
+    showTutorial: showTutorial.value,
+    tutorialStep: tutorialStep.value
+});
 
 // 快捷操作面板
 const showQuickActions = ref(false);
@@ -767,23 +900,41 @@ function showHelp() {
 
 // 新手引导相关函数
 function startTutorial() {
+    console.log('开始教程');
     showTutorial.value = true;
     tutorialStep.value = 1;
+    addLog('教程已开始', 'info');
 }
 
 function nextTutorialStep() {
+    console.log('下一步教程，当前步骤:', tutorialStep.value);
     tutorialStep.value++;
+    if (tutorialStep.value > 4) {
+        finishTutorial();
+    }
 }
 
 function closeTutorial() {
+    console.log('关闭教程');
     showTutorial.value = false;
+    addLog('教程已关闭', 'info');
 }
 
 function finishTutorial() {
+    console.log('完成教程');
     showTutorial.value = false;
     localStorage.setItem('douyin_tutorial_shown', 'true');
     hasShownTutorial.value = true;
     addLog('新手引导已完成', 'success');
+}
+
+function resetTutorial() {
+    console.log('重置教程状态');
+    localStorage.removeItem('douyin_tutorial_shown');
+    hasShownTutorial.value = false;
+    showTutorial.value = false;
+    tutorialStep.value = 1;
+    addLog('教程状态已重置，下次访问将显示教程', 'info');
 }
 
 // 快捷操作
@@ -884,9 +1035,12 @@ onMounted(async () => {
     
     // 检查是否需要显示新手引导
     if (!hasShownTutorial.value) {
+        console.log('首次访问，准备显示教程');
         setTimeout(() => {
             startTutorial();
-        }, 1000);
+        }, 2000); // 增加延迟，确保页面完全加载
+    } else {
+        console.log('用户已完成教程');
     }
     
     // 显示快捷键提示
@@ -936,35 +1090,103 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/* 全局样式 */
+* {
+    box-sizing: border-box;
+}
+
 /* 页面容器 */
 .page-container {
     min-height: 100vh;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding: 20px;
     font-family: 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    position: relative;
+    overflow-x: hidden;
 }
 
-.container {
-    max-width: 1200px;
+/* 背景装饰 */
+.bg-decoration {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.floating-shape {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    animation: float 6s ease-in-out infinite;
+}
+
+.shape-1 {
+    width: 100px;
+    height: 100px;
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.shape-2 {
+    width: 150px;
+    height: 150px;
+    top: 60%;
+    right: 15%;
+    animation-delay: 2s;
+}
+
+.shape-3 {
+    width: 80px;
+    height: 80px;
+    bottom: 20%;
+    left: 20%;
+    animation-delay: 4s;
+}
+
+.shape-4 {
+    width: 120px;
+    height: 120px;
+    top: 30%;
+    right: 30%;
+    animation-delay: 1s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+/* 主容器 */
+.main-container {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
     margin: 0 auto;
     background: rgba(255, 255, 255, 0.95);
-    border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(20px);
     overflow: hidden;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
-/* 头部区域 */
-.header-section {
+/* 顶部导航栏 */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
     background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
     color: white;
-    padding: 40px 30px;
-    text-align: center;
     position: relative;
     overflow: hidden;
 }
 
-.header-section::before {
+.top-nav::before {
     content: '';
     position: absolute;
     top: 0;
@@ -975,19 +1197,18 @@ onUnmounted(() => {
     opacity: 0.3;
 }
 
-.main-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin: 0 0 10px 0;
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
     position: relative;
     z-index: 1;
 }
 
-.title-icon {
-    margin-right: 15px;
+.logo-container {
     display: flex;
     align-items: center;
-    animation: float 3s ease-in-out infinite;
+    animation: logoFloat 3s ease-in-out infinite;
 }
 
 .douyin-logo {
@@ -995,44 +1216,95 @@ onUnmounted(() => {
     transition: transform 0.3s ease;
 }
 
-.title-icon:hover .douyin-logo {
+.logo-container:hover .douyin-logo {
     transform: scale(1.1);
 }
 
-@keyframes float {
+@keyframes logoFloat {
     0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-8px); }
+    50% { transform: translateY(-5px); }
 }
 
-.subtitle {
-    font-size: 1.1rem;
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.brand-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.brand-subtitle {
+    font-size: 0.9rem;
     opacity: 0.9;
     margin: 0;
+    font-weight: 400;
+}
+
+.nav-actions {
+    display: flex;
+    gap: 12px;
     position: relative;
     z-index: 1;
 }
 
-/* 标签页容器 */
-.tabs-container {
-    background: rgba(255, 255, 255, 0.1);
+.nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.tabs {
+.nav-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.nav-btn-icon {
+    font-size: 1rem;
+}
+
+.nav-btn.small {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+}
+
+/* 标签页导航 */
+.tab-navigation {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(254, 44, 85, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tab-list {
     display: flex;
     justify-content: center;
     gap: 0;
-    max-width: 600px;
+    max-width: 800px;
     margin: 0 auto;
 }
 
-.tab-button {
+.tab-item {
     flex: 1;
-    padding: 20px 30px;
+    padding: 20px 15px;
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.8);
+    color: #333;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
@@ -1041,177 +1313,390 @@ onUnmounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    min-height: 80px;
 }
 
-.tab-button::before {
+.tab-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+}
+
+.tab-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.tab-name {
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.2;
+}
+
+.tab-desc {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    line-height: 1.1;
+    font-weight: 400;
+}
+
+.tab-item::before {
     content: '';
     position: absolute;
     bottom: 0;
     left: 50%;
     width: 0;
     height: 3px;
-    background: white;
+    background: #fe2c55;
     transition: all 0.3s ease;
     transform: translateX(-50%);
 }
 
-.tab-button:hover {
-    color: white;
-    background: rgba(255, 255, 255, 0.1);
+.tab-item:hover {
+    color: #fe2c55;
+    background: rgba(254, 44, 85, 0.1);
 }
 
-.tab-button.active {
+.tab-item.active {
     color: white;
-    background: rgba(255, 255, 255, 0.2);
+    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
+    box-shadow: 0 2px 8px rgba(254, 44, 85, 0.3);
 }
 
-.tab-button.active::before {
+.tab-item.active::before {
     width: 80%;
+    background: white;
 }
 
 .tab-icon {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
+    transition: transform 0.2s ease;
 }
 
-/* 内容区域 */
-.tab-content {
+.tab-item:hover .tab-icon {
+    transform: scale(1.1);
+}
+
+/* 主内容区域 */
+.main-content {
     padding: 30px;
-    min-height: 500px;
+    min-height: 600px;
 }
 
-.section {
-    background: white;
-    border-radius: 15px;
-    padding: 25px;
-    margin-bottom: 25px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+.content-panel {
+    animation: fadeIn 0.3s ease;
 }
 
-.section:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-.section h2 {
-    font-size: 1.3rem;
-    margin: 0 0 20px 0;
-    color: #fe2c55;
-    font-weight: 600;
+.panel-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.panel-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 10px 0;
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
+    gap: 12px;
 }
 
-.section h2::before {
-    content: '';
-    width: 4px;
-    height: 20px;
-    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
-    border-radius: 2px;
+.title-icon {
+    font-size: 1.8rem;
 }
 
-/* Cookie和自动获取行 */
-.cookie-auto-row {
+.panel-subtitle {
+    font-size: 1.1rem;
+    color: #666;
+    margin: 0;
+    font-weight: 400;
+}
+
+/* 功能卡片网格 */
+.panel-grid {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    gap: 30px;
-    align-items: start;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
 }
 
-.cookie-block,
-.auto-block {
+.feature-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
     text-align: center;
 }
 
-.vertical-divider {
-    width: 2px;
-    background: linear-gradient(to bottom, transparent, #ddd, transparent);
-    height: 100px;
-    margin: 0 auto;
+.feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
-/* 表单样式 */
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #333;
-    font-size: 0.95rem;
-}
-
-.form-group input,
-.form-group select {
-    width: 100%;
-    padding: 12px 16px;
-    border: 2px solid #e1e8ed;
-    border-radius: 10px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    background: #f8f9fa;
-}
-
-.form-group input:focus,
-.form-group select:focus {
-    outline: none;
-    border-color: #fe2c55;
-    background: white;
-    box-shadow: 0 0 0 3px rgba(254, 44, 85, 0.1);
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 15px;
+.card-header {
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;
+    gap: 12px;
+    margin-bottom: 16px;
 }
 
-.form-row label {
-    margin: 0;
-    white-space: nowrap;
+.card-icon {
+    font-size: 2.5rem;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
+    border-radius: 50%;
+    color: white;
+    box-shadow: 0 4px 12px rgba(254, 44, 85, 0.3);
+}
+
+.card-header h3 {
+    font-size: 1.2rem;
     font-weight: 600;
     color: #333;
+    margin: 0;
 }
 
-.title-input,
-.comment-input,
-.stream-input,
-.model-select {
+.card-desc {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0 0 20px 0;
+    line-height: 1.5;
+}
+
+.card-btn {
     width: 100%;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.card-btn.primary {
+    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
+    color: white;
+}
+
+.card-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(254, 44, 85, 0.4);
+}
+
+.card-btn.success {
+    background: linear-gradient(135deg, #67c23a 0%, #85ce61 100%);
+    color: white;
+}
+
+.card-btn.success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(103, 194, 58, 0.4);
+}
+
+.card-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.loading-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 12px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #fe2c55;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 表单区域 */
+.form-section {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.section-header {
+    margin-bottom: 24px;
+}
+
+.section-header h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 8px 0;
+}
+
+.section-header p {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.field-label {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+.field-input {
     padding: 12px 16px;
     border: 2px solid #e1e8ed;
-    border-radius: 10px;
+    border-radius: 12px;
     font-size: 1rem;
     transition: all 0.3s ease;
     background: #f8f9fa;
 }
 
-.title-input:focus,
-.comment-input:focus,
-.stream-input:focus,
-.model-select:focus {
+.field-input:focus {
     outline: none;
     border-color: #fe2c55;
     background: white;
     box-shadow: 0 0 0 3px rgba(254, 44, 85, 0.1);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+/* 设置区域 */
+.setting-section {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    margin-bottom: 24px;
+}
+
+.input-group {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.modern-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid #e1e8ed;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.modern-input:focus {
+    outline: none;
+    border-color: #fe2c55;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(254, 44, 85, 0.1);
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.select-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.select-label {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+.modern-select {
+    padding: 12px 16px;
+    border: 2px solid #e1e8ed;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+    cursor: pointer;
+}
+
+.modern-select:focus {
+    outline: none;
+    border-color: #fe2c55;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(254, 44, 85, 0.1);
+}
+
+.action-group {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
 }
 
 /* 按钮样式 */
-.btn {
+.action-btn {
     padding: 12px 24px;
     border: none;
-    border-radius: 10px;
-    font-size: 14px;
+    border-radius: 12px;
+    font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1223,7 +1708,7 @@ onUnmounted(() => {
     white-space: nowrap;
 }
 
-.btn::before {
+.action-btn::before {
     content: '';
     position: absolute;
     top: 0;
@@ -1234,85 +1719,322 @@ onUnmounted(() => {
     transition: left 0.3s ease;
 }
 
-.btn:hover {
-    transform: translateY(-1px);
+.action-btn:hover {
+    transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.btn:hover::before {
+.action-btn:hover::before {
     left: 100%;
 }
 
-.btn:disabled {
+.action-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none !important;
 }
 
-.btn:disabled:hover {
-    transform: none !important;
-    box-shadow: none !important;
-}
-
-.btn.primary {
+.action-btn.primary {
     background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
     color: white;
 }
 
-.btn.primary:hover {
+.action-btn.primary:hover {
     background: linear-gradient(135deg, #e6254a 0%, #e55a8a 100%);
 }
 
-.btn.success {
+.action-btn.success {
     background: linear-gradient(135deg, #67c23a 0%, #85ce61 100%);
     color: white;
 }
 
-.btn.success:hover {
+.action-btn.success:hover {
     background: linear-gradient(135deg, #5daf34 0%, #73c25a 100%);
 }
 
-.btn.secondary {
+.action-btn.secondary {
     background: #f8f9fa;
     color: #666;
     border: 1px solid #ddd;
 }
 
-.btn.secondary:hover {
+.action-btn.secondary:hover {
     background: #e9ecef;
     color: #333;
 }
 
-.btn.danger {
+.action-btn.danger {
     background: linear-gradient(135deg, #f56c6c 0%, #f78989 100%);
     color: white;
 }
 
-.btn.danger:hover {
+.action-btn.danger:hover {
     background: linear-gradient(135deg, #e45656 0%, #e57575 100%);
 }
 
-.btn.pulse {
-    animation: pulse 3s infinite;
-    margin: 20px 0;
-    width: 100%;
-    font-size: 16px;
-    padding: 15px 30px;
-}
-
-@keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(254, 44, 85, 0.7); }
-    70% { box-shadow: 0 0 0 6px rgba(254, 44, 85, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(254, 44, 85, 0); }
+.action-btn.small {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    min-height: 36px;
 }
 
 .btn-icon {
-    font-size: 16px;
+    font-size: 1rem;
     transition: transform 0.2s ease;
 }
 
-.btn:hover .btn-icon {
+.action-btn:hover .btn-icon {
     transform: scale(1.05);
+}
+
+/* 直播操作 */
+.live-action {
+    text-align: center;
+    margin: 40px 0;
+}
+
+.live-btn {
+    padding: 20px 40px;
+    border: none;
+    border-radius: 16px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #67c23a 0%, #85ce61 100%);
+    color: white;
+    box-shadow: 0 8px 25px rgba(103, 194, 58, 0.3);
+    animation: pulse 2s infinite;
+}
+
+.live-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(103, 194, 58, 0.4);
+}
+
+.live-icon {
+    font-size: 1.5rem;
+}
+
+.live-text {
+    font-size: 1.2rem;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 8px 25px rgba(103, 194, 58, 0.3); }
+    50% { box-shadow: 0 8px 25px rgba(103, 194, 58, 0.5); }
+    100% { box-shadow: 0 8px 25px rgba(103, 194, 58, 0.3); }
+}
+
+/* 日志区域 */
+.log-section {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.log-section .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.log-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.log-container {
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 12px;
+    padding: 16px;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.log-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    border-left: 4px solid #fe2c55;
+    font-size: 0.9rem;
+}
+
+.log-time {
+    color: #999;
+    font-size: 0.8rem;
+    min-width: 80px;
+    flex-shrink: 0;
+}
+
+.log-icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+    width: 20px;
+    text-align: center;
+}
+
+.log-message {
+    color: #333;
+    flex: 1;
+    word-break: break-word;
+}
+
+.log-success {
+    border-left-color: #67c23a;
+    background: rgba(103, 194, 58, 0.05);
+}
+
+.log-error {
+    border-left-color: #f56c6c;
+    background: rgba(245, 108, 108, 0.05);
+}
+
+.log-warning {
+    border-left-color: #e6a23c;
+    background: rgba(230, 162, 60, 0.05);
+}
+
+.log-info {
+    border-left-color: #409eff;
+    background: rgba(64, 158, 255, 0.05);
+}
+
+.empty-log {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 40px 20px;
+    color: #999;
+    font-style: italic;
+}
+
+.empty-icon {
+    font-size: 2rem;
+    opacity: 0.5;
+}
+
+/* 推流信息区域 */
+.stream-info-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-bottom: 30px;
+}
+
+.info-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.info-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.info-card .card-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.copy-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    background: #f8f9fa;
+    color: #666;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.copy-btn:hover {
+    background: #e9ecef;
+    color: #333;
+}
+
+.info-value {
+    background: #f8f9fa;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    color: #333;
+    word-break: break-all;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+}
+
+.export-section,
+.control-section {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    margin-bottom: 24px;
+}
+
+.export-actions,
+.control-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* 状态栏 */
+.status-bar {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    padding: 16px 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    margin: 20px 30px 30px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.status-icon {
+    font-size: 1.2rem;
+    color: #fe2c55;
+    flex-shrink: 0;
+}
+
+.status-text {
+    color: #333;
+    font-weight: 500;
+    word-break: break-word;
 }
 
 /* 分隔线 */
@@ -1492,34 +2214,38 @@ onUnmounted(() => {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.85);
     z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.3s ease;
 }
 
 .tutorial-content {
     background: white;
-    border-radius: 20px;
+    border-radius: 24px;
     padding: 40px;
     max-width: 500px;
     text-align: center;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
     position: relative;
+    animation: slideIn 0.3s ease;
 }
 
 .tutorial-step h3 {
     color: #fe2c55;
     margin-bottom: 15px;
     font-size: 1.5rem;
+    font-weight: 700;
 }
 
 .tutorial-step p {
     color: #666;
     margin-bottom: 25px;
     line-height: 1.6;
+    font-size: 1rem;
 }
 
 .tutorial-highlight {
@@ -1527,9 +2253,9 @@ onUnmounted(() => {
     width: 200px;
     height: 100px;
     border: 3px solid #fe2c55;
-    border-radius: 10px;
+    border-radius: 12px;
     background: rgba(254, 44, 85, 0.1);
-    animation: pulse 2s infinite;
+    animation: tutorialPulse 2s infinite;
 }
 
 .highlight-arrow {
@@ -1542,6 +2268,21 @@ onUnmounted(() => {
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
     border-bottom: 20px solid #fe2c55;
+}
+
+@keyframes tutorialPulse {
+    0% { 
+        box-shadow: 0 0 0 0 rgba(254, 44, 85, 0.7);
+        transform: scale(1);
+    }
+    50% { 
+        box-shadow: 0 0 0 10px rgba(254, 44, 85, 0);
+        transform: scale(1.05);
+    }
+    100% { 
+        box-shadow: 0 0 0 0 rgba(254, 44, 85, 0);
+        transform: scale(1);
+    }
 }
 
 /* 快捷操作面板 */
@@ -1740,51 +2481,199 @@ onUnmounted(() => {
     }
 }
 
+/* 智能提示 */
+.smart-tip {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
+    color: white;
+    padding: 16px 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(254, 44, 85, 0.3);
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 350px;
+    animation: slideInRight 0.3s ease;
+}
+
+.tip-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.tip-text {
+    flex: 1;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.tip-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s ease;
+}
+
+.tip-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* 快捷操作面板 */
+.quick-actions {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    animation: slideIn 0.3s ease;
+    min-width: 280px;
+}
+
+.quick-action-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    margin-bottom: 8px;
+}
+
+.quick-action-item:hover {
+    background: #f8f9fa;
+    transform: translateX(5px);
+}
+
+.action-icon {
+    font-size: 1.2rem;
+}
+
+/* 动画 */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 /* 响应式设计 */
+@media (max-width: 1024px) {
+    .main-container {
+        margin: 10px;
+        border-radius: 20px;
+    }
+    
+    .panel-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stream-info-section {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (max-width: 768px) {
-    .page-container {
-        padding: 10px;
+    .top-nav {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
     }
     
-    .main-title {
-        font-size: 2rem;
+    .nav-brand {
+        flex-direction: column;
+        text-align: center;
     }
     
-    .tab-content {
+    .brand-title {
+        font-size: 1.5rem;
+    }
+    
+    .nav-actions {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .tab-list {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .tab-item {
+        min-height: 70px;
+        padding: 15px 10px;
+    }
+    
+    .tab-name {
+        font-size: 0.9rem;
+    }
+    
+    .tab-desc {
+        font-size: 0.7rem;
+    }
+    
+    .main-content {
         padding: 20px;
     }
     
-    .cookie-auto-row {
+    .panel-title {
+        font-size: 1.6rem;
+    }
+    
+    .input-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .category-grid {
         grid-template-columns: 1fr;
-        gap: 20px;
     }
     
-    .vertical-divider {
-        display: none;
-    }
-    
-    .form-row {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
-    
-    .export-buttons,
-    .control-buttons {
+    .action-group {
         flex-direction: column;
     }
     
-    .btn {
-        width: 100%;
+    .export-actions,
+    .control-actions {
+        flex-direction: column;
     }
     
     .status-bar {
         flex-direction: column;
         gap: 15px;
         align-items: stretch;
-    }
-    
-    .status-actions {
-        justify-content: center;
+        margin: 15px 20px 20px 20px;
     }
     
     .smart-tip {
@@ -1793,46 +2682,63 @@ onUnmounted(() => {
         max-width: none;
     }
     
-    .tutorial-content {
-        margin: 20px;
-        padding: 30px 20px;
-    }
-    
-    .qr-steps {
-        grid-template-columns: 1fr;
+    .quick-actions {
+        width: 90%;
+        max-width: 320px;
     }
 }
 
 @media (max-width: 480px) {
-    .main-title {
-        font-size: 1.8rem;
+    .brand-title {
+        font-size: 1.3rem;
     }
     
-    .title-icon {
-        margin-right: 10px;
+    .brand-subtitle {
+        font-size: 0.8rem;
     }
     
     .douyin-logo {
-        width: 40px;
-        height: 39px;
+        width: 35px;
+        height: 34px;
     }
     
-    .subtitle {
-        font-size: 1rem;
+    .panel-title {
+        font-size: 1.4rem;
     }
     
-    .tab-button {
-        padding: 15px 20px;
-        font-size: 0.9rem;
+    .title-icon {
+        font-size: 1.5rem;
     }
     
-    .section {
+    .feature-card {
         padding: 20px;
     }
     
-    .quick-actions {
-        width: 90%;
-        max-width: 300px;
+    .card-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 2rem;
+    }
+    
+    .setting-section,
+    .form-section,
+    .log-section,
+    .export-section,
+    .control-section {
+        padding: 20px;
+    }
+    
+    .live-btn {
+        padding: 16px 32px;
+        font-size: 1.1rem;
+    }
+    
+    .live-icon {
+        font-size: 1.3rem;
+    }
+    
+    .live-text {
+        font-size: 1.1rem;
     }
 }
 </style>

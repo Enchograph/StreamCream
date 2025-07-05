@@ -44,6 +44,36 @@ const routes = [
         path: '/helpPage',
         name: 'helpPage',
         component: helpPage
+    },
+    {
+        path: '/bilibili',
+        name: 'BilibiliStream',
+        component: () => import('../views/streamPlatforms/BilibiliStream.vue')
+    },
+    {
+        path: '/douyin',
+        name: 'DouyinStream',
+        component: () => import('../views/streamPlatforms/DouyinStream.vue')
+    },
+    {
+        path: '/xiaohongshu',
+        name: 'XiaohongshuStream',
+        component: () => import('../views/streamPlatforms/XiaohongshuStream.vue')
+    },
+    {
+        path: '/kuaishou',
+        name: 'KuaishouStream',
+        component: () => import('../views/streamPlatforms/KuaishouStream.vue')
+    },
+    {
+        path: '/youtube',
+        name: 'YoutubeStream',
+        component: () => import('../views/streamPlatforms/YoutubeStream.vue')
+    },
+    {
+        path: '/twitch',
+        name: 'TwitchStream',
+        component: () => import('../views/streamPlatforms/TwitchStream.vue')
     }
 ]
 
@@ -54,10 +84,10 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const authStore = useAuthStore()
-    
+
     // 检查是否需要认证
     const requiresAuth = protectedPaths.includes(to.path)
-    
+
     console.log('路由保护检查:', {
         to: to.path,
         requiresAuth,
@@ -65,7 +95,7 @@ router.beforeEach((to, from, next) => {
         token: authStore.token,
         isLoggedIn: authStore.isLoggedIn
     })
-    
+
     if (requiresAuth && !authStore.isAuthenticated) {
         ElMessage.warning('请先登录!!!')
         next('/loginPage')

@@ -430,12 +430,12 @@ export default defineComponent({
 
                 // 组合视频和音频流
                 this.mediaStream = new MediaStream();
-                
+
                 // 添加视频轨道
                 screenStream.getVideoTracks().forEach(track => {
                     this.mediaStream.addTrack(track);
                 });
-                
+
                 // 添加音频轨道
                 audioStream.getAudioTracks().forEach(track => {
                     this.mediaStream.addTrack(track);
@@ -448,7 +448,7 @@ export default defineComponent({
                     // 发送推流信息 - 添加推流地址和推流码
                     const rtmpUrl = localStorage.getItem('rtmp_url') || '';
                     const streamKey = localStorage.getItem('stream_key') || '';
-                    
+
                     this.wsConnection.send(JSON.stringify({
                         action: 'start_stream',
                         topic: this.topic,
@@ -635,7 +635,7 @@ export default defineComponent({
         },
 
         // 结束直播
-        async endBroadcast() {
+        async stopLive() {
             // 添加确认对话框
             const confirmEnd = await ElMessageBox.confirm(
                 '确定要结束直播吗？',
@@ -689,6 +689,9 @@ export default defineComponent({
             this.clearLive2DStorage();
             
             this.$router.push('/mainPage');
+
+            // 调用streamConfig.vue中的stopLive函数
+            window.parent.postMessage({ type: 'stopLive' }, '*');
 
             console.log('直播已结束');
         },
@@ -1186,6 +1189,35 @@ class SpeechPlayer {
     }
 }
 
+/* 标题响应式调整 */
+@media (max-width: 768px) {
+    h3 {
+        font-size: 1.8rem;
+        margin: 10px 20px;
+    }
+    
+    h3 span::before,
+    h3 span::after {
+        width: 2rem;
+        margin-right: 1rem;
+        margin-left: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h3 {
+        font-size: 1.5rem;
+        margin: 10px 10px;
+    }
+    
+    h3 span::before,
+    h3 span::after {
+        width: 1.5rem;
+        margin-right: 0.5rem;
+        margin-left: 0.5rem;
+    }
+}
+
 h3 {
     display: flex;
     align-items: center;
@@ -1198,13 +1230,17 @@ h3 {
     margin: 10px 50px;
     /* 标题与上下内容的间距 */
     position: relative;
+    white-space: nowrap;
+    flex-wrap: nowrap;
 }
 
 
 /* 文字包裹元素，确保伪元素正确显示 */
 h3 span {
-    display: inline-block;
-    /* 关键修复：确保 span 支持伪元素 */
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    /* 关键修复：确保 span 支持伪元素且不换行 */
     margin-bottom: 20px;
 }
 
@@ -1220,6 +1256,7 @@ h3 span::before {
     background-color: #c4a898;
     margin-right: 1.5rem;
     /* 横线与文字的间距 */
+    flex-shrink: 0;
 }
 
 /* 文字右侧横线 */
@@ -1234,6 +1271,7 @@ h3 span::after {
     background-color: #c4a898;
     margin-left: 1.5rem;
     /* 横线与文字的间距 */
+    flex-shrink: 0;
 }
 
 /* 第三列样式 */

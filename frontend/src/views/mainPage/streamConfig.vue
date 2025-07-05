@@ -3,12 +3,8 @@
     <p>选择直播平台并输入推流码</p>
     <div class="platform-select">
         <el-select v-model="selectedPlatform" class="platform-selector" placeholder="选择直播平台">
-            <el-option
-                v-for="platform in platforms"
-                :key="platform.value"
-                :label="platform.label"
-                :value="platform.value"
-            >
+            <el-option v-for="platform in platforms" :key="platform.value" :label="platform.label"
+                :value="platform.value">
                 <span class="platform-option">
                     <span class="platform-icon" :class="platform.value.toLowerCase()"></span>
                     {{ platform.label }}
@@ -30,42 +26,47 @@
     <button class="btn get-streamkey-btn" @click="getStreamKey">
         <span class="btn-icon">🔑</span>{{ platformToolNames[selectedPlatform] || '获取推流码工具' }}
     </button>
+    <button class="btn stop-stream-btn" @click="stopLive" :disabled="!isLiveActive">
+        <span class="btn-icon">⏹️</span>停止直播
+    </button>
 </template>
 
 <script setup>
 import { ref, watch, onMounted } from 'vue';
 import api from '/src/api/index.js'
+import { useRouter } from 'vue-router';
 import { ElMessage, ElSelect, ElOption } from 'element-plus'
 
 const selectedPlatform = ref('抖音');
 const streamUrl = ref('');
 const streamKey = ref('');
+const isLiveActive = ref(false);
 const wsBaseUrl = import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8888';
 
 // 平台列表数据
 const platforms = [
-    { 
-        value: '抖音', 
+    {
+        value: '抖音',
         label: '抖音'
     },
-    { 
-        value: 'B站', 
+    {
+        value: 'B站',
         label: 'B站'
     },
-    { 
-        value: '小红书', 
+    {
+        value: '小红书',
         label: '小红书'
     },
-    { 
-        value: '快手', 
+    {
+        value: '快手',
         label: '快手'
     },
-    { 
-        value: 'YouTube', 
+    {
+        value: 'YouTube',
         label: 'YouTube'
     },
-    { 
-        value: 'Twitch', 
+    {
+        value: 'Twitch',
         label: 'Twitch'
     }
 ];
@@ -134,22 +135,22 @@ watch(selectedPlatform, (platform) => {
     streamUrl.value = platformUrls[platform] || '';
 });
 
+const router = useRouter();
+
 function getStreamKey() {
-    // 根据平台调用不同的exe工具
-    const toolPath = {
-        'B站': 'tools/bilibili/bilibili_streamkey.exe',
-        '抖音': 'tools/douyin/douyin_streamkey.exe',
-        '小红书': 'tools/xiaohongshu/xiaohongshu_streamkey.exe',
-        '快手': 'tools/kuaishou/kuaishou_streamkey.exe',
-        'YouTube': 'tools/youtube/youtube_streamkey.exe',
-        'Twitch': 'tools/twitch/twitch_streamkey.exe'
+    const platformRoutes = {
+        'B站': '/bilibili',
+        '抖音': '/douyin',
+        '小红书': '/xiaohongshu',
+        '快手': '/kuaishou',
+        'YouTube': '/youtube',
+        'Twitch': '/twitch'
     }[selectedPlatform.value];
 
-    if (toolPath) {
-        // 这里需要实现调用exe的逻辑
-        console.log(`调用工具: ${toolPath}`);
+    if (platformRoutes) {
+        router.push(platformRoutes);
     } else {
-        console.log('未找到对应平台的工具');
+        console.log('未找到对应平台的路由');
     }
 }
 
@@ -183,6 +184,8 @@ async function testStream() {
         };
         recorder.start(100);
 
+        isLiveActive.value = true;
+
         // 不再自动断开，需用户手动关闭页面或刷新才会停止
     };
 
@@ -190,6 +193,26 @@ async function testStream() {
         ElMessage.error('WebSocket 连接失败: ' + e.message)
     };
 }
+
+function stopLive() {
+    isLiveActive.value = false;
+    // 这里可以添加更多停止直播的逻辑
+}
+
+// 监听来自BroadcastInterface.vue和BilibiliStream.vue的消息
+onMounted(() => {
+    window.addEventListener('message', (event) => {
+        console.log('Received message:', event.data);
+        if (event.data.type === 'stopLive') {
+            stopLive();
+        } else if (event.data.type === 'updateStreamInfo') {
+            console.log('Updating stream info:', event.data.server, event.data.code);
+            streamUrl.value = event.data.server;
+            streamKey.value = event.data.code;
+            saveStreamPreferences();
+        }
+    });
+});
 </script>
 
 <style scoped>
@@ -280,6 +303,33 @@ async function testStream() {
 :deep(.el-select .el-input__wrapper:hover) {
     border-color: #6366f1;
     box-shadow: 0 2px 12px 0 rgba(124, 58, 237, 0.10);
+    transform: translateY(-1px) scale(1.03);
+}
+
+.platform-select {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.platform-item {
+    border: 2px solid #e7eaee;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    width: 80px;
+}
+
+.platform-item:hover,
+.platform-item.active {
+    border-color: #3498db;
+    background-color: rgba(52, 152, 219, 0.05);
+}
+
+.platform-item.active {
+    font-weight: bold;
 }
 
 .file-upload {

@@ -13,12 +13,21 @@
 
                     <div class="file-upload">
                         <label>上传声音模型文件:</label>
-                        <input type="file" id="voice-model-file" accept=".mdl, .bin">
+                        <input type="file" id="voice-model-file" accept=".ckpt, .pth" multiple @change="handleVoiceModelUpload">
+                        <small style="color: #666; display: block; margin-top: 5px;">
+                            支持格式：GPT模型(.ckpt) 和 SoVITS模型(.pth)
+                        </small>
+                        <div v-if="uploadedVoiceModels.length > 0" style="margin-top: 10px;">
+                            <small style="color: #409eff; font-weight: bold;">已选择的文件:</small>
+                            <div v-for="(model, index) in uploadedVoiceModels" :key="index" style="margin: 5px 0; padding: 5px; background: #f5f7fa; border-radius: 4px; font-size: 12px;">
+                                📁 {{ model.name }} ({{ model.type }})
+                            </div>
+                        </div>
                     </div>
 
-                    <button class="btn primary" id="apply-voice">
+                    <button class="btn primary" @click="applyVoiceModel" :disabled="!uploadedVoiceModels.length">
                         <span class="btn-icon">🎵</span>
-                        应用声音
+                        应用声音模型
                     </button>
                 </div>
 
@@ -43,7 +52,7 @@
                         <span class="btn-icon">⚡</span>
                         开始训练
                     </button>
-                    <a href="#" class="link">高级语音模型训练设置</a>
+                    <router-link to="/trainPage" class="link">高级语音模型训练设置</router-link>
 
                     <div id="training-status" style="margin-top: 15px;">
                         训练状态: <span class="status-badge not-ready">未开始</span>
@@ -101,12 +110,14 @@
 
                     <div style="display: flex; justify-content: space-between;">
                         <div>
-                            状态: <span class="status-badge ready">预览就绪</span>
+                            状态: <span class="status-badge" :class="isRefreshing ? 'loading' : 'ready'">
+                                {{ isRefreshing ? '刷新中...' : '预览就绪' }}
+                            </span>
                         </div>
                         <div class="btn-group">
-                            <button class="btn secondary" @click="refreshPreview">
-                                <span class="btn-icon">🔄</span>
-                                刷新预览
+                            <button class="btn secondary" @click="refreshPreview" :disabled="isRefreshing">
+                                <span class="btn-icon">{{ isRefreshing ? '⏳' : '🔄' }}</span>
+                                {{ isRefreshing ? '刷新中...' : '刷新预览' }}
                             </button>
                             <button class="btn success pulse" id="test-stream" @click="goToNextPage">
                                 <span class="btn-icon">📺</span>
@@ -197,12 +208,18 @@ export default {
         // 自定义模型相关
         const customModelPath = ref('');
 
+        // 声音模型上传相关
+        const uploadedVoiceModels = ref([]);
+
         // AI讲稿生成相关数据
         const topic = ref('');
         const keywords = ref('');
         const speechStyle = ref('casual');
         const generatedSpeech = ref('');
         const isGenerating = ref(false);
+        
+        // 刷新预览状态
+        const isRefreshing = ref(false);
 
         // API配置
         let aiSettings = {};
@@ -247,27 +264,88 @@ export default {
             ElMessage.info('自定义模型功能开发中...')
         }
 
+        // 声音模型上传处理
+        const handleVoiceModelUpload = (event) => {
+            const files = Array.from(event.target.files);
+            uploadedVoiceModels.value = files.map(file => ({
+                name: file.name,
+                type: file.name.endsWith('.ckpt') ? 'GPT模型' : 'SoVITS模型',
+                file: file
+            }));
+            console.log('上传的声音模型文件:', uploadedVoiceModels.value);
+        };
+
+        const applyVoiceModel = async () => {
+            if (uploadedVoiceModels.value.length === 0) {
+                ElMessage.warning('请先选择模型文件');
+                return;
+            }
+
+            try {
+                // 这里应该实现文件上传到后端的逻辑
+                // 目前先显示提示信息
+                ElMessage.info('声音模型上传功能开发中...');
+                console.log('准备应用的声音模型:', uploadedVoiceModels.value);
+            } catch (error) {
+                console.error('应用声音模型失败:', error);
+                ElMessage.error('应用声音模型失败');
+            }
+        };
+
         const getCurrentModelName = () => {
             const currentModel = live2DStore.availableModels.find(m => m.id === live2DStore.currentModel);
             return currentModel ? currentModel.name : '未知模型';
         };
 
-        // 刷新预览功能
+        // 刷新预览功能 - 添加防抖机制
+        let refreshTimeout = null;
+        
         const refreshPreview = () => {
-            // 直接操作iframe元素进行刷新
+            // 防止重复点击
+            if (isRefreshing.value) {
+                console.log('刷新操作正在进行中，请稍候...');
+                return;
+            }
+            
+            // 清除之前的定时器
+            if (refreshTimeout) {
+                clearTimeout(refreshTimeout);
+            }
+            
+            isRefreshing.value = true;
+            
+            // 使用更简单的方式刷新iframe - 通过重新加载src
             const iframe = document.querySelector('.iframe-container iframe');
             if (iframe) {
-                // 保存当前src
-                const currentSrc = iframe.src;
-                // 清空src
-                iframe.src = '';
-                // 延迟后重新设置src，强制重新加载
-                setTimeout(() => {
-                    iframe.src = currentSrc;
-                }, 100);
-                console.log('Live2D预览已刷新');
+                try {
+                    // 保存当前src
+                    const currentSrc = iframe.src;
+                    
+                    // 清空src并立即重新设置，强制重新加载
+                    iframe.src = '';
+                    
+                    refreshTimeout = setTimeout(() => {
+                        iframe.src = currentSrc;
+                        console.log('Live2D预览已刷新');
+                        
+                        // 延迟重置状态，给用户更多时间看到加载过程
+                        setTimeout(() => {
+                            isRefreshing.value = false;
+                        }, 800);
+                    }, 100);
+                } catch (error) {
+                    console.error('刷新预览失败:', error);
+            
+                    setTimeout(() => {
+                        isRefreshing.value = false;
+                    }, 500);
+                }
             } else {
                 console.warn('未找到Live2D预览iframe');
+                // 未找到iframe时也延迟重置状态
+                setTimeout(() => {
+                    isRefreshing.value = false;
+                }, 500);
             }
         };
 
@@ -369,6 +447,11 @@ export default {
             getCurrentModelName,
             refreshPreview,
 
+            // 声音模型上传相关
+            uploadedVoiceModels,
+            handleVoiceModelUpload,
+            applyVoiceModel,
+
             // AI讲稿生成相关
             topic,
             keywords,
@@ -376,7 +459,10 @@ export default {
             generatedSpeech,
             isGenerating,
             generateSpeech,
-            testSpeech
+            testSpeech,
+            
+            // 刷新预览相关
+            isRefreshing
         };
     }
 }
@@ -506,6 +592,11 @@ p {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     min-width: 120px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
 }
 
 .btn::before {
@@ -609,13 +700,15 @@ p {
     margin: 0;
     flex: 1;
     min-width: auto;
+    height: 48px;
 }
 
 /* 按钮图标样式 */
 .btn-icon {
     margin-right: 8px;
     font-size: 16px;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     transition: transform 0.3s ease;
 }
 
@@ -1020,5 +1113,26 @@ input[type="file"]::file-selector-button:hover {
 .status-badge.not-ready:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+}
+
+.status-badge.loading {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+    animation: loadingPulse 1.5s ease-in-out infinite;
+}
+
+.status-badge.loading:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+}
+
+@keyframes loadingPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
 }
 </style>

@@ -71,15 +71,15 @@ const routes = [
         component: () => import('../views/streamPlatforms/YoutubeStream.vue')
     },
     {
-    path: '/twitch',
-    name: 'TwitchStream',
-    component: () => import('../views/streamPlatforms/TwitchStream.vue')
-},
-{
-    path: '/trainPage',
-    name: 'trainPage',
-    component: () => import('../views/trainPage/trainPage.vue')
-}
+        path: '/twitch',
+        name: 'TwitchStream',
+        component: () => import('../views/streamPlatforms/TwitchStream.vue')
+    },
+    {
+        path: '/trainPage',
+        name: 'trainPage',
+        component: () => import('../views/trainPage/trainPage.vue')
+    }
 ]
 
 const router = createRouter({

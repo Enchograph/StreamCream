@@ -37,7 +37,7 @@ import api from '/src/api/index.js'
 import { useRouter } from 'vue-router';
 import { ElMessage, ElSelect, ElOption } from 'element-plus'
 
-const selectedPlatform = ref('抖音');
+const selectedPlatform = ref('B站');
 const streamUrl = ref('');
 const streamKey = ref('');
 const isLiveActive = ref(false);
@@ -46,13 +46,14 @@ const wsBaseUrl = import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8888';
 // 平台列表数据
 const platforms = [
     {
-        value: '抖音',
-        label: '抖音'
-    },
-    {
         value: 'B站',
         label: 'B站'
     },
+    {
+        value: '抖音',
+        label: '抖音'
+    },
+
     {
         value: '小红书',
         label: '小红书'

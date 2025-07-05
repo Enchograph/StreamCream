@@ -38,20 +38,32 @@
                             </label>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group path-row">
                         <label for="sovitsGPath">预训练的SoVITS-G模型路径</label>
-                        <input type="text" id="sovitsGPath" v-model="sovitsGPath"
-                            placeholder="GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/c2G2333k_mth" class="glass-input" />
+                        <div class="input-btn-group">
+                            <input type="text" id="sovitsGPath" v-model="sovitsGPath"
+                                placeholder="GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/c2G2333k_mth" class="glass-input" />
+                            <input ref="sovitsGPathFile" type="file" style="display:none" accept=".pth,.ckpt,.pt" @change="onFileChange($event, 'sovitsGPath')" />
+                            <button class="path-btn" @click="chooseFile('sovitsGPathFile')">路径填入</button>
+                        </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group path-row">
                         <label for="sovitsDPath">预训练的SoVITS-D模型路径</label>
-                        <input type="text" id="sovitsDPath" v-model="sovitsDPath"
-                            placeholder="GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/c2D2333k_mth" class="glass-input" />
+                        <div class="input-btn-group">
+                            <input type="text" id="sovitsDPath" v-model="sovitsDPath"
+                                placeholder="GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/c2D2333k_mth" class="glass-input" />
+                            <input ref="sovitsDPathFile" type="file" style="display:none" accept=".pth,.ckpt,.pt" @change="onFileChange($event, 'sovitsDPath')" />
+                            <button class="path-btn" @click="chooseFile('sovitsDPathFile')">路径填入</button>
+                        </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group path-row">
                         <label for="gptPath">预训练的GPT模型路径</label>
-                        <input type="text" id="gptPath" v-model="gptPath"
-                            placeholder="GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s1bert25hz-5kh-longer-epoch=12-" class="glass-input" />
+                        <div class="input-btn-group">
+                            <input type="text" id="gptPath" v-model="gptPath"
+                                placeholder="GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s1bert25hz-5kh-longer-epoch=12-" class="glass-input" />
+                            <input ref="gptPathFile" type="file" style="display:none" accept=".pth,.ckpt,.pt" @change="onFileChange($event, 'gptPath')" />
+                            <button class="path-btn" @click="chooseFile('gptPathFile')">路径填入</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -83,15 +95,23 @@
                     </div>
                     
                     <div class="form-section">
-                        <div class="form-group">
+                        <div class="form-group path-row">
                             <label for="textLabelFile">*文本标注文件</label>
-                            <input type="text" id="textLabelFile" v-model="textLabelFile"
-                                placeholder="D:/RVC1006-GPT-SoVITS/raw/xxxx.list" class="glass-input" />
+                            <div class="input-btn-group">
+                                <input type="text" id="textLabelFile" v-model="textLabelFile"
+                                    placeholder="D:/RVC1006-GPT-SoVITS/raw/xxxx.list" class="glass-input" />
+                                <input ref="textLabelFileInput" type="file" style="display:none" accept=".list" @change="onFileChange($event, 'textLabelFile')" />
+                                <button class="path-btn" @click="chooseFile('textLabelFileInput')">路径填入</button>
+                            </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group path-row">
                             <label for="audioDir">*训练集音频文件目录</label>
-                            <input type="text" id="audioDir" v-model="audioDir"
-                                placeholder="填好训练后音频所在目录，读取的音频文件完整路径=该目录+拼接list文件里音频对应的文件名（不是全路径）" class="glass-input" />
+                            <div class="input-btn-group">
+                                <input type="text" id="audioDir" v-model="audioDir"
+                                    placeholder="填好训练后音频所在目录，读取的音频文件完整路径=该目录+拼接list文件里音频对应的文件名（不是全路径）" class="glass-input" />
+                                <input ref="audioDirInput" type="file" style="display:none" webkitdirectory directory @change="onFileChange($event, 'audioDir')" />
+                                <button class="path-btn" @click="chooseFile('audioDirInput')">路径填入</button>
+                            </div>
                         </div>
                     </div>
 
@@ -106,10 +126,14 @@
                                 <label for="textGpuIds">GPU卡号,以，分割，每个卡号对应一个进程</label>
                                 <input type="text" id="textGpuIds" v-model="textGpuIds" placeholder="0-0" class="glass-input" />
                             </div>
-                            <div class="form-group">
+                            <div class="form-group path-row">
                                 <label for="bertPath">预训练的中文BERT模型路径</label>
-                                <input type="text" id="bertPath" v-model="bertPath"
-                                    placeholder="GPT_SoVITS/pretrained_models/chinese-roberta-wwm-ext-large" class="glass-input" />
+                                <div class="input-btn-group">
+                                    <input type="text" id="bertPath" v-model="bertPath"
+                                        placeholder="GPT_SoVITS/pretrained_models/chinese-roberta-wwm-ext-large" class="glass-input" />
+                                    <input ref="bertPathFile" type="file" style="display:none" accept=".bin,.pt,.pth" @change="onFileChange($event, 'bertPath')" />
+                                    <button class="path-btn" @click="chooseFile('bertPathFile')">路径填入</button>
+                                </div>
                             </div>
                             <button class="action-btn" @click="handleTextExtract">
                                 <span class="btn-icon">🚀</span>
@@ -133,10 +157,14 @@
                                 <label for="sslGpuIds">GPU卡号，以，分割，每个卡号对应一个进程</label>
                                 <input type="text" id="sslGpuIds" v-model="sslGpuIds" placeholder="0-0" class="glass-input" />
                             </div>
-                            <div class="form-group">
+                            <div class="form-group path-row">
                                 <label for="sslModelPath">预训练的SSL模型路径</label>
-                                <input type="text" id="sslModelPath" v-model="sslModelPath"
-                                    placeholder="GPT_SoVITS/pretrained_models/chinese-hubert-base" class="glass-input" />
+                                <div class="input-btn-group">
+                                    <input type="text" id="sslModelPath" v-model="sslModelPath"
+                                        placeholder="GPT_SoVITS/pretrained_models/chinese-hubert-base" class="glass-input" />
+                                    <input ref="sslModelPathFile" type="file" style="display:none" accept=".bin,.pt,.pth" @change="onFileChange($event, 'sslModelPath')" />
+                                    <button class="path-btn" @click="chooseFile('sslModelPathFile')">路径填入</button>
+                                </div>
                             </div>
                             <button class="action-btn" @click="handleSslExtract">
                                 <span class="btn-icon">🎯</span>
@@ -160,10 +188,14 @@
                                 <label for="tokenGpuIds">GPU卡号，以，分割，每个卡号对应一个进程</label>
                                 <input type="text" id="tokenGpuIds" v-model="tokenGpuIds" placeholder="0-0" class="glass-input" />
                             </div>
-                            <div class="form-group">
+                            <div class="form-group path-row">
                                 <label for="tokenModelPath">预训练的SoVITS-G模型路径</label>
-                                <input type="text" id="tokenModelPath" v-model="tokenModelPath"
-                                    placeholder="GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s2G2333k.pth" class="glass-input" />
+                                <div class="input-btn-group">
+                                    <input type="text" id="tokenModelPath" v-model="tokenModelPath"
+                                        placeholder="GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s2G2333k.pth" class="glass-input" />
+                                    <input ref="tokenModelPathFile" type="file" style="display:none" accept=".pth,.ckpt,.pt" @change="onFileChange($event, 'tokenModelPath')" />
+                                    <button class="path-btn" @click="chooseFile('tokenModelPathFile')">路径填入</button>
+                                </div>
                             </div>
                             <button class="action-btn" @click="handleTokenExtract">
                                 <span class="btn-icon">⚡</span>
@@ -372,6 +404,16 @@ const sovitsGPath = ref('GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/c2G
 const sovitsDPath = ref('GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/c2D2333k_mth')
 const gptPath = ref('GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s1bert25hz-5kh-longer-epoch=12-')
 
+// 路径选择相关ref
+const sovitsGPathFile = ref(null)
+const sovitsDPathFile = ref(null)
+const gptPathFile = ref(null)
+const textLabelFileInput = ref(null)
+const audioDirInput = ref(null)
+const bertPathFile = ref(null)
+const sslModelPathFile = ref(null)
+const tokenModelPathFile = ref(null)
+
 // 标签页状态
 const activeTab = ref('1A')
 
@@ -413,6 +455,36 @@ const sovitsModelList = ref('GPT_SoVITS/pretrained_models/gsv-v2final-p')
 const inferGpuId = ref(0)
 const enableParallel = ref(false)
 const inferProcessInfo = ref('')
+
+// 路径选择弹窗
+function chooseFile(refName) {
+  if (refName === 'sovitsGPathFile' && sovitsGPathFile.value) sovitsGPathFile.value.click();
+  else if (refName === 'sovitsDPathFile' && sovitsDPathFile.value) sovitsDPathFile.value.click();
+  else if (refName === 'gptPathFile' && gptPathFile.value) gptPathFile.value.click();
+  else if (refName === 'textLabelFileInput' && textLabelFileInput.value) textLabelFileInput.value.click();
+  else if (refName === 'audioDirInput' && audioDirInput.value) audioDirInput.value.click();
+  else if (refName === 'bertPathFile' && bertPathFile.value) bertPathFile.value.click();
+  else if (refName === 'sslModelPathFile' && sslModelPathFile.value) sslModelPathFile.value.click();
+  else if (refName === 'tokenModelPathFile' && tokenModelPathFile.value) tokenModelPathFile.value.click();
+}
+
+function onFileChange(e, modelKey) {
+  const file = e.target.files[0];
+  if (file) {
+    if (modelKey === 'sovitsGPath') sovitsGPath.value = file.name;
+    else if (modelKey === 'sovitsDPath') sovitsDPath.value = file.name;
+    else if (modelKey === 'gptPath') gptPath.value = file.name;
+    else if (modelKey === 'textLabelFile') textLabelFile.value = file.name;
+    else if (modelKey === 'audioDir') {
+      // 对于文件夹，获取文件夹路径
+      const path = file.webkitRelativePath.split('/')[0];
+      audioDir.value = path;
+    }
+    else if (modelKey === 'bertPath') bertPath.value = file.name;
+    else if (modelKey === 'sslModelPath') sslModelPath.value = file.name;
+    else if (modelKey === 'tokenModelPath') tokenModelPath.value = file.name;
+  }
+}
 
 // 方法定义
 const handleTextExtract = () => {
@@ -543,7 +615,7 @@ const handleTtsInfer = () => {
 /* 表单网格 */
 .form-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: 1fr;
     gap: 20px;
 }
 
@@ -646,6 +718,46 @@ const handleTtsInfer = () => {
 .checkbox-text {
     font-weight: 500;
     color: #2c3e50;
+}
+
+/* 路径按钮组 */
+.path-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.input-btn-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.path-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: 2px solid #5a6fd8;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    min-width: 80px;
+}
+
+.path-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    border-color: #4a5fc7;
+}
+
+.path-btn:active {
+    transform: translateY(0);
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
 }
 
 /* 标签页 */

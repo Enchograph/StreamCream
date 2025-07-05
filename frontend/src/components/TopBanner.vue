@@ -9,8 +9,8 @@
             </div>
             
         <nav class="nav-links">
-                <a href="#" class="nav-link" title="查看文档">
-                    <span class="nav-text">文档</span>
+                <a href="#" class="nav-link" @click.prevent="goToHelp" title="使用帮助">
+                    <span class="nav-text">帮助</span>
                 </a>
                 <a href="#" class="nav-link" @click.prevent="goToSettings" title="系统设置">
                     <span class="nav-text">设置</span>
@@ -119,6 +119,10 @@ const bannerStyle = computed(() => {
             }
     }
 })
+
+function goToHelp() {
+    router.push('/helpPage');
+}
 
 function goToSettings() {
     // 获取当前路径，用于返回

@@ -456,6 +456,9 @@ const handleLogin = async () => {
                 if (userResponse.success) {
                     auth.setUser(userResponse.user)
                 }
+                
+                // 确保认证状态正确设置
+                console.log('登录成功，认证状态:', auth.isAuthenticated)
 
                 // 获取用户偏好
                 try {

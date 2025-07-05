@@ -4,10 +4,11 @@ import loginPage from '../views/loginPage/loginPage.vue'
 import settingPage from '../views/settingPage/settingPage.vue'
 import streamingPage from '../views/streamingPage/streamingPage.vue'
 import Live2DViewer from '../views/Live2DModel.vue'
+import helpPage from '../views/helpPage/helpPage.vue'
 import { useAuthStore } from '../stores/auth'
 import { ElMessage } from 'element-plus'
 
-const protectedPaths = ['/mainPage', '/settingPage', '/streamingPage', '/live2d']
+const protectedPaths = ['/mainPage', '/settingPage', '/streamingPage', '/live2d', '/helpPage']
 
 const routes = [
     {
@@ -38,6 +39,11 @@ const routes = [
         path: '/live2d',
         name: 'Live2DViewer',
         component: Live2DViewer
+    },
+    {
+        path: '/helpPage',
+        name: 'helpPage',
+        component: helpPage
     }
 ]
 
@@ -49,7 +55,18 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     const authStore = useAuthStore()
     
-    if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    // 检查是否需要认证
+    const requiresAuth = protectedPaths.includes(to.path)
+    
+    console.log('路由保护检查:', {
+        to: to.path,
+        requiresAuth,
+        isAuthenticated: authStore.isAuthenticated,
+        token: authStore.token,
+        isLoggedIn: authStore.isLoggedIn
+    })
+    
+    if (requiresAuth && !authStore.isAuthenticated) {
         ElMessage.warning('请先登录!!!')
         next('/loginPage')
     } else {

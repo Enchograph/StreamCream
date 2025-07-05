@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import api from '../api'
 
 export const useAuthStore = defineStore('auth', () => {
@@ -40,11 +40,16 @@ export const useAuthStore = defineStore('auth', () => {
     
     try {
       const response = await api.verifyToken()
-      if (response.success) {
+      console.log('Token验证响应:', response) // 添加调试信息
+      if (response && response.success) {
         // 更新用户信息
-        setUser(response.user)
+        if (response.user) {
+          setUser(response.user)
+        }
+        isLoggedIn.value = true
         return true
       } else {
+        console.log('Token验证失败，清除认证状态')
         logout()
         return false
       }
@@ -55,10 +60,16 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
   
+  // 计算属性：检查是否已认证
+  const isAuthenticated = computed(() => {
+    return !!token.value && isLoggedIn.value
+  })
+
   return { 
     token, 
     user, 
     isLoggedIn, 
+    isAuthenticated,
     login, 
     logout, 
     setUser,

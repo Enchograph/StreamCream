@@ -13,12 +13,21 @@
 
                     <div class="file-upload">
                         <label>上传声音模型文件:</label>
-                        <input type="file" id="voice-model-file" accept=".mdl, .bin">
+                        <input type="file" id="voice-model-file" accept=".ckpt, .pth" multiple @change="handleVoiceModelUpload">
+                        <small style="color: #666; display: block; margin-top: 5px;">
+                            支持格式：GPT模型(.ckpt) 和 SoVITS模型(.pth)
+                        </small>
+                        <div v-if="uploadedVoiceModels.length > 0" style="margin-top: 10px;">
+                            <small style="color: #409eff; font-weight: bold;">已选择的文件:</small>
+                            <div v-for="(model, index) in uploadedVoiceModels" :key="index" style="margin: 5px 0; padding: 5px; background: #f5f7fa; border-radius: 4px; font-size: 12px;">
+                                📁 {{ model.name }} ({{ model.type }})
+                            </div>
+                        </div>
                     </div>
 
-                    <button class="btn primary" id="apply-voice">
+                    <button class="btn primary" @click="applyVoiceModel" :disabled="!uploadedVoiceModels.length">
                         <span class="btn-icon">🎵</span>
-                        应用声音
+                        应用声音模型
                     </button>
                 </div>
 
@@ -197,6 +206,9 @@ export default {
         // 自定义模型相关
         const customModelPath = ref('');
 
+        // 声音模型上传相关
+        const uploadedVoiceModels = ref([]);
+
         // AI讲稿生成相关数据
         const topic = ref('');
         const keywords = ref('');
@@ -246,6 +258,34 @@ export default {
         const applyCustomModel = () => {
             ElMessage.info('自定义模型功能开发中...')
         }
+
+        // 声音模型上传处理
+        const handleVoiceModelUpload = (event) => {
+            const files = Array.from(event.target.files);
+            uploadedVoiceModels.value = files.map(file => ({
+                name: file.name,
+                type: file.name.endsWith('.ckpt') ? 'GPT模型' : 'SoVITS模型',
+                file: file
+            }));
+            console.log('上传的声音模型文件:', uploadedVoiceModels.value);
+        };
+
+        const applyVoiceModel = async () => {
+            if (uploadedVoiceModels.value.length === 0) {
+                ElMessage.warning('请先选择模型文件');
+                return;
+            }
+
+            try {
+                // 这里应该实现文件上传到后端的逻辑
+                // 目前先显示提示信息
+                ElMessage.info('声音模型上传功能开发中...');
+                console.log('准备应用的声音模型:', uploadedVoiceModels.value);
+            } catch (error) {
+                console.error('应用声音模型失败:', error);
+                ElMessage.error('应用声音模型失败');
+            }
+        };
 
         const getCurrentModelName = () => {
             const currentModel = live2DStore.availableModels.find(m => m.id === live2DStore.currentModel);
@@ -368,6 +408,11 @@ export default {
             applyCustomModel,
             getCurrentModelName,
             refreshPreview,
+
+            // 声音模型上传相关
+            uploadedVoiceModels,
+            handleVoiceModelUpload,
+            applyVoiceModel,
 
             // AI讲稿生成相关
             topic,

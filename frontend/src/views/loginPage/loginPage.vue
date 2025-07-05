@@ -18,15 +18,15 @@
                  ]">
                 <div class="toggle-container">
                     <button class="toggle-btn" @click="toggleForm" :disabled="isLoading" v-if="!isForgotPassword">
-                        {{ isRegistering ? '登录' : '注册' }}
+                        {{ isRegistering ? $t('login.login') : $t('login.register') }}
                     </button>
                     <button class="toggle-btn" @click="backToLogin" :disabled="isLoading" v-if="isForgotPassword">
-                        登录
+                        {{ $t('login.login') }}
                     </button>
                 </div>
              <!-- 登录表单 -->
                 <div class="form-container login-container">
-                    <h1>登录</h1>
+                    <h1>{{ $t('login.login') }}</h1>
                     <div class="input-group">
                         <!-- <label for="loginUsername">用户名</label> -->
                         <input
@@ -36,7 +36,7 @@
                             @keyup.enter="!isLoading && handleLogin()"
                             :style="loginErrors.username ? errorInputStyle : {}"
                             required
-                            placeholder="请输入用户名"
+                            :placeholder="$t('login.inputUsername')"
                             :disabled="isLoading"
                         >
                     </div>
@@ -46,7 +46,7 @@
                         <el-input
                             v-model="loginForm.password"
                             type="password"
-                            placeholder="请输入密码"
+                            :placeholder="$t('login.inputPassword')"
                             @keyup.enter="!isLoading && handleLogin()"
                             :disabled="isLoading"
                             show-password
@@ -57,14 +57,14 @@
 
                     <button class="btn" @click="handleLogin" :disabled="isLoading">
                         <span v-if="isLoading" class="loading-spinner"></span>
-                        {{ isLoading ? '登录中...' : '登录' }}
+                        {{ isLoading ? $t('login.loggingIn') : $t('login.login') }}
                     </button>
 
                     <div class="forgot-password">
-                        <a href="#" @click.prevent="showForgotPasswordPanel">忘记密码?</a>
+                        <a href="#" @click.prevent="showForgotPasswordPanel">{{ $t('login.forgotPassword') }}</a>
                     </div>
                     <hr class="divider" />
-                    <div class="other-login-tip">其他方式登录</div>
+                    <div class="other-login-tip">{{ $t('login.otherLoginMethods') }}</div>
                     <div class="social-login">
                         <div class="social-icon facebook">
                             <i>f</i>
@@ -81,7 +81,7 @@
 
                 <!-- 注册表单 -->
                 <div class="form-container register-container">
-                    <h1>注册</h1>
+                    <h1>{{ $t('login.register') }}</h1>
                     <div class="input-group">
                         <!-- <label for="registerUsername">用户名</label> -->
                         <input
@@ -91,21 +91,19 @@
                             @keyup.enter="handleRegister"
                             :style="registerErrors.username ? errorInputStyle : {}"
                             required
-                            placeholder="请输入用户名"
+                            :placeholder="$t('login.inputUsername')"
                         >
                     </div>
                     <div class="error-message" v-if="registerErrors.username">{{ registerErrors.username }}</div>
 
                     <div class="input-group">
-                        <input
-                            type="email"
-                            id="registerEmail"
+                        <el-input
                             v-model="registerForm.email"
+                            type="email"
+                            :placeholder="$t('login.inputEmail')"
                             @keyup.enter="handleRegister"
-                            :style="registerErrors.email ? errorInputStyle : {}"
-                            required
-                            placeholder="请输入邮箱"
-                        >
+                            :class="{ 'error-style': registerErrors.email }"
+                        />
                     </div>
                     <div class="error-message" v-if="registerErrors.email">{{ registerErrors.email }}</div>
 
@@ -113,7 +111,7 @@
                         <el-input
                             v-model="registerForm.password"
                             type="password"
-                            placeholder="请输入密码"
+                                                         :placeholder="$t('login.inputPassword')"
                             @input="e => checkPasswordStrength(registerForm.password, passwordStrength)"
                             @keyup.enter="handleRegister"
                             show-password
@@ -143,7 +141,7 @@
                         <el-input
                             v-model="registerForm.confirmPassword"
                             type="password"
-                            placeholder="请确认密码"
+                                                         :placeholder="$t('login.confirmPassword')"
                             @keyup.enter="handleRegister"
                             show-password
                             :class="{ 'error-style': registerErrors.confirmPassword }"
@@ -162,7 +160,7 @@
                             @keyup.enter="handleVerifyEmail"
                             :style="registerErrors.verificationCode ? errorInputStyle : {}"
                             required
-                            placeholder="请输入邮箱验证码"
+                            :placeholder="$t('login.inputVerificationCode')"
                             maxlength="6"
                         >
                         <button 
@@ -171,20 +169,20 @@
                             @click="handleResendVerification"
                             :disabled="resendCooldown > 0"
                         >
-                            {{ resendCooldown > 0 ? `${resendCooldown}s` : '重新发送' }}
+                                                         {{ resendCooldown > 0 ? `${resendCooldown}s` : $t('login.resendCode') }}
                         </button>
                     </div>
                     <div class="error-message" v-if="registerErrors.verificationCode">
                         {{ registerErrors.verificationCode }}
                     </div>
 
-                    <button class="btn" @click="handleRegister" v-if="!showVerificationCode">注册</button>
-                    <button class="btn" @click="handleVerifyEmail" v-if="showVerificationCode">验证邮箱</button>
+                                         <button class="btn" @click="handleRegister" v-if="!showVerificationCode">{{ $t('login.register') }}</button>
+                     <button class="btn" @click="handleVerifyEmail" v-if="showVerificationCode">{{ $t('login.verifyEmail') }}</button>
                 </div>
 
                 <!-- 找回密码表单 -->
                 <div class="form-container forgot-password-container">
-                    <h1>找回密码</h1>
+                    <h1>{{ $t('login.forgotPassword') }}</h1>
                     
                     <!-- 第一步：输入用户名和邮箱 -->
                     <div v-if="forgotPasswordStep === 1">
@@ -195,7 +193,7 @@
                                 v-model="forgotPasswordForm.username"
                                 :style="forgotPasswordErrors.username ? errorInputStyle : {}"
                                 required
-                                placeholder="请输入用户名"
+                                :placeholder="$t('login.inputUsername')"
                                 :disabled="isLoading"
                             >
                         </div>
@@ -208,7 +206,7 @@
                                 v-model="forgotPasswordForm.email"
                                 :style="forgotPasswordErrors.email ? errorInputStyle : {}"
                                 required
-                                placeholder="请输入邮箱"
+                                :placeholder="$t('login.inputEmail')"
                                 :disabled="isLoading"
                             >
                         </div>
@@ -216,7 +214,7 @@
 
                         <button class="btn" @click="handleForgotPassword" :disabled="isLoading">
                             <span v-if="isLoading" class="loading-spinner"></span>
-                            {{ isLoading ? '发送中...' : '发送验证码' }}
+                                                         {{ isLoading ? $t('login.sending') : $t('login.sendVerificationCode') }}
                         </button>
                     </div>
 
@@ -229,7 +227,7 @@
                                 v-model="forgotPasswordForm.code"
                                 :style="forgotPasswordErrors.code ? errorInputStyle : {}"
                                 required
-                                placeholder="请输入验证码"
+                                :placeholder="$t('login.inputVerificationCode')"
                                 maxlength="6"
                                 :disabled="isLoading"
                             >
@@ -238,7 +236,7 @@
 
                         <button class="btn" @click="handleVerifyResetCode" :disabled="isLoading">
                             <span v-if="isLoading" class="loading-spinner"></span>
-                            {{ isLoading ? '验证中...' : '验证验证码' }}
+                                                         {{ isLoading ? $t('login.verifying') : $t('login.verifyCode') }}
                         </button>
                     </div>
 
@@ -248,7 +246,7 @@
                             <el-input
                                 v-model="forgotPasswordForm.newPassword"
                                 type="password"
-                                placeholder="请输入新密码"
+                                :placeholder="$t('login.inputNewPassword')"
                                 @input="e => checkPasswordStrength(forgotPasswordForm.newPassword, forgotPasswordStrength)"
                                 show-password
                                 :class="{ 'error-style': forgotPasswordErrors.newPassword }"
@@ -278,7 +276,7 @@
                             <el-input
                                 v-model="forgotPasswordForm.confirmNewPassword"
                                 type="password"
-                                placeholder="请确认新密码"
+                                :placeholder="$t('login.confirmNewPassword')"
                                 show-password
                                 :class="{ 'error-style': forgotPasswordErrors.confirmNewPassword }"
                                 :disabled="isLoading"
@@ -288,7 +286,7 @@
 
                         <button class="btn" @click="handleResetPassword" :disabled="isLoading">
                             <span v-if="isLoading" class="loading-spinner"></span>
-                            {{ isLoading ? '重置中...' : '重置密码' }}
+                                                         {{ isLoading ? $t('login.resetting') : $t('login.resetPassword') }}
                         </button>
                     </div>
                 </div>
@@ -308,10 +306,12 @@ import api from '/src/api/index.js'
 import TopBanner from '/src/components/TopBanner.vue'
 import LanguageSwitcher from '/src/components/LanguageSwitcher.vue'
 import { ElMessage, ElInput } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 
 const auth = useAuthStore();
 const router = useRouter();
 const route = useRoute();
+const { t } = useI18n();
 // 定义响应式状态
 const isRegistering = ref(false);
 const isForgotPassword = ref(false);
@@ -382,7 +382,7 @@ const showForgotPassword = ref(false); // 找回密码用
 const checkPasswordStrength = (value, targetObj = passwordStrength) => {
     value = value || '';
     let score = 0;
-    let message = '非常弱';
+    let message = t('login.passwordStrength.veryWeak');
     let className = 'very-weak';
 
     if (value.length >= 6) score++;
@@ -391,16 +391,16 @@ const checkPasswordStrength = (value, targetObj = passwordStrength) => {
     if (/[^A-Za-z0-9]/.test(value)) score++;
 
     if (score === 1) {
-        message = '弱';
+        message = t('login.passwordStrength.weak');
         className = 'weak';
     } else if (score === 2) {
-        message = '中等';
+        message = t('login.passwordStrength.medium');
         className = 'medium';
     } else if (score === 3) {
-        message = '强';
+        message = t('login.passwordStrength.strong');
         className = 'strong';
     } else if (score === 4) {
-        message = '非常强';
+        message = t('login.passwordStrength.veryStrong');
         className = 'very-strong';
     }
 
@@ -427,7 +427,7 @@ const handleLogin = async () => {
 
     // 验证用户名
     if (loginForm.username.trim() === '') {
-        loginErrors.username = '请输入用户名';
+        loginErrors.username = t('login.invalidUsername');
         isValid = false;
     } else {
         loginErrors.username = '';
@@ -435,7 +435,7 @@ const handleLogin = async () => {
 
     // 验证密码
     if (loginForm.password.trim() === '') {
-        loginErrors.password = '请输入密码';
+        loginErrors.password = t('login.invalidPassword');
         isValid = false;
     } else {
         loginErrors.password = '';
@@ -491,7 +491,7 @@ const handleLogin = async () => {
                 }
                 
                 ElMessage.success({
-                    message: '登录成功！',
+                    message: t('login.loginSuccess'),
                     duration: 2500,
                     type: 'success'
                 });
@@ -501,7 +501,7 @@ const handleLogin = async () => {
                 clearForms();
             } else {
                 ElMessage.error({
-                    message: response.message || '登录失败',
+                    message: response.message || t('login.loginFailed'),
                     duration: 3500,
                     type: 'error'
                 });
@@ -509,7 +509,7 @@ const handleLogin = async () => {
         } catch (error) {
             console.error('登录失败:', error)
             ElMessage({
-                message: '登录失败: ' + (error.message || '服务器错误'),
+                message: t('login.loginFailed') + ': ' + (error.message || t('login.serverError')),
                 type: 'error',
                 duration: 3000
             });
@@ -527,10 +527,10 @@ const handleRegister = async () => {
 
     // 验证用户名
     if (registerForm.username.trim() === '') {
-        registerErrors.username = '请输入用户名';
+        registerErrors.username = t('login.invalidUsername');
         isValid = false;
     } else if (registerForm.username.length < 3) {
-        registerErrors.username = '用户名长度至少为3个字符';
+        registerErrors.username = t('login.usernameTooShort');
         isValid = false;
     } else {
         registerErrors.username = '';
@@ -539,10 +539,10 @@ const handleRegister = async () => {
     // 验证邮箱
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (registerForm.email.trim() === '') {
-        registerErrors.email = '请输入邮箱';
+        registerErrors.email = t('login.invalidEmail');
         isValid = false;
     } else if (!emailRegex.test(registerForm.email)) {
-        registerErrors.email = '请输入有效的邮箱地址';
+        registerErrors.email = t('login.invalidEmail');
         isValid = false;
     } else {
         registerErrors.email = '';
@@ -550,10 +550,10 @@ const handleRegister = async () => {
 
     // 验证密码
     if (registerForm.password.trim() === '') {
-        registerErrors.password = '请输入密码';
+        registerErrors.password = t('login.invalidPassword');
         isValid = false;
     } else if (registerForm.password.length < 6) {
-        registerErrors.password = '密码长度至少为6个字符';
+        registerErrors.password = t('login.invalidPassword');
         isValid = false;
     } else {
         registerErrors.password = '';
@@ -561,16 +561,16 @@ const handleRegister = async () => {
 
     // 添加密码强度验证
     if (passwordStrength.score < 2) {
-        registerErrors.password = '密码强度太弱，请使用更复杂的密码';
+        registerErrors.password = t('login.passwordTooWeak');
         isValid = false;
     }
 
     // 验证确认密码
     if (registerForm.confirmPassword.trim() === '') {
-        registerErrors.confirmPassword = '请确认密码';
+        registerErrors.confirmPassword = t('login.confirmPassword');
         isValid = false;
     } else if (registerForm.confirmPassword !== registerForm.password) {
-        registerErrors.confirmPassword = '两次输入的密码不一致';
+        registerErrors.confirmPassword = t('login.passwordMismatch');
         isValid = false;
     } else {
         registerErrors.confirmPassword = '';
@@ -588,7 +588,7 @@ const handleRegister = async () => {
             
             if (response.success) {
                 ElMessage.success({
-                    message: response.message || '验证码已发送，请查收邮箱！',
+                    message: response.message || t('login.emailSent'),
                     duration: 3500,
                     type: 'success'
                 });
@@ -607,7 +607,7 @@ const handleRegister = async () => {
                 }, 1000);
             } else {
                 ElMessage.error({
-                    message: response.message || '注册失败',
+                    message: response.message || t('login.registerFailed'),
                     duration: 3500,
                     type: 'error'
                 });
@@ -615,7 +615,7 @@ const handleRegister = async () => {
         } catch (error) {
             console.error('注册失败:', error)
             ElMessage({
-                message: '注册失败: ' + (error.message || '服务器错误'),
+                message: t('login.registerFailed') + ': ' + (error.message || t('login.serverError')),
                 type: 'error',
                 duration: 3000
             });
@@ -631,10 +631,10 @@ const handleVerifyEmail = async () => {
     
     // 验证验证码
     if (registerForm.verificationCode.trim() === '') {
-        registerErrors.verificationCode = '请输入验证码';
+        registerErrors.verificationCode = t('login.invalidCode');
         return;
     } else if (registerForm.verificationCode.length !== 6) {
-        registerErrors.verificationCode = '验证码应为6位数字';
+        registerErrors.verificationCode = t('login.codeLengthError');
         return;
     } else {
         registerErrors.verificationCode = '';
@@ -649,7 +649,7 @@ const handleVerifyEmail = async () => {
         
         if (response.success) {
             ElMessage.success({
-                message: '注册成功！',
+                message: t('login.registerSuccess'),
                 duration: 2500,
                 type: 'success'
             });
@@ -670,7 +670,7 @@ const handleVerifyEmail = async () => {
             showVerificationCode.value = false;
         } else {
             ElMessage.error({
-                message: response.message || '验证失败',
+                message: response.message || t('login.verificationFailed'),
                 duration: 3500,
                 type: 'error'
             });
@@ -678,7 +678,7 @@ const handleVerifyEmail = async () => {
     } catch (error) {
         console.error('邮箱验证失败:', error);
         ElMessage({
-            message: '验证失败: ' + (error.message || '服务器错误'),
+            message: t('login.verificationFailed') + ': ' + (error.message || t('login.serverError')),
             type: 'error',
             duration: 3000
         });
@@ -698,7 +698,7 @@ const handleResendVerification = async () => {
         
         if (response.success) {
             ElMessage.success({
-                message: '验证码已重新发送',
+                message: t('login.resendSuccess'),
                 duration: 2500,
                 type: 'success'
             });
@@ -713,7 +713,7 @@ const handleResendVerification = async () => {
             }, 1000);
         } else {
             ElMessage.error({
-                message: response.message || '发送失败',
+                message: response.message || t('login.sendFailed'),
                 duration: 3500,
                 type: 'error'
             });
@@ -721,7 +721,7 @@ const handleResendVerification = async () => {
     } catch (error) {
         console.error('重新发送验证码失败:', error);
         ElMessage({
-            message: '发送失败: ' + (error.message || '服务器错误'),
+            message: t('login.sendFailed') + ': ' + (error.message || t('login.serverError')),
             type: 'error',
             duration: 3000
         });
@@ -823,17 +823,17 @@ const handleForgotPassword = async () => {
     let isValid = true;
     
     if (forgotPasswordForm.username.trim() === '') {
-        forgotPasswordErrors.username = '请输入用户名';
+        forgotPasswordErrors.username = t('login.invalidUsername');
         isValid = false;
     } else {
         forgotPasswordErrors.username = '';
     }
     
     if (forgotPasswordForm.email.trim() === '') {
-        forgotPasswordErrors.email = '请输入邮箱';
+        forgotPasswordErrors.email = t('login.invalidEmail');
         isValid = false;
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(forgotPasswordForm.email)) {
-        forgotPasswordErrors.email = '请输入有效的邮箱地址';
+        forgotPasswordErrors.email = t('login.invalidEmail');
         isValid = false;
     } else {
         forgotPasswordErrors.email = '';
@@ -849,14 +849,14 @@ const handleForgotPassword = async () => {
             
             if (response.success) {
                 ElMessage.success({
-                    message: response.message || '验证码已发送，请查收邮箱！',
+                    message: response.message || t('login.emailSent'),
                     duration: 3500,
                     type: 'success'
                 });
                 forgotPasswordStep.value = 2;
             } else {
                 ElMessage.error({
-                    message: response.message || '发送失败',
+                    message: response.message || t('login.sendFailed'),
                     duration: 3500,
                     type: 'error'
                 });
@@ -864,7 +864,7 @@ const handleForgotPassword = async () => {
         } catch (error) {
             console.error('发送找回密码验证码失败:', error);
             ElMessage({
-                message: '发送失败: ' + (error.message || '服务器错误'),
+                message: t('login.sendFailed') + ': ' + (error.message || t('login.serverError')),
                 type: 'error',
                 duration: 3000
             });
@@ -879,10 +879,10 @@ const handleVerifyResetCode = async () => {
     if (isLoading.value) return;
     
     if (forgotPasswordForm.code.trim() === '') {
-        forgotPasswordErrors.code = '请输入验证码';
+        forgotPasswordErrors.code = t('login.invalidCode');
         return;
     } else if (forgotPasswordForm.code.length !== 6) {
-        forgotPasswordErrors.code = '验证码应为6位数字';
+        forgotPasswordErrors.code = t('login.codeLengthError');
         return;
     } else {
         forgotPasswordErrors.code = '';
@@ -897,23 +897,23 @@ const handleVerifyResetCode = async () => {
         });
         
         if (response.success) {
-            ElMessage.success({
-                message: response.message || '验证码验证成功！',
-                duration: 2500,
-                type: 'success'
-            });
+                            ElMessage.success({
+                    message: response.message || t('login.verificationSuccess'),
+                    duration: 2500,
+                    type: 'success'
+                });
             forgotPasswordStep.value = 3;
         } else {
-            ElMessage.error({
-                message: response.message || '验证失败',
-                duration: 3500,
-                type: 'error'
-            });
+                            ElMessage.error({
+                    message: response.message || t('login.verificationFailed'),
+                    duration: 3500,
+                    type: 'error'
+                });
         }
     } catch (error) {
         console.error('验证找回密码验证码失败:', error);
         ElMessage({
-            message: '验证失败: ' + (error.message || '服务器错误'),
+            message: t('login.verificationFailed') + ': ' + (error.message || t('login.serverError')),
             type: 'error',
             duration: 3000
         });
@@ -930,23 +930,23 @@ const handleResetPassword = async () => {
     let isValid = true;
     
     if (forgotPasswordForm.newPassword.trim() === '') {
-        forgotPasswordErrors.newPassword = '请输入新密码';
+        forgotPasswordErrors.newPassword = t('login.inputNewPassword');
         isValid = false;
     } else if (forgotPasswordForm.newPassword.length < 6) {
-        forgotPasswordErrors.newPassword = '密码长度至少6位';
+        forgotPasswordErrors.newPassword = t('login.invalidPassword');
         isValid = false;
     } else if (forgotPasswordStrength.score < 2) {
-        forgotPasswordErrors.newPassword = '密码强度太弱，请使用更复杂的密码';
+        forgotPasswordErrors.newPassword = t('login.passwordTooWeak');
         isValid = false;
     } else {
         forgotPasswordErrors.newPassword = '';
     }
     
     if (forgotPasswordForm.confirmNewPassword.trim() === '') {
-        forgotPasswordErrors.confirmNewPassword = '请确认新密码';
+        forgotPasswordErrors.confirmNewPassword = t('login.confirmNewPassword');
         isValid = false;
     } else if (forgotPasswordForm.confirmNewPassword !== forgotPasswordForm.newPassword) {
-        forgotPasswordErrors.confirmNewPassword = '两次输入的密码不一致';
+        forgotPasswordErrors.confirmNewPassword = t('login.passwordMismatch');
         isValid = false;
     } else {
         forgotPasswordErrors.confirmNewPassword = '';
@@ -964,7 +964,7 @@ const handleResetPassword = async () => {
             
             if (response.success) {
                 ElMessage.success({
-                    message: response.message || '密码重置成功！',
+                    message: response.message || t('login.passwordResetSuccess'),
                     duration: 2500,
                     type: 'success'
                 });
@@ -975,7 +975,7 @@ const handleResetPassword = async () => {
                 forgotPasswordStep.value = 1;
             } else {
                 ElMessage.error({
-                    message: response.message || '重置失败',
+                    message: response.message || t('login.passwordResetFailed'),
                     duration: 3500,
                     type: 'error'
                 });
@@ -983,7 +983,7 @@ const handleResetPassword = async () => {
         } catch (error) {
             console.error('重置密码失败:', error);
             ElMessage({
-                message: '重置失败: ' + (error.message || '服务器错误'),
+                message: t('login.passwordResetFailed') + ': ' + (error.message || t('login.serverError')),
                 type: 'error',
                 duration: 3000
             });

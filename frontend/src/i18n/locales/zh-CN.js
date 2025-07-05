@@ -58,11 +58,11 @@ export default {
     subtitle: '专业的直播推流码获取与管理平台',
     login: '登录',
     register: '注册',
-    forgotPassword: '忘记密码',
+
     username: '用户名',
     password: '密码',
     email: '邮箱',
-    confirmPassword: '确认密码',
+
     verificationCode: '验证码',
     resendCode: '重新发送',
     loginSuccess: '登录成功！',
@@ -75,6 +75,7 @@ export default {
     passwordResetSuccess: '密码重置成功！',
     passwordResetFailed: '密码重置失败',
     invalidUsername: '请输入用户名',
+    usernameTooShort: '用户名长度至少为3个字符',
     invalidEmail: '请输入有效的邮箱地址',
     invalidPassword: '密码长度至少为6个字符',
     passwordTooWeak: '密码强度太弱，请使用更复杂的密码',
@@ -87,7 +88,33 @@ export default {
       facebook: 'Facebook登录',
       google: 'Google登录',
       twitter: 'Twitter登录'
-    }
+    },
+    inputUsername: '请输入用户名',
+    inputPassword: '请输入密码',
+    inputEmail: '请输入邮箱',
+    confirmPassword: '请确认密码',
+    inputVerificationCode: '请输入验证码',
+    loggingIn: '登录中...',
+    forgotPassword: '忘记密码?',
+    verifyEmail: '验证邮箱',
+    sending: '发送中...',
+    sendVerificationCode: '发送验证码',
+    verifying: '验证中...',
+    verifyCode: '验证验证码',
+    inputNewPassword: '请输入新密码',
+    confirmNewPassword: '请确认新密码',
+    resetting: '重置中...',
+    resetPassword: '重置密码',
+    passwordStrength: {
+      veryWeak: '非常弱',
+      weak: '弱',
+      medium: '中等',
+      strong: '强',
+      veryStrong: '非常强'
+    },
+    serverError: '服务器错误',
+    resendSuccess: '验证码已重新发送',
+    sendFailed: '发送失败'
   },
 
   // 抖音直播页面
@@ -352,5 +379,6 @@ export default {
     processing: '处理中...',
     confirmTopicAndOutline: '确认主题与提纲',
     addNewSection: '添加新章节'
-  }
+  },
+
 } 

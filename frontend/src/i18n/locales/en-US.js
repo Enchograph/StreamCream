@@ -58,11 +58,11 @@ export default {
     subtitle: 'Professional Live Streaming Code Management Platform',
     login: 'Login',
     register: 'Register',
-    forgotPassword: 'Forgot Password',
+
     username: 'Username',
     password: 'Password',
     email: 'Email',
-    confirmPassword: 'Confirm Password',
+
     verificationCode: 'Verification Code',
     resendCode: 'Resend',
     loginSuccess: 'Login successful!',
@@ -75,6 +75,7 @@ export default {
     passwordResetSuccess: 'Password reset successful!',
     passwordResetFailed: 'Password reset failed',
     invalidUsername: 'Please enter username',
+    usernameTooShort: 'Username must be at least 3 characters',
     invalidEmail: 'Please enter a valid email address',
     invalidPassword: 'Password must be at least 6 characters',
     passwordTooWeak: 'Password too weak, please use a more complex password',
@@ -87,7 +88,33 @@ export default {
       facebook: 'Facebook Login',
       google: 'Google Login',
       twitter: 'Twitter Login'
-    }
+    },
+    inputUsername: 'Enter username',
+    inputPassword: 'Enter password',
+    inputEmail: 'Enter email',
+    confirmPassword: 'Confirm password',
+    inputVerificationCode: 'Enter verification code',
+    loggingIn: 'Logging in...',
+    forgotPassword: 'Forgot password?',
+    verifyEmail: 'Verify Email',
+    sending: 'Sending...',
+    sendVerificationCode: 'Send verification code',
+    verifying: 'Verifying...',
+    verifyCode: 'Verify code',
+    inputNewPassword: 'Enter new password',
+    confirmNewPassword: 'Confirm new password',
+    resetting: 'Resetting...',
+    resetPassword: 'Reset password',
+    passwordStrength: {
+      veryWeak: 'Very Weak',
+      weak: 'Weak',
+      medium: 'Medium',
+      strong: 'Strong',
+      veryStrong: 'Very Strong'
+    },
+    serverError: 'Server error',
+    resendSuccess: 'Verification code resent',
+    sendFailed: 'Send failed'
   },
 
   // Douyin streaming page

@@ -15,6 +15,7 @@
         "axios": "^1.10.0",
         "element-plus": "^2.10.2",
         "font-awesome": "^4.7.0",
+        "gsap": "^3.13.0",
         "pinia": "^3.0.3",
         "pixi-live2d-display-lipsyncpatch": "^0.5.0-ls-8",
         "pixi.js": "^7.4.3",

@@ -5,20 +5,20 @@
             <div class="column column-1">
                 <!-- 声音库选择 -->
                 <div class="box box-1">
-                    <h2>声音库选择</h2>
-                    <p>选择已训练好的声音模型或上传声音模型文件</p>
+                    <h2>{{ $t('mainPage.voiceLibTitle') }}</h2>
+                    <p>{{ $t('mainPage.voiceLibDesc') }}</p>
 
                     <!-- 挂载ModelSelector.vue的容器 -->
                     <div id="model-selector"></div>
 
                     <div class="file-upload">
-                        <label>上传声音模型文件:</label>
+                        <label>{{ $t('mainPage.uploadVoiceModel') }}</label>
                         <input type="file" id="voice-model-file" accept=".ckpt, .pth" multiple @change="handleVoiceModelUpload">
                         <small style="color: #666; display: block; margin-top: 5px;">
-                            支持格式：GPT模型(.ckpt) 和 SoVITS模型(.pth)
+                            {{ $t('mainPage.supportedFormat') }}
                         </small>
                         <div v-if="uploadedVoiceModels.length > 0" style="margin-top: 10px;">
-                            <small style="color: #409eff; font-weight: bold;">已选择的文件:</small>
+                            <small style="color: #409eff; font-weight: bold;">{{ $t('mainPage.selectedFiles') }}:</small>
                             <div v-for="(model, index) in uploadedVoiceModels" :key="index" style="margin: 5px 0; padding: 5px; background: #f5f7fa; border-radius: 4px; font-size: 12px;">
                                 📁 {{ model.name }} ({{ model.type }})
                             </div>
@@ -27,35 +27,35 @@
 
                     <button class="btn primary" @click="applyVoiceModel" :disabled="!uploadedVoiceModels.length">
                         <span class="btn-icon">🎵</span>
-                        应用声音模型
+                        {{ $t('mainPage.applyVoiceModel') }}
                     </button>
                 </div>
 
                 <!-- 训练新声音 -->
                 <div class="box box-2">
-                    <h2>训练新声音</h2>
-                    <p>上传声音样本以训练新的声音模型</p>
+                    <h2>{{ $t('mainPage.trainNewVoice') }}</h2>
+                    <p>{{ $t('mainPage.trainNewVoiceDesc') }}</p>
 
                     <div class="file-upload">
-                        <label>上传声音样本文件 (MP3/WAV):</label>
+                        <label>{{ $t('mainPage.uploadVoiceSample') }}</label>
                         <input type="file" id="voice-sample-file" accept=".mp3, .wav" multiple>
                     </div>
 
-                    <p>上传至少10分钟的清晰语音样本以获得最佳效果</p>
+                    <p>{{ $t('mainPage.trainTip') }}</p>
 
                     <div class="file-upload">
-                        <label>声音名称:</label>
-                        <input type="text" id="voice-name" placeholder="为你的声音模型命名">
+                        <label>{{ $t('mainPage.voiceName') }}</label>
+                        <input type="text" id="voice-name" :placeholder="$t('mainPage.voiceNamePlaceholder')">
                     </div>
 
                     <button class="btn success" id="start-training">
                         <span class="btn-icon">⚡</span>
-                        开始训练
+                        {{ $t('mainPage.startTraining') }}
                     </button>
-                    <router-link to="/trainPage" class="link">高级语音模型训练设置</router-link>
+                    <router-link to="/trainPage" class="link">{{ $t('mainPage.advancedTrain') }}</router-link>
 
                     <div id="training-status" style="margin-top: 15px;">
-                        训练状态: <span class="status-badge not-ready">未开始</span>
+                        {{ $t('mainPage.trainStatus') }} <span class="status-badge not-ready">{{ $t('mainPage.notStarted') }}</span>
                     </div>
                 </div>
             </div>
@@ -64,11 +64,11 @@
             <div class="column column-2">
                 <!-- Live2D模型选择 -->
                 <div class="box box-1">
-                    <h2>Live2D模型选择</h2>
-                    <p>选择Live2D模型</p>
+                    <h2>{{ $t('mainPage.live2dTitle') }}</h2>
+                    <p>{{ $t('mainPage.live2dDesc') }}</p>
 
                     <div class="model-selector">
-                        <label for="live2d-model-select">选择基础模型:</label>
+                        <label for="live2d-model-select">{{ $t('mainPage.selectBaseModel') }}</label>
                         <select id="live2d-model-select" v-model="live2DStore.currentModel"
                             @change="selectLive2DModel(live2DStore.currentModel)" class="model-select">
                             <option v-for="model in live2DStore.availableModels" :key="model.id" :value="model.id">
@@ -78,18 +78,18 @@
                     </div>
 
                     <div class="file-upload">
-                        <label>上传Live2D模型文件:</label>
+                        <label>{{ $t('mainPage.uploadLive2dModel') }}</label>
                         <input type="file" id="live2d-model-file" accept=".model3.json" @change="handleModelUpload">
                     </div>
 
                     <button class="btn primary" @click="applyCustomModel" :disabled="!customModelPath">
                         <span class="btn-icon">🎭</span>
-                        应用自定义模型
+                        {{ $t('mainPage.applyCustomModel') }}
                     </button>
-                    <a href="#" class="link">高级Live2D模型训练设置</a>
+                    <a href="#" class="link">{{ $t('mainPage.advancedLive2dTrain') }}</a>
 
                     <div id="model-status" style="margin-top: 15px;">
-                        当前模型: <span class="status-badge ready">{{ getCurrentModelName() }}</span>
+                        {{ $t('mainPage.currentModel') }} <span class="status-badge ready">{{ getCurrentModelName() }}</span>
                     </div>
                 </div>
 
@@ -103,25 +103,25 @@
             <div class="column column-3">
                 <!-- 直播效果预览 -->
                 <div class="box box-1">
-                    <h2>直播效果预览</h2>
+                    <h2>{{ $t('mainPage.livePreviewTitle') }}</h2>
                     <!-- <LivePreview title="直播效果预览" placeholder-text="Live2D模型预览区域" :resolution="revolutionPreference"
                         :show-title="false" /> -->
                     <Live2DIframeContainer src="/live2d" :resolution="'1920x1080'" />
 
                     <div style="display: flex; justify-content: space-between;">
                         <div>
-                            状态: <span class="status-badge" :class="isRefreshing ? 'loading' : 'ready'">
-                                {{ isRefreshing ? '刷新中...' : '预览就绪' }}
+                            {{ $t('mainPage.status') }} <span class="status-badge" :class="isRefreshing ? 'loading' : 'ready'">
+                                {{ isRefreshing ? $t('mainPage.refreshing') : $t('mainPage.previewReady') }}
                             </span>
                         </div>
                         <div class="btn-group">
                             <button class="btn secondary" @click="refreshPreview" :disabled="isRefreshing">
                                 <span class="btn-icon">{{ isRefreshing ? '⏳' : '🔄' }}</span>
-                                {{ isRefreshing ? '刷新中...' : '刷新预览' }}
+                                {{ isRefreshing ? $t('mainPage.refreshing') : $t('mainPage.refreshPreview') }}
                             </button>
                             <button class="btn success pulse" id="test-stream" @click="goToNextPage">
                                 <span class="btn-icon">📺</span>
-                                开始直播
+                                {{ $t('mainPage.startLive') }}
                             </button>
                         </div>
                         <!-- !!! 这里开始直播前要先检测一下 GPT-sovits, Live 2D, 大模型API的可用性。 -->
@@ -131,12 +131,12 @@
 
                 <!-- AI讲稿生成测试 -->
                 <div class="box box-2">
-                    <h2>AI讲稿生成测试</h2>
-                    <p>生成AI讲稿并在预览区域测试效果</p>
+                    <h2>{{ $t('mainPage.aiScriptTestTitle') }}</h2>
+                    <p>{{ $t('mainPage.aiScriptTestDesc') }}</p>
 
                     <div class="file-upload">
-                        <label>讲稿主题:</label>
-                        <input type="text" v-model="topic" placeholder="输入讲稿主题">
+                        <label>{{ $t('mainPage.scriptTopic') }}</label>
+                        <input type="text" v-model="topic" :placeholder="$t('mainPage.inputScriptTopic')">
                     </div>
                     <!-- <div class="file-upload">
                         <label>关键词 (用逗号分隔):</label>
@@ -144,30 +144,30 @@
                     </div> -->
 
                     <div class="file-upload">
-                        <label>讲稿风格:</label>
+                        <label>{{ $t('mainPage.scriptStyle') }}</label>
                         <select v-model="speechStyle"
                             style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 15px;">
-                            <option value="casual">轻松休闲</option>
-                            <option value="professional">专业正式</option>
-                            <option value="cute">可爱活泼</option>
-                            <option value="humorous">幽默诙谐</option>
+                            <option value="casual">{{ $t('mainPage.styleCasual') }}</option>
+                            <option value="professional">{{ $t('mainPage.styleProfessional') }}</option>
+                            <option value="cute">{{ $t('mainPage.styleCute') }}</option>
+                            <option value="humorous">{{ $t('mainPage.styleHumorous') }}</option>
                         </select>
                     </div>
 
                     <div class="btn-group">
                         <button class="btn primary animated" @click="generateSpeech" :disabled="!topic || isGenerating">
                             <span class="btn-icon">{{ isGenerating ? '⏳' : '🤖' }}</span>
-                            {{ isGenerating ? '生成中...' : '生成讲稿' }}
+                            {{ isGenerating ? $t('mainPage.generating') : $t('mainPage.generateScript') }}
                         </button>
                         <button class="btn warning" @click="testSpeech">
                             <span class="btn-icon">🎤</span>
-                            测试讲稿
+                            {{ $t('mainPage.testScript') }}
                         </button>
                     </div>
 
                     <div class="file-upload" style="margin-top: 15px;">
-                        <label>生成的讲稿:</label>
-                        <textarea v-model="generatedSpeech" placeholder="生成的AI讲稿将显示在这里..." readonly></textarea>
+                        <label>{{ $t('mainPage.generatedScript') }}</label>
+                        <textarea v-model="generatedSpeech" :placeholder="$t('mainPage.generatedScriptPlaceholder')" readonly></textarea>
                     </div>
                 </div>
             </div>

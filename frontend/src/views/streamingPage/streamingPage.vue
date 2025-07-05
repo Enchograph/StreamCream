@@ -4,21 +4,21 @@
             <div class="container">
                 <!-- 第一列：主题设置和提纲生成 -->
                 <div class="column">
-                    <h3><span>主题设置与提纲生成</span></h3>
+                    <h3><span>{{ $t('streamingPage.topicAndOutline') }}</span></h3>
                     <div class="input-section">
                         <div class="topic-row">
-                            <input id=" topic" v-model="topic" placeholder="请输入直播主题" />
+                            <input id=" topic" v-model="topic" :placeholder="$t('streamingPage.inputLiveTopic')" />
                             <button @click="generateOutline" :disabled="!topic || isGeneratingOutline">
-                                {{ isGeneratingOutline ? '生成中...' : '生成提纲' }}
+                                {{ isGeneratingOutline ? $t('streamingPage.generating') : $t('streamingPage.generateOutline') }}
                             </button>
                         </div>
                     </div>
                     <div class="outline-section" style="display: flex; flex-direction: column; height: 100%;">
-                        <textarea id="outline" v-model="outline" rows="10" placeholder="您也可以在此输入您设计的提纲"
+                        <textarea id="outline" v-model="outline" rows="10" :placeholder="$t('streamingPage.inputOrEditOutline')"
                             style="font-family: sans-serif; flex-grow: 1;"></textarea>
                         <button class="confirmOutline" @click="confirmOutline"
                             :disabled="!outline || isConfirmingOutline">
-                            {{ isConfirmingOutline ? '处理中...' : '确认主题与提纲' }}
+                            {{ isConfirmingOutline ? $t('streamingPage.processing') : $t('streamingPage.confirmTopicAndOutline') }}
                         </button>
                     </div>
                 </div>
@@ -55,7 +55,8 @@
                     </div>
                     <br></br>
                     <button v-if="outlineBlocks.length > 0" @click="addNewBlock" class="add-block-btn">+
-                        添加新章节</button>
+                        {{ $t('streamingPage.addNewSection') }}
+                    </button>
                 </div>
 
                 <!-- 第三列：直播界面 -->

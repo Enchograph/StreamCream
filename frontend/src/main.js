@@ -7,6 +7,7 @@ import api from './api'
 import ElementPlus from 'element-plus'
 import { ElMessage } from 'element-plus'
 import 'element-plus/dist/index.css'
+import i18n from './i18n'
 
 // Vuetify
 import 'vuetify/styles'
@@ -26,6 +27,7 @@ app.use(pinia)
 app.use(router)
 app.use(vuetify)
 app.use(ElementPlus)
+app.use(i18n)
 app.mount('#app')
 
 //错误处理

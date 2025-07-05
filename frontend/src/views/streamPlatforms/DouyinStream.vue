@@ -21,26 +21,27 @@
                         </svg>
                     </div>
                     <div class="brand-text">
-                        <h1 class="brand-title">抖音直播推流工具</h1>
-                        <p class="brand-subtitle">专业的直播推流码获取与管理平台</p>
+                        <h1 class="brand-title">{{ $t('douyin.title') }}</h1>
+                        <p class="brand-subtitle">{{ $t('douyin.subtitle') }}</p>
                     </div>
                 </div>
                 <div class="nav-actions">
+                    <LanguageSwitcher />
                     <button class="nav-btn" @click="showHelp">
                         <span class="nav-btn-icon">📖</span>
-                        帮助
+                        {{ $t('douyin.actions.help') }}
                     </button>
                     <button class="nav-btn" @click="showQuickActions = !showQuickActions">
                         <span class="nav-btn-icon">⚡</span>
-                        快捷操作
+                        {{ $t('douyin.actions.quickActions') }}
                     </button>
                     <button class="nav-btn" @click="startTutorial">
                         <span class="nav-btn-icon">🎓</span>
-                        教程
+                        {{ $t('douyin.actions.tutorial') }}
                     </button>
                     <button class="nav-btn" @click="resetTutorial" title="重置教程状态">
                         <span class="nav-btn-icon">🔄</span>
-                        重置教程
+                        {{ $t('douyin.actions.resetTutorial') }}
                     </button>
                 </div>
             </nav>
@@ -439,34 +440,37 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import axios from 'axios';
 import QRCode from 'qrcode';
 import { useRouter } from 'vue-router';
+import LanguageSwitcher from '/src/components/LanguageSwitcher.vue';
 
 // API 基础 URL
 const API_BASE = 'http://localhost:9702/api';
 
 // 标签页管理
-const tabs = [
+const { t } = useI18n();
+const tabs = computed(() => [
     { 
         id: 'account', 
-        name: '账号设置', 
+        name: t('douyin.tabs.account.name'), 
         icon: '🔐',
-        description: '账号登录与认证'
+        description: t('douyin.tabs.account.description')
     },
     { 
         id: 'live', 
-        name: '直播设置', 
+        name: t('douyin.tabs.live.name'), 
         icon: '📡',
-        description: '直播配置与管理'
+        description: t('douyin.tabs.live.description')
     },
     { 
         id: 'stream', 
-        name: '推流信息', 
+        name: t('douyin.tabs.stream.name'), 
         icon: '📊',
-        description: '推流码获取与导出'
+        description: t('douyin.tabs.stream.description')
     }
-];
+]);
 const currentTab = ref('account');
 
 // 状态和日志

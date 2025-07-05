@@ -2,8 +2,12 @@
     <TopBanner />
     <div class="page-container">
         <div class="page-bg-animated"></div>
+        <!-- 语言切换器 -->
+        <div style="position: absolute; top: 20px; right: 20px; z-index: 10;">
+            <LanguageSwitcher />
+        </div>
         <div class="welcome-message">
-            <h2>欢迎使用StreamCream</h2>
+            <h2>{{ $t('login.title') }}</h2>
         </div>
         <div class="app-container">
             <!-- 表单内容 -->
@@ -290,8 +294,7 @@
                 </div>
             </div>
         </div>
-        <div class="copyright">
-            © 2025 Made by <a href="https://whucsgitlab.whu.edu.cn/2025se-deepsleep" target="_blank" rel="noopener" style="color: rgba(255,255,255,0.9); text-decoration: underline; transition: color 0.3s ease;">DeepSleep</a>. All rights reserved.
+        <div class="copyright" v-html="$t('copyright.text')">
         </div>
     </div>
 </template>
@@ -303,6 +306,7 @@ import { useAuthStore } from '/src/stores/auth.js'
 import {useRoute} from 'vue-router'
 import api from '/src/api/index.js'
 import TopBanner from '/src/components/TopBanner.vue'
+import LanguageSwitcher from '/src/components/LanguageSwitcher.vue'
 import { ElMessage, ElInput } from 'element-plus'
 
 const auth = useAuthStore();

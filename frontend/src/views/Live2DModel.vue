@@ -1,28 +1,10 @@
 <template>
     <div class="live-preview">
-        <!-- 嘴型变换按钮，点击后调用 mouthFn 方法 -->
-        <!-- <button @click="mouthFn">嘴型变换</button> -->
-        <!-- 随机动作按钮，点击后调用 randomMotionFn 方法 -->
-        <!-- <button @click="randomMotionFn">随机动作</button> -->
-        <!-- 音频同步控制 -->
-        <!-- <button @click="toggleAudioSync" :class="{ active: isAudioSyncActive }">
-            {{ isAudioSyncActive ? '停止音频同步' : '开始音频同步' }}
-        </button> -->
-        <!-- 音频文件上传 -->
-        <input type="file" ref="audioFileInput" @change="loadAudioFile" accept="audio/*" style="display: none">
-        <!-- <button @click="$refs.audioFileInput.click()">选择音频文件</button> -->
-        <!-- 表情选择下拉框，绑定 selectedExpression，切换时调用 applyExpression 方法 -->
-        <!-- <label for="expression-select">表情:</label>
-        <select v-model="selectedExpression" @change="applyExpression" id="expression-select">
-            <option v-for="name in expressionNames" :key="name" :value="name">{{ name }}</option>
-        </select> -->
-
         <!-- 画布容器 -->
         <div class="canvasWrap" :style="aspectRatioStyle">
             <!-- 用于渲染 Live2D 模型的 canvas -->
             <canvas id="myCanvas" />
         </div>
-        <!-- <button @click="resetModel">重置模型位置</button> -->
     </div>
 </template>
 
@@ -79,6 +61,14 @@ const live2DStore = useLive2DStore();
 
 // 判断是否在iframe中加载
 const isIframe = ref(window.self !== window.top);
+
+// 字幕同步相关变量
+const currentSubtitle = ref(null);
+const isSubtitleSyncing = ref(false);
+const subtitleSyncStartTime = ref(0);
+
+// 全局暂停状态控制
+const isPaused = ref(false);
 
 // 音频相关变量
 let audioSource;
@@ -144,10 +134,25 @@ onMounted(() => {
     live2DStore.loadState();
     init();
     initAudioContext();
+    setupSubtitleListener(); // 设置字幕监听器
+    
+    // 监听页面可见性变化
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            console.log('页面隐藏，暂停动画');
+            pauseAllAnimations();
+        } else {
+            console.log('页面显示，恢复动画');
+            resumeAllAnimations();
+        }
+    });
 });
 
 // 组件卸载前销毁 PIXI 应用，释放资源
 onBeforeUnmount(() => {
+    // 立即暂停所有动画
+    pauseAllAnimations();
+    
     if (app) {
         app.destroy(true, true); // 销毁 PIXI 应用和所有子对象
     }
@@ -552,6 +557,17 @@ const stopAudioSync = () => {
 const updateMouthSync = () => {
     if (!isAudioSyncActive.value || !analyser || !model || !audioElement) return;
 
+    // 如果全局暂停，立即停止
+    if (isPaused.value) {
+        return;
+    }
+
+    // 如果字幕同步正在进行，暂停音频驱动的嘴型同步
+    if (isSubtitleSyncing.value) {
+        animationId = requestAnimationFrame(updateMouthSync);
+        return;
+    }
+
     const dataArray = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteFrequencyData(dataArray);
 
@@ -573,13 +589,13 @@ const updateMouthSync = () => {
         lastAudioActivity = currentTime;
     }
 
-    // 如果超过600ms没有音频活动，逐渐闭合嘴巴（提高灵敏度）
+    // 如果超过600ms没有音频活动，逐渐设置嘴巴为轻微张开状态（提高灵敏度）
     const timeSinceLastActivity = currentTime - lastAudioActivity;
     if (timeSinceLastActivity > 600) {
         const currentMouthValue = model.internalModel.coreModel.getParameterValueById("ParamMouthOpenY");
-        const closedMouthValue = Math.max(currentMouthValue * 0.85, 0); // 完全闭合，最小值为0
+        const targetMouthValue = Math.max(currentMouthValue * 0.85, 0.2); // 轻微张开，最小值为0.2
 
-        model.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", closedMouthValue);
+        model.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", targetMouthValue);
 
         // 重置嘴型形状
         model.internalModel.coreModel.setParameterValueById("ParamMouthForm", 0);
@@ -734,7 +750,7 @@ const updateMouthSync = () => {
     const newMouthFrown = currentMouthFrown + (targetMouthFrown - currentMouthFrown) * smoothFactor;
 
     // 添加最小阈值，避免嘴型完全闭合
-    const minMouthOpen = 0; // 允许完全闭合
+    const minMouthOpen = 0.2; // 最小轻微张开
     const finalMouthOpen = Math.max(newMouthOpen, minMouthOpen);
 
     // 设置嘴型参数
@@ -752,6 +768,298 @@ const updateMouthSync = () => {
 
     // 继续下一帧
     animationId = requestAnimationFrame(updateMouthSync);
+};
+
+// 字幕驱动的嘴型同步更新函数 - 精细版本
+const updateSubtitleSync = (timelineResult) => {
+    // 如果全局暂停，立即停止
+    if (isPaused.value) {
+        isSubtitleSyncing.value = false;
+        return;
+    }
+    
+    if (!model || !timelineResult || !timelineResult.timeline) {
+        isSubtitleSyncing.value = false;
+        // 字幕同步结束时，让嘴巴回到轻微张开状态
+        if (model) {
+            model.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", 0.2);
+            model.internalModel.coreModel.setParameterValueById("ParamMouthForm", 0);
+            model.internalModel.coreModel.setParameterValueById("ParamMouthOpenWidth", 0.5);
+            try {
+                model.internalModel.coreModel.setParameterValueById("ParamMouthSmile", 0);
+                model.internalModel.coreModel.setParameterValueById("ParamMouthFrown", 0);
+            } catch (e) {
+                // 如果模型不支持这些参数，忽略错误
+            }
+        }
+        return;
+    }
+
+    const currentTime = Date.now() - subtitleSyncStartTime.value;
+    const timeline = timelineResult.timeline;
+    
+    // 存储timelineResult用于递归调用
+    const currentTimelineResult = timelineResult;
+    
+    // 找到当前时间对应的timeline项
+    let currentItem = null;
+    let nextItem = null;
+    let progress = 0; // 在当前时间轴项中的进度 (0-1)
+    
+    for (let i = 0; i < timeline.length; i++) {
+        const item = timeline[i];
+        if (currentTime >= item.start * 1000 && currentTime <= item.end * 1000) {
+            currentItem = item;
+            nextItem = timeline[i + 1] || null;
+            // 计算在当前项中的进度
+            const itemDuration = (item.end - item.start) * 1000;
+            const elapsedInItem = currentTime - item.start * 1000;
+            progress = Math.min(elapsedInItem / itemDuration, 1);
+            break;
+        }
+    }
+    
+    // 如果超出时间范围，停止同步并设置嘴巴为轻微张开状态
+    if (!currentItem || currentTime > timeline[timeline.length - 1].end * 1000) {
+        isSubtitleSyncing.value = false;
+        console.log('字幕同步结束，设置嘴巴为轻微张开状态');
+        // 让嘴巴回到轻微张开状态
+        if (model) {
+            model.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", 0.2);
+            model.internalModel.coreModel.setParameterValueById("ParamMouthForm", 0);
+            model.internalModel.coreModel.setParameterValueById("ParamMouthOpenWidth", 0.5);
+            try {
+                model.internalModel.coreModel.setParameterValueById("ParamMouthSmile", 0);
+                model.internalModel.coreModel.setParameterValueById("ParamMouthFrown", 0);
+            } catch (e) {
+                // 如果模型不支持这些参数，忽略错误
+            }
+        }
+        return;
+    }
+    
+    // 扩展的精细元音嘴型配置 - 全小写版本
+    const vowelConfigs = {
+        // 基本元音
+        'a': {
+            openY: 0.8,      // 嘴巴开合度
+            width: 0.7,      // 嘴巴宽度
+            form: 0.8,       // 嘴型形状（圆形）
+            smile: 0.1,      // 微笑程度
+            frown: 0         // 撇嘴程度
+        },
+        'o': {
+            openY: 0.7,
+            width: 0.6,
+            form: 0.7,
+            smile: 0.15,
+            frown: 0
+        },
+        'e': {
+            openY: 0.6,
+            width: 0.5,
+            form: 0.5,
+            smile: 0.05,
+            frown: 0
+        },
+        'i': {
+            openY: 0.4,
+            width: 0.3,
+            form: 0.2,
+            smile: 0,
+            frown: 0.1
+        },
+        'u': {
+            openY: 0.3,
+            width: 0.2,
+            form: 0.1,
+            smile: 0,
+            frown: 0.2
+        },
+        'ü': {
+            openY: 0.35,
+            width: 0.25,
+            form: 0.15,
+            smile: 0,
+            frown: 0.15
+        },
+        
+        // 复合元音
+        'ai': {
+            openY: 0.75,     // ai - 爱
+            width: 0.65,
+            form: 0.7,
+            smile: 0.2,
+            frown: 0
+        },
+        'ao': {
+            openY: 0.7,      // ao - 奥
+            width: 0.6,
+            form: 0.65,
+            smile: 0.1,
+            frown: 0
+        },
+        'ei': {
+            openY: 0.55,     // ei - 诶
+            width: 0.45,
+            form: 0.45,
+            smile: 0.05,
+            frown: 0.05
+        },
+        'ou': {
+            openY: 0.6,      // ou - 欧
+            width: 0.5,
+            form: 0.55,
+            smile: 0.08,
+            frown: 0
+        },
+        'ia': {
+            openY: 0.6,      // ia - 呀
+            width: 0.5,
+            form: 0.5,
+            smile: 0.1,
+            frown: 0
+        },
+        'ie': {
+            openY: 0.5,      // ie - 耶
+            width: 0.4,
+            form: 0.35,
+            smile: 0.05,
+            frown: 0.05
+        },
+        'ua': {
+            openY: 0.65,     // ua - 哇
+            width: 0.55,
+            form: 0.6,
+            smile: 0.15,
+            frown: 0
+        },
+        'uo': {
+            openY: 0.55,     // uo - 我
+            width: 0.45,
+            form: 0.5,
+            smile: 0.1,
+            frown: 0.05
+        },
+        
+        // 特殊元音
+        'an': {
+            openY: 0.7,      // an - 安
+            width: 0.6,
+            form: 0.65,
+            smile: 0.05,
+            frown: 0
+        },
+        'en': {
+            openY: 0.55,     // en - 恩
+            width: 0.45,
+            form: 0.4,
+            smile: 0,
+            frown: 0.05
+        },
+        'in': {
+            openY: 0.35,     // in - 因
+            width: 0.25,
+            form: 0.15,
+            smile: 0,
+            frown: 0.1
+        },
+        'un': {
+            openY: 0.25,     // un - 温
+            width: 0.15,
+            form: 0.05,
+            smile: 0,
+            frown: 0.15
+        },
+        'ang': {
+            openY: 0.75,     // ang - 昂
+            width: 0.65,
+            form: 0.7,
+            smile: 0.1,
+            frown: 0
+        },
+        'eng': {
+            openY: 0.6,      // eng - 英
+            width: 0.5,
+            form: 0.45,
+            smile: 0,
+            frown: 0.05
+        },
+        'ing': {
+            openY: 0.4,      // ing - 英
+            width: 0.3,
+            form: 0.2,
+            smile: 0,
+            frown: 0.1
+        },
+        'ong': {
+            openY: 0.65,     // ong - 翁
+            width: 0.55,
+            form: 0.6,
+            smile: 0.05,
+            frown: 0
+        }
+    };
+    
+    const vowel = currentItem.vowel;
+    const config = vowelConfigs[vowel] || vowelConfigs['a'];
+    
+    // 如果有下一个时间轴项，进行平滑过渡
+    let finalConfig = { ...config };
+    if (nextItem && progress > 0.7) { // 在最后30%时间开始过渡
+        const nextVowel = nextItem.vowel;
+        const nextConfig = vowelConfigs[nextVowel] || vowelConfigs['a'];
+        const transitionProgress = (progress - 0.7) / 0.3; // 0-1的过渡进度
+        
+        // 平滑插值
+        finalConfig = {
+            openY: config.openY + (nextConfig.openY - config.openY) * transitionProgress,
+            width: config.width + (nextConfig.width - config.width) * transitionProgress,
+            form: config.form + (nextConfig.form - config.form) * transitionProgress,
+            smile: config.smile + (nextConfig.smile - config.smile) * transitionProgress,
+            frown: config.frown + (nextConfig.frown - config.frown) * transitionProgress
+        };
+    }
+    
+    // 添加轻微动态变化效果（减少幅度）
+    const time = currentTime / 1000; // 转换为秒
+    const vibrationPhase = time * 4; // 降低震动频率
+    const vibrationAmplitude = Math.min(finalConfig.openY * 0.01, 0.005); // 大幅降低震动幅度
+    
+    // 只在嘴型开合较大时添加轻微震动
+    if (finalConfig.openY > 0.4) {
+        finalConfig.openY += Math.sin(vibrationPhase) * vibrationAmplitude;
+    }
+    
+    // 添加极轻微的随机微调（每500ms，减少频率）
+    const variationTimer = Math.floor(time * 2); // 每0.5秒一个周期
+    if (variationTimer !== Math.floor((time - 0.016) * 2)) { // 新周期
+        const randomVariation = (Math.random() - 0.5) * 0.005; // 极小幅度的随机变化
+        finalConfig.openY += randomVariation;
+        finalConfig.width += randomVariation * 0.3;
+    }
+    
+    // 确保参数在合理范围内
+    finalConfig.openY = Math.max(0.2, Math.min(1.0, finalConfig.openY));
+    finalConfig.width = Math.max(0.1, Math.min(1.0, finalConfig.width));
+    finalConfig.form = Math.max(0.0, Math.min(1.0, finalConfig.form));
+    finalConfig.smile = Math.max(0.0, Math.min(0.3, finalConfig.smile));
+    finalConfig.frown = Math.max(0.0, Math.min(0.3, finalConfig.frown));
+    
+    // 应用所有嘴型参数
+    try {
+        model.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", finalConfig.openY);
+        model.internalModel.coreModel.setParameterValueById("ParamMouthOpenWidth", finalConfig.width);
+        model.internalModel.coreModel.setParameterValueById("ParamMouthForm", finalConfig.form);
+        model.internalModel.coreModel.setParameterValueById("ParamMouthSmile", finalConfig.smile);
+        model.internalModel.coreModel.setParameterValueById("ParamMouthFrown", finalConfig.frown);
+    } catch (e) {
+        // 如果模型不支持某些参数，只设置基本参数
+        model.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", finalConfig.openY);
+    }
+    
+    // 继续下一帧
+    requestAnimationFrame(() => updateSubtitleSync(currentTimelineResult));
 };
 
 // 重置模型位置和大小
@@ -774,13 +1082,13 @@ const resetModel = () => {
 };
 
 // 嘴型变换函数，随机设置嘴巴张开程度
-const mouthFn = () => {
-    if (!model) return;
-    let n = Math.random(); // 生成 0~1 的随机数
-    console.log("随机数0~1控制嘴巴Y轴高度-->", n);
-    // 设置嘴巴张开参数
-    model.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", n);
-};
+// const mouthFn = () => {
+//     if (!model) return;
+//     let n = Math.random(); // 生成 0~1 的随机数
+//     console.log("随机数0~1控制嘴巴Y轴高度-->", n);
+//     // 设置嘴巴张开参数
+//     model.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", n);
+// };
 
 // 随机动作函数，触发模型的 TapBody 动作
 const randomMotionFn = () => {
@@ -840,6 +1148,17 @@ const analyzeAudio = () => {
         return;
     }
 
+    // 如果全局暂停，立即停止
+    if (isPaused.value) {
+        return;
+    }
+
+    // 如果字幕同步正在进行，暂停音频分析
+    if (isSubtitleSyncing.value) {
+        animationId = requestAnimationFrame(analyzeAudio);
+        return;
+    }
+
     analyser.getByteFrequencyData(dataArray);
 
     // 计算平均音量
@@ -863,9 +1182,198 @@ const analyzeAudio = () => {
     // 继续分析
     animationId = requestAnimationFrame(analyzeAudio);
 };
+
+
+
+
+
+const setupSubtitleListener = () => {
+    console.log('设置字幕监听器...');
+    
+    // 监听localStorage变化
+    window.addEventListener('storage', (event) => {
+        console.log('立即收到localStorage变化事件:', event.key, event.newValue);
+        if (event.key === 'live2d_current_subtitle') {
+            if (event.newValue === null) {
+                // 如果字幕被清空，立即暂停所有动画
+                pauseAllAnimations();
+            } else {
+                // 如果有新字幕，恢复动画并处理
+                resumeAllAnimations();
+                handleSubtitleChange(event.newValue);
+            }
+        }
+    });
+    
+    // 监听字幕更新事件
+    window.addEventListener('subtitleUpdated', (event) => {
+        console.log('收到字幕更新事件:', event.detail);
+        handleSubtitleChange(JSON.stringify(event.detail));
+    });
+    
+    // 监听字幕清空事件
+    window.addEventListener('subtitleCleared', () => {
+        console.log('立即收到字幕清空事件');
+        // 立即暂停所有动画
+        pauseAllAnimations();
+    });
+    
+    // 延迟检查当前字幕，避免与storage事件冲突
+    setTimeout(() => {
+        const currentSubtitleStored = localStorage.getItem('live2d_current_subtitle');
+        if (currentSubtitleStored) {
+            handleSubtitleChange(currentSubtitleStored);
+        }
+    }, 100);
+};
+
+
+
+// 防重复处理机制
+let lastProcessedSubtitle = null;
+let lastProcessedTime = 0;
+
+// 全局暂停控制函数
+const pauseAllAnimations = () => {
+    console.log('立即暂停所有动画...');
+    isPaused.value = true;
+    
+    // 立即设置嘴巴为轻微张开状态
+    if (model) {
+        model.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", 0.2);
+        model.internalModel.coreModel.setParameterValueById("ParamMouthForm", 0);
+        model.internalModel.coreModel.setParameterValueById("ParamMouthOpenWidth", 0.5);
+        try {
+            model.internalModel.coreModel.setParameterValueById("ParamMouthSmile", 0);
+            model.internalModel.coreModel.setParameterValueById("ParamMouthFrown", 0);
+        } catch (e) {
+            // 如果模型不支持这些参数，忽略错误
+        }
+    }
+    
+    // 停止所有动画循环
+    if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+    }
+    
+    // 重置所有状态
+    isSubtitleSyncing.value = false;
+    currentSubtitle.value = null;
+    lastProcessedSubtitle = null;
+    
+    console.log('所有动画已立即暂停');
+};
+
+// 恢复动画
+const resumeAllAnimations = () => {
+    console.log('恢复动画...');
+    isPaused.value = false;
+};
+
+// 改进的字幕时长估算函数
+const estimateSubtitleDuration = (text) => {
+    if (!text) return 1.0;
+    
+    let totalDuration = 0;
+    const chars = text.split('');
+    
+    for (const char of chars) {
+        if (char.trim()) {
+            // 根据字符类型估算时长
+            if (/[，。！？；：]/.test(char)) {
+                totalDuration += 0.1; // 标点符号
+            } else if (/[一二三四五六七八九十]/.test(char)) {
+                totalDuration += 0.2; // 数字
+            } else if (/[的地得着了过]/.test(char)) {
+                totalDuration += 0.15; // 轻声字
+            } else {
+                totalDuration += 0.25; // 普通字符
+            }
+        } else {
+            totalDuration += 0.05; // 空格
+        }
+    }
+    
+    // 添加一些缓冲时间
+    return Math.max(totalDuration, 0.5);
+};
+
+const handleSubtitleChange = async (subtitleData) => {
+    // 如果全局暂停，不处理字幕变化
+    if (isPaused.value && subtitleData) {
+        console.log('系统暂停中，忽略字幕变化');
+        return;
+    }
+    
+    if (!subtitleData) {
+        // 立即暂停所有动画
+        pauseAllAnimations();
+        return;
+    }
+    
+    try {
+        const subtitle = JSON.parse(subtitleData);
+        const currentTime = Date.now();
+        
+        // 防重复处理：如果相同字幕在100ms内重复处理，则跳过
+        if (lastProcessedSubtitle === subtitle.text && 
+            currentTime - lastProcessedTime < 100) {
+            console.log('跳过重复字幕处理:', subtitle.text);
+            return;
+        }
+        
+        console.log('处理字幕变化:', subtitle);
+        currentSubtitle.value = subtitle;
+        lastProcessedSubtitle = subtitle.text;
+        lastProcessedTime = currentTime;
+        
+        // 改进的字幕时长估算
+        const estimatedDuration = estimateSubtitleDuration(subtitle.text);
+        
+        // 自动请求timeline
+        try {
+            console.log('请求字幕时间轴，文本:', subtitle.text, '时长:', estimatedDuration);
+            const response = await fetch('http://localhost:5001/text2mouth_timeline', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    text: subtitle.text,
+                    duration: estimatedDuration
+                })
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                console.log('字幕时间轴结果:', result);
+                console.log(`文本: "${subtitle.text}"`);
+                console.log(`字符数: ${subtitle.text.length}`);
+                console.log(`时间轴项数: ${result.timeline.length}`);
+                console.log(`总时长: ${estimatedDuration}秒`);
+                
+                // 显示详细的时间轴信息
+                result.timeline.forEach((item, index) => {
+                    console.log(`[${index}] ${item.char || ' '} (${item.vowel || '无元音'}) ${item.start.toFixed(2)}s-${item.end.toFixed(2)}s`);
+                });
+                
+                // 自动驱动嘴型
+                isSubtitleSyncing.value = true;
+                subtitleSyncStartTime.value = Date.now();
+                updateSubtitleSync(result);
+            } else {
+                console.error('请求字幕时间轴失败:', response.status, response.statusText);
+            }
+        } catch (e) {
+            console.error('字幕驱动嘴型失败', e);
+        }
+    } catch (e) {
+        console.error('解析字幕数据失败', e);
+    }
+};
 </script>
 
 <style scoped>
+
 /* 画布样式，直接访问时固定分辨率，iframe嵌入时保持比例 */
 #myCanvas {
     width: 100%;

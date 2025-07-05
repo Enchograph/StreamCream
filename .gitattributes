@@ -1,2 +1,44 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Vue files should always use LF
+*.vue text eol=lf
+
+# JavaScript files should always use LF
+*.js text eol=lf
+*.ts text eol=lf
+
+# CSS files should always use LF
+*.css text eol=lf
+*.scss text eol=lf
+*.sass text eol=lf
+
+# HTML files should always use LF
+*.html text eol=lf
+
+# JSON files should always use LF
+*.json text eol=lf
+
+# Markdown files should always use LF
+*.md text eol=lf
+
+# Python files should always use LF
+*.py text eol=lf
+
+# Shell scripts should always use LF
+*.sh text eol=lf
+*.bash text eol=lf
+
+# Binary files should not be modified
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.tar.gz binary
+*.exe binary
+*.dll binary
+*.so binary
+*.dylib binary

@@ -110,12 +110,14 @@
 
                     <div style="display: flex; justify-content: space-between;">
                         <div>
-                            状态: <span class="status-badge ready">预览就绪</span>
+                            状态: <span class="status-badge" :class="isRefreshing ? 'loading' : 'ready'">
+                                {{ isRefreshing ? '刷新中...' : '预览就绪' }}
+                            </span>
                         </div>
                         <div class="btn-group">
-                            <button class="btn secondary" @click="refreshPreview">
-                                <span class="btn-icon">🔄</span>
-                                刷新预览
+                            <button class="btn secondary" @click="refreshPreview" :disabled="isRefreshing">
+                                <span class="btn-icon">{{ isRefreshing ? '⏳' : '🔄' }}</span>
+                                {{ isRefreshing ? '刷新中...' : '刷新预览' }}
                             </button>
                             <button class="btn success pulse" id="test-stream" @click="goToNextPage">
                                 <span class="btn-icon">📺</span>
@@ -215,6 +217,9 @@ export default {
         const speechStyle = ref('casual');
         const generatedSpeech = ref('');
         const isGenerating = ref(false);
+        
+        // 刷新预览状态
+        const isRefreshing = ref(false);
 
         // API配置
         let aiSettings = {};
@@ -292,22 +297,55 @@ export default {
             return currentModel ? currentModel.name : '未知模型';
         };
 
-        // 刷新预览功能
+        // 刷新预览功能 - 添加防抖机制
+        let refreshTimeout = null;
+        
         const refreshPreview = () => {
-            // 直接操作iframe元素进行刷新
+            // 防止重复点击
+            if (isRefreshing.value) {
+                console.log('刷新操作正在进行中，请稍候...');
+                return;
+            }
+            
+            // 清除之前的定时器
+            if (refreshTimeout) {
+                clearTimeout(refreshTimeout);
+            }
+            
+            isRefreshing.value = true;
+            
+            // 使用更简单的方式刷新iframe - 通过重新加载src
             const iframe = document.querySelector('.iframe-container iframe');
             if (iframe) {
-                // 保存当前src
-                const currentSrc = iframe.src;
-                // 清空src
-                iframe.src = '';
-                // 延迟后重新设置src，强制重新加载
-                setTimeout(() => {
-                    iframe.src = currentSrc;
-                }, 100);
-                console.log('Live2D预览已刷新');
+                try {
+                    // 保存当前src
+                    const currentSrc = iframe.src;
+                    
+                    // 清空src并立即重新设置，强制重新加载
+                    iframe.src = '';
+                    
+                    refreshTimeout = setTimeout(() => {
+                        iframe.src = currentSrc;
+                        console.log('Live2D预览已刷新');
+                        
+                        // 延迟重置状态，给用户更多时间看到加载过程
+                        setTimeout(() => {
+                            isRefreshing.value = false;
+                        }, 800);
+                    }, 100);
+                } catch (error) {
+                    console.error('刷新预览失败:', error);
+            
+                    setTimeout(() => {
+                        isRefreshing.value = false;
+                    }, 500);
+                }
             } else {
                 console.warn('未找到Live2D预览iframe');
+                // 未找到iframe时也延迟重置状态
+                setTimeout(() => {
+                    isRefreshing.value = false;
+                }, 500);
             }
         };
 
@@ -421,7 +459,10 @@ export default {
             generatedSpeech,
             isGenerating,
             generateSpeech,
-            testSpeech
+            testSpeech,
+            
+            // 刷新预览相关
+            isRefreshing
         };
     }
 }
@@ -551,6 +592,11 @@ p {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     min-width: 120px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
 }
 
 .btn::before {
@@ -654,13 +700,15 @@ p {
     margin: 0;
     flex: 1;
     min-width: auto;
+    height: 48px;
 }
 
 /* 按钮图标样式 */
 .btn-icon {
     margin-right: 8px;
     font-size: 16px;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     transition: transform 0.3s ease;
 }
 
@@ -1065,5 +1113,26 @@ input[type="file"]::file-selector-button:hover {
 .status-badge.not-ready:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+}
+
+.status-badge.loading {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+    animation: loadingPulse 1.5s ease-in-out infinite;
+}
+
+.status-badge.loading:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+}
+
+@keyframes loadingPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
 }
 </style>

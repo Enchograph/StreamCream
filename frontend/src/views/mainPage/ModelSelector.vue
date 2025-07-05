@@ -28,15 +28,15 @@
       >切换模型</button>
     </div>
 
-    <!-- 参考音频选择单独一行 -->
-    <div style="margin: 10px 0; display: flex; align-items: center;">
-      <label style="margin-right: 6px;">参考音频：</label>
+    <!-- 参考音频选择同一行 -->
+    <div class="model-dropdown" style="margin-bottom: 18px;">
+      <label style="margin-right: 10px; white-space: nowrap; font-weight: 500;">参考音频：</label>
       <select v-model="selectedAudio" :disabled="audioLoading" class="model-select">
         <option v-for="audio in audioList" :key="audio.path" :value="audio.path">
           {{ audio.file_name }}<span v-if="audio.is_current">（当前）</span>
         </option>
       </select>
-      <button class="btn primary" style="margin-left: 10px;" @click="onSwitchAudio" :disabled="audioLoading || !selectedAudio">
+      <button class="btn primary audio-switch-btn" style="margin-left: 10px;" @click="onSwitchAudio" :disabled="audioLoading || !selectedAudio">
         切换参考音频
       </button>
     </div>
@@ -179,23 +179,70 @@ const generateSample = async () => {
     display: flex;
     align-items: center;
 }
-.model-select {
-    padding: 8px 12px;
-    border-radius: 4px;
-    border: 1px solid #dcdfe6;
+
+.model-select,
+select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e1e8ed;
+    border-radius: 10px;
     font-size: 14px;
-    max-width: 200px;
-    outline: none;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     cursor: pointer;
-    background-color: white;
-    transition: border-color 0.2s;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
 }
-.model-select:hover {
-    border-color: #c0c4cc;
+
+.model-select:hover,
+select:hover {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    transform: translateY(-1px);
 }
-.model-select:focus {
-    border-color: #409eff;
+
+.model-select:focus,
+select:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-1px);
 }
+
+.model-select option,
+select option {
+    padding: 12px;
+    background: white;
+    color: #333;
+    font-size: 14px;
+}
+
+.model-select option:hover,
+select option:hover {
+    background: #667eea;
+    color: white;
+}
+
+.model-item.active {
+    font-weight: bold;
+}
+
+.model-status {
+    margin-top: 18px;
+    padding: 12px 16px;
+    background: #f7fafd;
+    border-radius: 6px;
+    font-size: 15px;
+    color: #333;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
 .btn {
     padding: 10px 22px;
     border: none;
@@ -238,15 +285,6 @@ const generateSample = async () => {
     font-size: 20px;
     vertical-align: middle;
 }
-.model-status {
-    margin-top: 18px;
-    padding: 12px 16px;
-    background: #f7fafd;
-    border-radius: 6px;
-    font-size: 15px;
-    color: #333;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-}
 /* 移除.btn-icon，所有按钮主色为紫色渐变，继承.btn.primary主页面风格 */
 .btn.primary {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
@@ -255,5 +293,19 @@ const generateSample = async () => {
 .btn.primary:hover:not(:disabled) {
   background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%) !important;
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.model-dropdown select.model-select {
+  max-width: 180px;
+  width: auto;
+}
+
+.model-dropdown-row .model-select {
+  max-width: 140px;
+  width: 140px;
+}
+.model-dropdown-row select.model-select {
+  max-width: 140px;
+  width: 140px;
 }
 </style>

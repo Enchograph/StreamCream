@@ -5,6 +5,7 @@ import router from './router'
 import 'font-awesome/css/font-awesome.min.css'
 import api from './api'
 import ElementPlus from 'element-plus'
+import { ElMessage } from 'element-plus'
 import 'element-plus/dist/index.css'
 
 // Vuetify
@@ -24,6 +25,7 @@ const pinia = createPinia()
 app.use(pinia)
 app.use(router)
 app.use(vuetify)
+app.use(ElementPlus)
 app.mount('#app')
 
 //错误处理
@@ -36,12 +38,12 @@ app.config.errorHandler = (err, vm, info) => {
         const message = err.response.data?.message || '请求失败'
 
         if (status === 401) {
-            alert('登录已过期，请重新登录')
+            ElMessage.error('登录已过期，请重新登录')
             router.push('/loginPage')
         } else if (status >= 500) {
-            alert('服务器错误，请稍后再试')
+            ElMessage.error('服务器错误，请稍后再试')
         } else {
-            alert(message)
+            ElMessage.error(message)
         }
     }
 }

@@ -35,6 +35,7 @@ import * as PIXI from "pixi.js";
 import { Live2DModel } from "pixi-live2d-display-lipsyncpatch";
 // 引入Live2D状态管理
 import { useLive2DStore } from "../stores/live2d";
+import { ElMessage } from 'element-plus'
 
 // 添加音频分析相关变量
 let microphone;
@@ -484,8 +485,8 @@ const loadAudioFile = async (event) => {
 // 切换音频同步状态
 const toggleAudioSync = () => {
     if (!audioElement || !analyser) {
-        alert('请先选择音频文件');
-        return;
+        ElMessage.warning('请先选择音频文件')
+        return
     }
 
     if (isAudioSyncActive.value) {

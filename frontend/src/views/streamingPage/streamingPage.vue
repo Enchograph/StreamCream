@@ -72,6 +72,7 @@
 import { defineComponent } from 'vue';
 import draggable from 'vuedraggable';
 import BroadcastInterface from './BroadcastInterface.vue';
+import { ElMessage } from 'element-plus'
 
 export default defineComponent({
     name: 'LiveStreamingAssistant',
@@ -145,7 +146,7 @@ export default defineComponent({
                 this.outline = response;
             } catch (error) {
                 console.error('生成提纲出错:', error);
-                alert('生成提纲失败，请重试');
+                ElMessage.error('生成提纲失败，请重试');
             } finally {
                 this.isGeneratingOutline = false;
             }
@@ -184,7 +185,7 @@ export default defineComponent({
                 this.outlineConfirmed = true;
             } catch (error) {
                 console.error('确认提纲出错:', error);
-                alert('处理提纲失败，请重试');
+                ElMessage.error('处理提纲失败，请重试');
             } finally {
                 this.isConfirmingOutline = false;
             }
@@ -238,7 +239,7 @@ export default defineComponent({
                 console.log(`章节 "${targetBlock.title}" 内容生成完成，共 ${targetBlock.content.length} 句`);
             } catch (error) {
                 console.error(`生成章节 "${targetBlock.title}" 内容出错:`, error);
-                alert('生成章节内容失败，请重试');
+                ElMessage.error('生成章节内容失败，请重试');
             }
         },
 
@@ -325,7 +326,7 @@ export default defineComponent({
                 }
             } catch (error) {
                 console.error('生成章节内容出错:', error);
-                alert('生成章节内容失败，请重试');
+                ElMessage.error('生成章节内容失败，请重试');
             } finally {
                 this.isGeneratingContent = false;
             }

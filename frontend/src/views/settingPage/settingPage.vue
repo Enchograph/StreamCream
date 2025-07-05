@@ -495,9 +495,9 @@ export default {
             try {
                 await api.resetPreferences();
                 localStorage.clear();
-                this.$toast.success('所有偏好设置已重置');
+                ElMessage.success('所有偏好设置已重置');
             } catch (error) {
-                this.$toast.error('重置失败: ' + error.message);
+                ElMessage.error('重置失败: ' + error.message);
             }
         },
         testStreamConnection() {
@@ -520,7 +520,7 @@ export default {
                 window.dispatchEvent(new Event('storage'));
             } catch (error) {
                 console.error('上传背景失败:', error);
-                alert('上传背景失败');
+                ElMessage.error('上传背景失败');
             }
             event.target.value = ''; // 重置input
         },
@@ -543,9 +543,9 @@ export default {
                 });
                 const live2dStore = useLive2DStore();
                 live2dStore.setResolution(this.resolution);
-                if (showAlert) alert('直播设置已保存！');
+                if (showAlert) ElMessage.success('直播设置已保存！');
             } catch (e) {
-                if (showAlert) alert('直播设置保存失败：' + e.message);
+                if (showAlert) ElMessage.error('直播设置保存失败：' + e.message);
             }
         },
 

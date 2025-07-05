@@ -46,7 +46,7 @@
 
 
 import { defineComponent } from 'vue';
-import { ElMessageBox } from 'element-plus';
+import { ElMessageBox, ElMessage } from 'element-plus';
 import Live2DIframeContainer from '../../components/Live2DIframeContainer.vue';
 
 
@@ -398,7 +398,7 @@ export default defineComponent({
 
         async startBroadcast() {
             if (this.outlineBlocks.length === 0) {
-                alert('请先生成并确认提纲');
+                ElMessage.warning('请先生成并确认提纲');
                 return;
             }
 
@@ -409,7 +409,7 @@ export default defineComponent({
                 // 获取屏幕视频流
                 const screenStream = await navigator.mediaDevices.getDisplayMedia({
                     video: true,
-                    audio: false  // 不采集屏幕音频
+                    audio: true  // 采集屏幕音频
                 });
 
                 // 获取系统音频流（通过 getUserMedia）
@@ -474,12 +474,12 @@ export default defineComponent({
                 };
 
                 this.wsConnection.onerror = (e) => {
-                    alert('WebSocket连接失败: ' + e.message);
+                    ElMessage.error('WebSocket连接失败: ' + e.message);
                     this.cleanupResources();
                 };
 
             } catch (err) {
-                alert('获取屏幕共享失败: ' + err);
+                ElMessage.error('获取屏幕共享失败: ' + err);
                 this.cleanupResources();
                 return;
             }

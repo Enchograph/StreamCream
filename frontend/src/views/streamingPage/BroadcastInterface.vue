@@ -424,12 +424,12 @@ export default defineComponent({
 
                 // 组合视频和音频流
                 this.mediaStream = new MediaStream();
-                
+
                 // 添加视频轨道
                 screenStream.getVideoTracks().forEach(track => {
                     this.mediaStream.addTrack(track);
                 });
-                
+
                 // 添加音频轨道
                 audioStream.getAudioTracks().forEach(track => {
                     this.mediaStream.addTrack(track);
@@ -442,7 +442,7 @@ export default defineComponent({
                     // 发送推流信息 - 添加推流地址和推流码
                     const rtmpUrl = localStorage.getItem('rtmp_url') || '';
                     const streamKey = localStorage.getItem('stream_key') || '';
-                    
+
                     this.wsConnection.send(JSON.stringify({
                         action: 'start_stream',
                         topic: this.topic,
@@ -606,7 +606,7 @@ export default defineComponent({
         },
 
         // 结束直播
-        async endBroadcast() {
+        async stopLive() {
             // 添加确认对话框
             const confirmEnd = await ElMessageBox.confirm(
                 '确定要结束直播吗？',
@@ -656,6 +656,9 @@ export default defineComponent({
             this.currentSubtitle = '';
             this.nextSubtitle = '';
             this.$router.push('/mainPage');
+
+            // 调用streamConfig.vue中的stopLive函数
+            window.parent.postMessage({ type: 'stopLive' }, '*');
 
             console.log('直播已结束');
         },

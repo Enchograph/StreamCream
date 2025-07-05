@@ -37,6 +37,36 @@ const routes = [
         path: '/live2d',
         name: 'Live2DViewer',
         component: Live2DViewer
+    },
+    {
+        path: '/bilibili',
+        name: 'BilibiliStream',
+        component: () => import('../views/streamPlatforms/BilibiliStream.vue')
+    },
+    {
+        path: '/douyin',
+        name: 'DouyinStream',
+        component: () => import('../views/streamPlatforms/DouyinStream.vue')
+    },
+    {
+        path: '/xiaohongshu',
+        name: 'XiaohongshuStream',
+        component: () => import('../views/streamPlatforms/XiaohongshuStream.vue')
+    },
+    {
+        path: '/kuaishou',
+        name: 'KuaishouStream',
+        component: () => import('../views/streamPlatforms/KuaishouStream.vue')
+    },
+    {
+        path: '/youtube',
+        name: 'YoutubeStream',
+        component: () => import('../views/streamPlatforms/YoutubeStream.vue')
+    },
+    {
+        path: '/twitch',
+        name: 'TwitchStream',
+        component: () => import('../views/streamPlatforms/TwitchStream.vue')
     }
 ]
 

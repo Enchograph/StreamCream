@@ -26,15 +26,20 @@
     <button class="btn get-streamkey-btn" @click="getStreamKey">
         <span class="btn-icon">🔑</span>{{ platformToolNames[selectedPlatform] || '获取推流码工具' }}
     </button>
+    <button class="btn stop-stream-btn" @click="stopLive" :disabled="!isLiveActive">
+        <span class="btn-icon">⏹️</span>停止直播
+    </button>
 </template>
 
 <script setup>
 import { ref, watch, onMounted } from 'vue';
 import api from '/src/api/index.js'
+import { useRouter } from 'vue-router';
 
 const selectedPlatform = ref('抖音');
 const streamUrl = ref('');
 const streamKey = ref('');
+const isLiveActive = ref(false);
 const wsBaseUrl = import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8888';
 const platformToolNames = {
     'B站': 'B站推流码获取工具',
@@ -100,22 +105,22 @@ function selectPlatform(platform) {
     streamUrl.value = platformUrls[platform] || '';
 }
 
+const router = useRouter();
+
 function getStreamKey() {
-    // 根据平台调用不同的exe工具
-    const toolPath = {
-        'B站': 'tools/bilibili/bilibili_streamkey.exe',
-        '抖音': 'tools/douyin/douyin_streamkey.exe',
-        '小红书': 'tools/xiaohongshu/xiaohongshu_streamkey.exe',
-        '快手': 'tools/kuaishou/kuaishou_streamkey.exe',
-        'YouTube': 'tools/youtube/youtube_streamkey.exe',
-        'Twitch': 'tools/twitch/twitch_streamkey.exe'
+    const platformRoutes = {
+        'B站': '/bilibili',
+        '抖音': '/douyin',
+        '小红书': '/xiaohongshu',
+        '快手': '/kuaishou',
+        'YouTube': '/youtube',
+        'Twitch': '/twitch'
     }[selectedPlatform.value];
 
-    if (toolPath) {
-        // 这里需要实现调用exe的逻辑
-        console.log(`调用工具: ${toolPath}`);
+    if (platformRoutes) {
+        router.push(platformRoutes);
     } else {
-        console.log('未找到对应平台的工具');
+        console.log('未找到对应平台的路由');
     }
 }
 
@@ -149,6 +154,8 @@ async function testStream() {
         };
         recorder.start(100);
 
+        isLiveActive.value = true;
+
         // 不再自动断开，需用户手动关闭页面或刷新才会停止
     };
 
@@ -156,6 +163,26 @@ async function testStream() {
         alert('WebSocket 连接失败: ' + e.message);
     };
 }
+
+function stopLive() {
+    isLiveActive.value = false;
+    // 这里可以添加更多停止直播的逻辑
+}
+
+// 监听来自BroadcastInterface.vue和BilibiliStream.vue的消息
+onMounted(() => {
+    window.addEventListener('message', (event) => {
+        console.log('Received message:', event.data);
+        if (event.data.type === 'stopLive') {
+            stopLive();
+        } else if (event.data.type === 'updateStreamInfo') {
+            console.log('Updating stream info:', event.data.server, event.data.code);
+            streamUrl.value = event.data.server;
+            streamKey.value = event.data.code;
+            saveStreamPreferences();
+        }
+    });
+});
 </script>
 
 <style scoped>

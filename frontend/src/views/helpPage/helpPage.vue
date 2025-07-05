@@ -21,21 +21,35 @@
                             <div class="step-number">1</div>
                             <div class="step-content">
                                 <h3>登录系统</h3>
-                                <p>使用您的账号密码登录StreamCream系统。如果是首次使用，请先注册账号。</p>
+                                <p>打开StreamCream平台首页，点击右上角"登录"按钮。输入账号和密码后点击"登录"进入系统。如果没有账号，请先点击"注册"，填写邮箱、密码等信息完成注册。</p>
                             </div>
                         </div>
                         <div class="step-card">
                             <div class="step-number">2</div>
                             <div class="step-content">
                                 <h3>配置设置</h3>
-                                <p>在设置页面配置AI模型、直播参数和推流信息。</p>
+                                <p>进入"设置"页面，在"AI设置"区域选择模型提供商（如OpenAI、Claude等），填写API密钥。在"直播设置"区域选择直播平台（如B站），填写推流地址和推流码，设置分辨率、帧率等参数。可根据需要自定义Banner颜色、开启调试模式等。</p>
                             </div>
                         </div>
                         <div class="step-card">
                             <div class="step-number">3</div>
                             <div class="step-content">
+                                <h3>声音库与Live2D模型选择</h3>
+                                <p>在主页面"声音库选择"区域，选择或上传GPT/SoVITS模型和参考音频。在"Live2D模型"区域，选择或上传虚拟形象模型，实时预览效果。</p>
+                            </div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h3>AI讲稿生成与测试</h3>
+                                <p>在"AI讲稿生成"区域，输入讲稿主题，选择风格，点击"生成讲稿"。可在下方预览和测试AI生成的讲稿内容。</p>
+                            </div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
                                 <h3>开始直播</h3>
-                                <p>在主页面配置完成后，点击"开始直播"即可开始AI直播。</p>
+                                <p>在主页面确认所有配置无误后，点击"开始直播"按钮。直播页面会显示Live2D形象、AI语音、讲稿管理等功能。可实时发送弹幕、与观众互动，随时停止直播。</p>
                             </div>
                         </div>
                     </div>
@@ -244,7 +258,7 @@ const goBack = () => {
 <style scoped>
 .help-page {
     min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #f6f8fa 0%, #e9ecf3 100%);
     padding: 20px;
 }
 
@@ -316,37 +330,69 @@ const goBack = () => {
 .step-card {
     display: flex;
     align-items: flex-start;
-    margin-bottom: 25px;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 12px;
-    border-left: 4px solid #667eea;
+    margin-bottom: 32px;
+    padding: 28px 28px 28px 24px;
+    background: linear-gradient(120deg, #f6f8fa 60%, #e0e7ff 100%);
+    border-radius: 18px;
+    border-left: 5px solid #667eea;
+    box-shadow: 0 6px 24px rgba(102,126,234,0.08);
+    transition: box-shadow 0.2s, transform 0.2s;
+    position: relative;
 }
-
+.step-card:hover {
+    box-shadow: 0 12px 32px rgba(102,126,234,0.13);
+    transform: translateY(-2px) scale(1.01);
+}
 .step-number {
-    background: #667eea;
-    color: white;
-    width: 40px;
-    height: 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    width: 54px;
+    height: 54px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    font-size: 1.2rem;
-    margin-right: 20px;
+    font-size: 1.6rem;
+    margin-right: 28px;
+    box-shadow: 0 2px 8px rgba(102,126,234,0.18);
+    border: 3px solid #fff;
     flex-shrink: 0;
+    transition: box-shadow 0.2s;
 }
-
+.step-card:hover .step-number {
+    box-shadow: 0 4px 16px rgba(102,126,234,0.22);
+}
 .step-content h3 {
-    margin: 0 0 10px 0;
+    margin: 0 0 12px 0;
     color: #333;
-    font-size: 1.3rem;
+    font-size: 1.25rem;
+    font-weight: 700;
 }
-
 .step-content p {
     margin: 0;
-    line-height: 1.6;
+    line-height: 1.7;
+    color: #555;
+    font-size: 1.05rem;
+}
+/* 步骤之间的流程线（PC端） */
+@media (min-width: 700px) {
+    .step-card:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        left: 36px;
+        top: 64px;
+        width: 2px;
+        height: calc(100% - 64px);
+        background: repeating-linear-gradient(
+            to bottom,
+            #b3c0d1 0px,
+            #b3c0d1 8px,
+            transparent 8px,
+            transparent 16px
+        );
+        z-index: 0;
+    }
 }
 
 /* 功能网格 */

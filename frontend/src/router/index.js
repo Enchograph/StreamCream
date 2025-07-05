@@ -8,7 +8,7 @@ import helpPage from '../views/helpPage/helpPage.vue'
 import { useAuthStore } from '../stores/auth'
 import { ElMessage } from 'element-plus'
 
-const protectedPaths = ['/mainPage', '/settingPage', '/streamingPage', '/live2d', '/helpPage']
+const protectedPaths = ['/mainPage', '/settingPage', '/streamingPage', '/live2d', '/helpPage', '/trainPage', '/bilibili']
 
 const routes = [
     {
@@ -71,10 +71,15 @@ const routes = [
         component: () => import('../views/streamPlatforms/YoutubeStream.vue')
     },
     {
-        path: '/twitch',
-        name: 'TwitchStream',
-        component: () => import('../views/streamPlatforms/TwitchStream.vue')
-    }
+    path: '/twitch',
+    name: 'TwitchStream',
+    component: () => import('../views/streamPlatforms/TwitchStream.vue')
+},
+{
+    path: '/trainPage',
+    name: 'trainPage',
+    component: () => import('../views/trainPage/trainPage.vue')
+}
 ]
 
 const router = createRouter({

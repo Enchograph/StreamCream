@@ -52,7 +52,7 @@
                         <span class="btn-icon">⚡</span>
                         开始训练
                     </button>
-                    <a href="#" class="link">高级语音模型训练设置</a>
+                    <router-link to="/trainPage" class="link">高级语音模型训练设置</router-link>
 
                     <div id="training-status" style="margin-top: 15px;">
                         训练状态: <span class="status-badge not-ready">未开始</span>

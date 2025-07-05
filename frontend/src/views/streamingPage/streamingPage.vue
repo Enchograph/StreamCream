@@ -488,13 +488,17 @@ h3 {
     margin: 10px 50px;
     /* 标题与上下内容的间距 */
     position: relative;
+    white-space: nowrap;
+    flex-wrap: nowrap;
 }
 
 
 /* 文字包裹元素，确保伪元素正确显示 */
 h3 span {
-    display: inline-block;
-    /* 关键修复：确保 span 支持伪元素 */
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    /* 关键修复：确保 span 支持伪元素且不换行 */
     margin-bottom: 20px;
 }
 
@@ -510,6 +514,7 @@ h3 span::before {
     background-color: #c4a898;
     margin-right: 1.5rem;
     /* 横线与文字的间距 */
+    flex-shrink: 0;
 }
 
 /* 文字右侧横线 */
@@ -524,6 +529,7 @@ h3 span::after {
     background-color: #c4a898;
     margin-left: 1.5rem;
     /* 横线与文字的间距 */
+    flex-shrink: 0;
 }
 
 .container {
@@ -580,6 +586,35 @@ h3 span::after {
         width: 100%;
         flex: none;
         /* 取消 flex: 1 */
+    }
+}
+
+/* 标题响应式调整 */
+@media (max-width: 768px) {
+    h3 {
+        font-size: 1.8rem;
+        margin: 10px 20px;
+    }
+    
+    h3 span::before,
+    h3 span::after {
+        width: 2rem;
+        margin-right: 1rem;
+        margin-left: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h3 {
+        font-size: 1.5rem;
+        margin: 10px 10px;
+    }
+    
+    h3 span::before,
+    h3 span::after {
+        width: 1.5rem;
+        margin-right: 0.5rem;
+        margin-left: 0.5rem;
     }
 }
 

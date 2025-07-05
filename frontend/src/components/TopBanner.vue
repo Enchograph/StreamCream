@@ -163,7 +163,12 @@ function syncBannerColor() {
 }
 
 function goToHome() {
-    router.push('/')
+    // 如果用户已登录，跳转到主页面；否则跳转到登录页面
+    if (auth.isAuthenticated) {
+        router.push('/mainPage')
+    } else {
+        router.push('/loginPage')
+    }
 }
 </script>
 

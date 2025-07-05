@@ -3,28 +3,28 @@
         <div class="live-streaming-assistant" ref="assistant">
             <div class="container">
                 <!-- 第一列：主题设置和提纲生成 -->
-                <div class="column">
-                    <h3><span>{{ $t('streamingPage.topicAndOutline') }}</span></h3>
+                <div class="column theme-column">
+                    <h3><span>主题设置与提纲生成</span></h3>
                     <div class="input-section">
                         <div class="topic-row">
-                            <input id=" topic" v-model="topic" :placeholder="$t('streamingPage.inputLiveTopic')" />
+                            <input id=" topic" v-model="topic" placeholder="请输入直播主题" />
                             <button @click="generateOutline" :disabled="!topic || isGeneratingOutline">
-                                {{ isGeneratingOutline ? $t('streamingPage.generating') : $t('streamingPage.generateOutline') }}
+                                {{ isGeneratingOutline ? '生成中...' : '生成提纲' }}
                             </button>
                         </div>
                     </div>
                     <div class="outline-section" style="display: flex; flex-direction: column; height: 100%;">
-                        <textarea id="outline" v-model="outline" rows="10" :placeholder="$t('streamingPage.inputOrEditOutline')"
+                        <textarea id="outline" v-model="outline" rows="10" placeholder="您也可以在此输入您设计的提纲"
                             style="font-family: sans-serif; flex-grow: 1;"></textarea>
                         <button class="confirmOutline" @click="confirmOutline"
                             :disabled="!outline || isConfirmingOutline">
-                            {{ isConfirmingOutline ? $t('streamingPage.processing') : $t('streamingPage.confirmTopicAndOutline') }}
+                            {{ isConfirmingOutline ? '处理中...' : '确认主题与提纲' }}
                         </button>
                     </div>
                 </div>
 
                 <!-- 第二列：提纲块管理（使用拖拽功能） -->
-                <div class="column">
+                <div class="column outline-column">
                     <h3><span>提纲管理</span></h3>
                     <div class="blocks-container" :style="{ height: outlineSectionHeight }">
                         <draggable v-model="outlineBlocks" item-key="id" handle=".drag-handle" ghost-class="ghost-block"
@@ -55,8 +55,7 @@
                     </div>
                     <br></br>
                     <button v-if="outlineBlocks.length > 0" @click="addNewBlock" class="add-block-btn">+
-                        {{ $t('streamingPage.addNewSection') }}
-                    </button>
+                        添加新章节</button>
                 </div>
 
                 <!-- 第三列：直播界面 -->
@@ -467,14 +466,25 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.page-container {
+    min-height: 100vh;
+    width: 100%;
+    background-color: white;
+    margin: 0;
+    padding: 0;
+}
+
 .live-streaming-assistant {
     font-family: 'Arial', sans-serif;
     color: #333;
     width: 100%;
     margin: 0;
-    padding: 25px;
+    padding: 20px;
     box-sizing: border-box;
     font-size: 16px;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
 }
 
 h3 {
@@ -538,7 +548,8 @@ h3 span::after {
     width: 100%;
     gap: 20px;
     box-sizing: border-box;
-    padding: 15px;
+    padding: 10px;
+    align-items: flex-start;
 }
 
 @media (min-width: calc(100vw / 3)) {
@@ -574,7 +585,54 @@ h3 span::after {
     overflow: auto;
     margin: 0 15px;
     min-width: 350px;
-    height: var(--column-height);
+    height: 85vh;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* 主题设置列的浮动效果 */
+.theme-column {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+    border: 2px solid rgba(102, 126, 234, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15);
+    transform: translateY(-4px);
+    position: relative;
+    z-index: 2;
+}
+
+.theme-column:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(102, 126, 234, 0.2);
+}
+
+/* 提纲管理列的浮动效果 */
+.outline-column {
+    background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+    border: 1px solid rgba(243, 156, 18, 0.08);
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(243, 156, 18, 0.08);
+    transform: translateY(-2px);
+    position: relative;
+    z-index: 1;
+}
+
+.outline-column:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(243, 156, 18, 0.12);
+}
+
+/* 其他列的对比效果 */
+.column:not(.theme-column):not(.outline-column) {
+    background: rgba(249, 249, 249, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transform: translateY(0);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.column:not(.theme-column):not(.outline-column):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 /* 响应式调整 */
@@ -665,28 +723,102 @@ textarea {
 }
 
 button {
-    padding: 12px 20px;
-    background-color: #4CAF50;
+    /* 基础样式 */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
-    border-radius: 6px;
+    padding: 12px 24px;
+    border-radius: 12px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    font-size: 16px;
+    font-weight: 600;
+    font-size: 14px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 120px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+/* 生成提纲按钮特殊样式 */
+.topic-row button {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+}
+
+.topic-row button:hover {
+    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+    box-shadow: 0 8px 25px rgba(243, 156, 18, 0.4);
+}
+
+.topic-row button:disabled {
+    background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
+    box-shadow: 0 2px 8px rgba(189, 195, 199, 0.3);
+    opacity: 0.6;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+}
+
+button:hover::before {
+    left: 100%;
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+button:disabled {
+    background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 2px 8px rgba(189, 195, 199, 0.3);
+    opacity: 0.6;
+}
+
+button:disabled:hover {
+    transform: none;
+    box-shadow: 0 2px 8px rgba(189, 195, 199, 0.3);
+    opacity: 0.6;
 }
 
 .confirmOutline {
     width: 100%;
-    padding: 12px 20px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
 }
 
-button:hover {
-    background-color: #45a049;
+.confirmOutline:hover {
+    background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+    box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
 }
 
-button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
+.confirmOutline:disabled {
+    background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
+    box-shadow: 0 2px 8px rgba(189, 195, 199, 0.3);
+    opacity: 0.6;
 }
 
 /* 第二列样式 - 拖拽相关 */
@@ -734,14 +866,24 @@ button:disabled {
 }
 
 .remove-btn {
-    padding: 2px 8px;
-    font-size: 12px;
-    background-color: #f44336;
+    padding: 8px 12px;
+    font-size: 14px;
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
     margin-right: 8px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+    transition: all 0.3s ease;
+    min-width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .remove-btn:hover {
-    background-color: #d32f2f;
+    background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+    box-shadow: 0 3px 12px rgba(231, 76, 60, 0.4);
+    transform: translateY(-1px);
 }
 
 .drag-handle {
@@ -770,11 +912,13 @@ button:disabled {
 
 .add-block-btn {
     margin-top: 10px;
-    background-color: #2196F3;
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
 }
 
 .add-block-btn:hover {
-    background-color: #0b7dda;
+    background: linear-gradient(135deg, #138496 0%, #117a8b 100%);
+    box-shadow: 0 8px 25px rgba(23, 162, 184, 0.4);
 }
 
 .blocks-container {
@@ -784,12 +928,26 @@ button:disabled {
     padding-right: 5px;
 }
 
-.blocks-container::-webkit-scrollbar {
-    width: 6px;
+/* 隐藏所有滚动条 */
+.blocks-container::-webkit-scrollbar,
+.column::-webkit-scrollbar,
+*::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
 }
 
-.blocks-container::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 3px;
+.blocks-container::-webkit-scrollbar-thumb,
+.column::-webkit-scrollbar-thumb,
+*::-webkit-scrollbar-thumb {
+    background: transparent;
+}
+
+/* Firefox 滚动条隐藏 */
+.blocks-container,
+.column,
+* {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 </style>

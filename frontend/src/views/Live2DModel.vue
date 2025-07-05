@@ -1372,7 +1372,17 @@ const handleSubtitleChange = async (subtitleData) => {
 };
 </script>
 
-<style scoped>
+<style>
+/* 隐藏所有滚动条 */
+*::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
+}
+* {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
 
 /* 画布样式，直接访问时固定分辨率，iframe嵌入时保持比例 */
 #myCanvas {
@@ -1383,6 +1393,7 @@ const handleSubtitleChange = async (subtitleData) => {
 
 .live-preview {
     width: 100%;
+    overflow: hidden !important;
 }
 
 .canvasWrap {
@@ -1392,6 +1403,7 @@ const handleSubtitleChange = async (subtitleData) => {
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden !important;
 }
 
 /* 按钮样式 */

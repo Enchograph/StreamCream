@@ -48,17 +48,23 @@
             <!-- 标签页导航 -->
             <div class="tab-navigation">
                 <div class="tab-list">
-                    <button v-for="tab in tabs" :key="tab.id" 
-                        :class="['tab-item', { active: currentTab === tab.id }]"
-                        @click="currentTab = tab.id">
-                        <div class="tab-content">
-                            <span class="tab-icon">{{ tab.icon }}</span>
-                            <div class="tab-info">
-                                <span class="tab-name">{{ tab.name }}</span>
-                                <span class="tab-desc">{{ tab.description }}</span>
-                            </div>
+                                    <button v-for="tab in tabs" :key="tab.id" 
+                    :class="['tab-item', { 
+                        active: currentTab === tab.id,
+                        disabled: tab.id === 'stream' && !isLiveActive
+                    }]"
+                    @click="handleTabClick(tab.id)">
+                    <div class="tab-content">
+                        <span class="tab-icon">{{ tab.icon }}</span>
+                        <div class="tab-info">
+                            <span class="tab-name">{{ tab.name }}</span>
+                            <span class="tab-desc">{{ tab.description }}</span>
                         </div>
-                    </button>
+                    </div>
+                    <div v-if="tab.id === 'stream' && !isLiveActive" class="tab-lock">
+                        <span class="lock-icon">🔒</span>
+                    </div>
+                </button>
                 </div>
             </div>
 
@@ -398,9 +404,6 @@
                 <div class="tutorial-step" v-if="tutorialStep === 2">
                     <h3>第一步：账号设置</h3>
                     <p>首先需要设置你的抖音账号信息，支持多种登录方式</p>
-                    <div class="tutorial-highlight" style="top: 120px; left: 50%; transform: translateX(-50%);">
-                        <div class="highlight-arrow"></div>
-                    </div>
                     <button class="action-btn primary" @click="nextTutorialStep">下一步</button>
                 </div>
                 <div class="tutorial-step" v-if="tutorialStep === 3">
@@ -909,6 +912,16 @@ function startTutorial() {
 function nextTutorialStep() {
     console.log('下一步教程，当前步骤:', tutorialStep.value);
     tutorialStep.value++;
+    
+    // 根据教程步骤切换到对应标签页
+    if (tutorialStep.value === 2) {
+        currentTab.value = 'account';
+    } else if (tutorialStep.value === 3) {
+        currentTab.value = 'live';
+    } else if (tutorialStep.value === 4) {
+        currentTab.value = 'stream';
+    }
+    
     if (tutorialStep.value > 4) {
         finishTutorial();
     }
@@ -935,6 +948,19 @@ function resetTutorial() {
     showTutorial.value = false;
     tutorialStep.value = 1;
     addLog('教程状态已重置，下次访问将显示教程', 'info');
+}
+
+// 处理标签页点击
+function handleTabClick(tabId) {
+    console.log('点击标签页:', tabId, '直播状态:', isLiveActive.value);
+    if (tabId === 'stream' && !isLiveActive.value) {
+        console.log('推流信息被禁用，显示警告');
+        addLog('请先开始直播才能查看推流信息', 'warning');
+        // 添加一个更明显的提示
+        alert('请先开始直播才能查看推流信息！');
+        return;
+    }
+    currentTab.value = tabId;
 }
 
 // 快捷操作
@@ -1010,14 +1036,8 @@ async function loadLogs() {
 watch(currentTab, async (newTab) => {
     if (newTab === 'live') {
         await loadCategoryData();
-    } else if (newTab === 'stream' && !isLiveActive.value) {
-        // 如果切换到推流信息页，但没有直播，则切回直播设置页
-        setTimeout(() => {
-            if (!isLiveActive.value) {
-                currentTab.value = 'live';
-            }
-        }, 100);
     }
+    // 移除自动切换逻辑，允许用户自由查看推流信息页面
 });
 
 // 组件挂载时执行
@@ -1369,6 +1389,49 @@ onUnmounted(() => {
 .tab-item.active::before {
     width: 80%;
     background: white;
+}
+
+.tab-item.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    position: relative;
+}
+
+.tab-item.disabled:hover {
+    transform: none;
+    box-shadow: none;
+    color: inherit;
+    background: inherit;
+}
+
+.tab-item.disabled .tab-name {
+    color: #999;
+}
+
+.tab-item.disabled .tab-desc {
+    color: #ccc;
+}
+
+.tab-item.disabled .tab-icon {
+    opacity: 0.5;
+}
+
+.tab-lock {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lock-icon {
+    font-size: 10px;
+    color: #666;
 }
 
 .tab-icon {
@@ -2251,11 +2314,12 @@ onUnmounted(() => {
 .tutorial-highlight {
     position: absolute;
     width: 200px;
-    height: 100px;
+    height: 50px;
     border: 3px solid #fe2c55;
     border-radius: 12px;
-    background: rgba(254, 44, 85, 0.1);
+    background: rgba(254, 44, 85, 0.15);
     animation: tutorialPulse 2s infinite;
+    box-shadow: 0 0 20px rgba(254, 44, 85, 0.3);
 }
 
 .highlight-arrow {

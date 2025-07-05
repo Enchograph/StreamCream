@@ -749,7 +749,6 @@ def get_logs():
 
 
 # 初始化设置
-@app.before_first_request
 def initialize():
     """应用启动时的初始化操作"""
     log_message("B站推流码获取工具API已启动")
@@ -766,16 +765,21 @@ def initialize():
     else:
         log_message("警告: 未找到config.ini，请尝试重新安装此程序！")
 
+# 在应用启动时调用初始化函数
+initialize()
+
 
 @app.route('/qrcode', methods=['GET'])
 def get_qrcode():
     try:
-        qrcode_data = GetCookies.get_qrcode()
+        # 使用 GetCookies 模块中的 get_qrcode 函数
+        from GetCookies import get_qrcode as get_qrcode_func
+        qrcode_data = get_qrcode_func()
         return {
             'success': True,
             'data': {
-                'url': qrcode_data['url'],
-                'qrcode_key': qrcode_data['qrcode_key']
+                'url': qrcode_data.get('url', ''),
+                'qrcode_key': qrcode_data.get('qrcode_key', '')
             }
         }
     except Exception as e:

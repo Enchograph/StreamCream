@@ -14,15 +14,22 @@
                 <div class="nav-brand">
                     <div class="logo-container">
                         <svg width="40" height="39" fill="none" xmlns="http://www.w3.org/2000/svg" class="douyin-logo">
-                            <path d="M6 14a8 8 0 0 1 8-8h20a8 8 0 0 1 8 8v20a8 8 0 0 1-8 8H14a8 8 0 0 1-8-8V14Z" fill="#000"/>
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M35 17a6 6 0 0 1-6-6h-5v18.5a3.5 3.5 0 1 1-3.5-3.5H22v-5h-1.5a8.5 8.5 0 1 0 8.5 8.5v-9.279A10.948 10.948 0 0 0 35 22h.5v-5H35Z" fill="#FA1E5C"/>
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M34 16a6 6 0 0 1-6-6h-5v18.5a3.5 3.5 0 1 1-3.5-3.5H21v-5h-1.5a8.5 8.5 0 1 0 8.5 8.5v-9.279A10.948 10.948 0 0 0 34 21h.5v-5H34Z" fill="#5FFDFF"/>
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M34.5 16.98a5.992 5.992 0 0 1-4.213-2.267A5.996 5.996 0 0 1 28.083 11H24v18.5a3.5 3.5 0 0 1-6.424 1.924A3.5 3.5 0 0 1 19.5 25H21v-4h-.5a8.5 8.5 0 0 0-6.49 13.99A8.5 8.5 0 0 0 28 28.5v-9.279A10.948 10.948 0 0 0 34 21h.5v-4.02Z" fill="#fff"/>
+                            <path d="M6 14a8 8 0 0 1 8-8h20a8 8 0 0 1 8 8v20a8 8 0 0 1-8 8H14a8 8 0 0 1-8-8V14Z"
+                                fill="#000" />
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M35 17a6 6 0 0 1-6-6h-5v18.5a3.5 3.5 0 1 1-3.5-3.5H22v-5h-1.5a8.5 8.5 0 1 0 8.5 8.5v-9.279A10.948 10.948 0 0 0 35 22h.5v-5H35Z"
+                                fill="#667eea" />
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M34 16a6 6 0 0 1-6-6h-5v18.5a3.5 3.5 0 1 1-3.5-3.5H21v-5h-1.5a8.5 8.5 0 1 0 8.5 8.5v-9.279A10.948 10.948 0 0 0 34 21h.5v-5H34Z"
+                                fill="#5FFDFF" />
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M34.5 16.98a5.992 5.992 0 0 1-4.213-2.267A5.996 5.996 0 0 1 28.083 11H24v18.5a3.5 3.5 0 0 1-6.424 1.924A3.5 3.5 0 0 1 19.5 25H21v-4h-.5a8.5 8.5 0 0 0-6.49 13.99A8.5 8.5 0 0 0 28 28.5v-9.279A10.948 10.948 0 0 0 34 21h.5v-4.02Z"
+                                fill="#fff" />
                         </svg>
                     </div>
                     <div class="brand-text">
                         <h1 class="brand-title">{{ $t('douyin.title') }}</h1>
-                        <p class="brand-subtitle">{{ $t('douyin.subtitle') }}</p>
+                        <!-- <p class="brand-subtitle">{{ $t('douyin.subtitle') }}</p> -->
                     </div>
                 </div>
                 <div class="nav-actions">
@@ -48,12 +55,10 @@
             <!-- 标签页导航 -->
             <div class="tab-navigation">
                 <div class="tab-list">
-                    <button v-for="tab in tabs" :key="tab.id" 
-                        :class="['tab-item', { 
-                            active: currentTab === tab.id,
-                            disabled: tab.id === 'stream' && !isLiveActive
-                        }]"
-                        @click="handleTabClick(tab.id)">
+                    <button v-for="tab in tabs" :key="tab.id" :class="['tab-item', {
+                        active: currentTab === tab.id,
+                        disabled: tab.id === 'stream' && !isLiveActive
+                    }]" @click="handleTabClick(tab.id)">
                         <div class="tab-content">
                             <i v-if="tab.id === 'account'" class="fas fa-user-cog tab-icon"></i>
                             <i v-else-if="tab.id === 'live'" class="fas fa-video tab-icon"></i>
@@ -119,24 +124,24 @@
                             <h3>{{ $t('douyin.account.manualInput.title') }}</h3>
                             <p>{{ $t('douyin.account.manualInput.description') }}</p>
                         </div>
-                        
+
                         <div class="form-grid">
                             <div class="form-field">
                                 <label class="field-label">{{ $t('douyin.account.manualInput.roomId') }}</label>
-                                <input type="password" v-model="accountInfo.room_id" 
-                                    class="field-input" :placeholder="$t('douyin.account.manualInput.roomIdPlaceholder')" />
+                                <input type="password" v-model="accountInfo.room_id" class="field-input"
+                                    :placeholder="$t('douyin.account.manualInput.roomIdPlaceholder')" />
                             </div>
-                            
+
                             <div class="form-field">
                                 <label class="field-label">{{ $t('douyin.account.manualInput.cookies') }}</label>
-                                <input type="password" v-model="accountInfo.cookie_str" 
-                                    class="field-input" :placeholder="$t('douyin.account.manualInput.cookiesPlaceholder')" />
+                                <input type="password" v-model="accountInfo.cookie_str" class="field-input"
+                                    :placeholder="$t('douyin.account.manualInput.cookiesPlaceholder')" />
                             </div>
-                            
+
                             <div class="form-field">
                                 <label class="field-label">{{ $t('douyin.account.manualInput.sessionId') }}</label>
-                                <input type="password" v-model="accountInfo.session_id" 
-                                    class="field-input" :placeholder="$t('douyin.account.manualInput.sessionIdPlaceholder')" />
+                                <input type="password" v-model="accountInfo.session_id" class="field-input"
+                                    :placeholder="$t('douyin.account.manualInput.sessionIdPlaceholder')" />
                             </div>
                         </div>
 
@@ -166,8 +171,8 @@
                             <p>{{ $t('douyin.live.titleSetting.description') }}</p>
                         </div>
                         <div class="input-group">
-                            <input type="text" v-model="liveSettings.live_title" 
-                                class="modern-input" :placeholder="$t('douyin.live.titleSetting.placeholder')" />
+                            <input type="text" v-model="liveSettings.live_title" class="modern-input"
+                                :placeholder="$t('douyin.live.titleSetting.placeholder')" />
                             <button class="action-btn primary" @click="updateTitle">
                                 <i class="fas fa-redo btn-icon"></i>
                                 {{ $t('douyin.live.titleSetting.updateTitle') }}
@@ -184,16 +189,19 @@
                         <div class="category-grid">
                             <div class="select-group">
                                 <label class="select-label">{{ $t('douyin.live.category.mainCategory') }}</label>
-                                <select v-model="liveSettings.selected_category" @change="updateSubCategories" class="modern-select">
+                                <select v-model="liveSettings.selected_category" @change="updateSubCategories"
+                                    class="modern-select">
                                     <option value="">{{ $t('douyin.live.category.selectCategory') }}</option>
-                                    <option v-for="category in mainCategories" :key="category" :value="category">{{ category }}</option>
+                                    <option v-for="category in mainCategories" :key="category" :value="category">
+                                        {{ category }}</option>
                                 </select>
                             </div>
                             <div class="select-group">
                                 <label class="select-label">{{ $t('douyin.live.category.subCategory') }}</label>
                                 <select v-model="liveSettings.selected_sub_category" class="modern-select">
                                     <option value="">{{ $t('douyin.live.category.selectSubCategory') }}</option>
-                                    <option v-for="subCategory in subCategories" :key="subCategory" :value="subCategory">{{ subCategory }}</option>
+                                    <option v-for="subCategory in subCategories" :key="subCategory"
+                                        :value="subCategory">{{ subCategory }}</option>
                                 </select>
                             </div>
                         </div>
@@ -216,8 +224,8 @@
                             <p>{{ $t('douyin.live.comment.description') }}</p>
                         </div>
                         <div class="input-group">
-                            <input type="text" v-model="commentMessage" 
-                                class="modern-input" :placeholder="$t('douyin.live.comment.placeholder')" />
+                            <input type="text" v-model="commentMessage" class="modern-input"
+                                :placeholder="$t('douyin.live.comment.placeholder')" />
                             <button class="action-btn success" @click="sendComment">
                                 <i class="fas fa-paper-plane btn-icon"></i>
                                 {{ $t('douyin.live.comment.sendComment') }}
@@ -351,7 +359,8 @@
                             <i class="fas fa-graduation-cap nav-btn-icon"></i>
                             {{ $t('douyin.status.tutorial') }}
                         </button>
-                        <button class="nav-btn small" @click="resetTutorial" :title="$t('douyin.actions.resetTutorial')">
+                        <button class="nav-btn small" @click="resetTutorial"
+                            :title="$t('douyin.actions.resetTutorial')">
                             <i class="fas fa-redo nav-btn-icon"></i>
                             {{ $t('douyin.status.reset') }}
                         </button>
@@ -395,7 +404,8 @@
         </el-dialog>
 
         <!-- 帮助对话框 -->
-        <el-dialog v-model="showHelpDialog" :title="$t('douyin.helpDialog.title')" width="640px" class="help-dialog" :lock-scroll="false" :auto-focus="false">
+        <el-dialog v-model="showHelpDialog" :title="$t('douyin.helpDialog.title')" width="640px" class="help-dialog"
+            :lock-scroll="false" :auto-focus="false">
             <div class="help-content">
                 <pre class="help-text">{{ $t('douyin.helpDialog.content') }}</pre>
             </div>
@@ -408,7 +418,7 @@
                     <h3>{{ $t('douyin.tutorial.welcome') }}</h3>
                     <p>{{ $t('douyin.tutorial.description') }}</p>
                     <p v-if="$t('douyin.tutorial.detail')">{{ $t('douyin.tutorial.detail') }}</p>
-                    
+
                     <!-- 教程步骤内容 -->
                     <div v-if="tutorialStep === 1" class="step-content">
                         <p>{{ $t('douyin.tutorial.step1_1') }}</p>
@@ -422,12 +432,12 @@
                         <p>{{ $t('douyin.tutorial.step3_1') }}</p>
                         <p>{{ $t('douyin.tutorial.step3_2') }}</p>
                     </div>
-                    
+
                     <div v-if="tutorialStep === 4" class="step-content">
                         <p>{{ $t('douyin.tutorial.step4_1') }}</p>
                         <p>{{ $t('douyin.tutorial.step4_2') }}</p>
                     </div>
-                    
+
                     <!-- 教程按钮 -->
                     <div class="tutorial-buttons">
                         <button v-if="tutorialStep < 3" @click="nextTutorialStep" class="tutorial-btn next-btn">
@@ -443,12 +453,12 @@
                             {{ $t('douyin.tutorial.skip') }}
                         </button>
                     </div>
-                    
+
                     <!-- 教程进度指示器 -->
                     <div class="tutorial-progress">
                         <div class="progress-dots">
-                            <span v-for="step in 3" :key="step" 
-                                  :class="['progress-dot', { active: step <= tutorialStep }]"></span>
+                            <span v-for="step in 3" :key="step"
+                                :class="['progress-dot', { active: step <= tutorialStep }]"></span>
                         </div>
                     </div>
                 </div>
@@ -470,21 +480,21 @@ const API_BASE = 'http://localhost:9702/api';
 // 标签页管理
 const { t } = useI18n();
 const tabs = computed(() => [
-    { 
-        id: 'account', 
-        name: t('douyin.tabs.account.name'), 
+    {
+        id: 'account',
+        name: t('douyin.tabs.account.name'),
         icon: '🔐',
         description: t('douyin.tabs.account.description')
     },
-    { 
-        id: 'live', 
-        name: t('douyin.tabs.live.name'), 
+    {
+        id: 'live',
+        name: t('douyin.tabs.live.name'),
         icon: '📡',
         description: t('douyin.tabs.live.description')
     },
-    { 
-        id: 'stream', 
-        name: t('douyin.tabs.stream.name'), 
+    {
+        id: 'stream',
+        name: t('douyin.tabs.stream.name'),
         icon: '📊',
         description: t('douyin.tabs.stream.description')
     }
@@ -565,20 +575,20 @@ function addLog(message, type = 'info') {
         timestamp,
         timeString: timestamp.toLocaleTimeString()
     };
-    
+
     // 限制日志数量以提高性能
     if (logs.value.length >= 50) {
         logs.value = logs.value.slice(0, 40);
     }
     logs.value.unshift(logEntry);
     statusMessage.value = message;
-    
+
     // 添加到操作历史
     addToHistory(message, type);
-    
+
     // 智能提示
     checkSmartTip(message, type);
-    
+
     console.log(`[${type.toUpperCase()}] ${message}`);
 }
 
@@ -590,7 +600,7 @@ function addToHistory(message, type) {
         timestamp: new Date(),
         tab: currentTab.value
     };
-    
+
     operationHistory.value.unshift(historyEntry);
     if (operationHistory.value.length > maxHistoryLength) {
         operationHistory.value = operationHistory.value.slice(0, maxHistoryLength);
@@ -614,7 +624,7 @@ function checkSmartTip(message, type) {
             '请确保选择了正确的直播分类'
         ]
     };
-    
+
     if (tips[type] && Math.random() < 0.3) { // 30%概率显示提示
         currentTip.value = tips[type][Math.floor(Math.random() * tips[type].length)];
         showSmartTip.value = true;
@@ -934,7 +944,7 @@ function startTutorial() {
 function nextTutorialStep() {
     console.log('下一步教程，当前步骤:', tutorialStep.value);
     tutorialStep.value++;
-    
+
     // 根据教程步骤切换到对应标签页
     if (tutorialStep.value === 2) {
         currentTab.value = 'account';
@@ -943,7 +953,7 @@ function nextTutorialStep() {
     } else if (tutorialStep.value === 4) {
         currentTab.value = 'stream';
     }
-    
+
     if (tutorialStep.value > 3) {
         finishTutorial();
     }
@@ -1016,13 +1026,13 @@ function handleKeydown(event) {
         event.preventDefault();
         showQuickActions.value = !showQuickActions.value;
     }
-    
+
     // Ctrl/Cmd + H 显示帮助
     if ((event.ctrlKey || event.metaKey) && event.key === 'h') {
         event.preventDefault();
         showHelp();
     }
-    
+
     // Ctrl/Cmd + R 刷新数据
     if ((event.ctrlKey || event.metaKey) && event.key === 'r') {
         event.preventDefault();
@@ -1071,10 +1081,10 @@ onMounted(async () => {
 
     // 每30秒刷新一次日志
     setInterval(loadLogs, 30000);
-    
+
     // 添加键盘事件监听
     document.addEventListener('keydown', handleKeydown);
-    
+
     // 检查是否需要显示新手引导
     if (!hasShownTutorial.value) {
         console.log('首次访问，准备显示教程');
@@ -1084,7 +1094,7 @@ onMounted(async () => {
     } else {
         console.log('用户已完成教程');
     }
-    
+
     // 显示快捷键提示
     setTimeout(() => {
         addLog('💡 提示：按 Ctrl+K 打开快捷操作面板', 'info');
@@ -1110,10 +1120,10 @@ function clearLogs() {
 
 // 导出日志
 function exportLogs() {
-    const logText = logs.value.map(log => 
+    const logText = logs.value.map(log =>
         `[${log.timeString}] [${log.type.toUpperCase()}] ${log.message}`
     ).join('\n');
-    
+
     const blob = new Blob([logText], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -1121,7 +1131,7 @@ function exportLogs() {
     a.download = `douyin_logs_${new Date().toISOString().split('T')[0]}.txt`;
     a.click();
     URL.revokeObjectURL(url);
-    
+
     addLog('日志已导出', 'success');
 }
 
@@ -1132,6 +1142,77 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+:root {
+  --primary-color: #667eea;
+  --primary-hover: #764ba2;
+}
+
+.top-nav {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-bottom: 1px solid #e1e8ed;
+}
+
+.tab-item.active, .action-btn.primary, .card-btn.primary {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+  color: #fff;
+  border: none;
+}
+
+.tab-item, .action-btn, .card-btn {
+  background: #fafdff;
+  color: #222;
+  border: 1px solid #e1e8ed;
+}
+
+input, select, .modern-input, .modern-select, .field-input {
+  background: #fff;
+  border: 1.5px solid #e1e8ed;
+  color: #222;
+}
+
+.feature-card, .content-panel, .setting-section, .form-section, .log-section, .export-section, .control-section {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  border: 1px solid #f0f0f0;
+}
+
+.card-icon, .tab-icon, .title-icon {
+  color: var(--primary-color);
+}
+
+.brand-title, .brand-subtitle {
+  color: var(--primary-color);
+}
+
+.action-btn.success, .card-btn.success {
+  background: linear-gradient(135deg, #67c23a 0%, #85ce61 100%);
+  color: #fff;
+}
+
+.action-btn.secondary, .card-btn.secondary {
+  background: #f8f9fa;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.tab-item.active {
+  box-shadow: 0 4px 12px rgba(102,126,234,0.25);
+}
+
+.tab-item:hover, .action-btn:hover, .card-btn:hover {
+  background: rgba(102,126,234,0.08);
+  color: #667eea;
+}
+
+input:focus, select:focus, .modern-input:focus, .modern-select:focus, .field-input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102,126,234,0.12);
+}
+
+/* 保留原有装饰和动画，logo原色不变 */
+
 /* 全局样式 */
 * {
     box-sizing: border-box;
@@ -1140,7 +1221,7 @@ onUnmounted(() => {
 /* 页面容器 */
 .page-container {
     min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #fafdff;
     font-family: 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     position: relative;
     overflow-x: hidden;
@@ -1197,8 +1278,15 @@ onUnmounted(() => {
 }
 
 @keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-20px) rotate(180deg); }
+
+    0%,
+    100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-20px) rotate(180deg);
+    }
 }
 
 /* 主容器 */
@@ -1222,7 +1310,7 @@ onUnmounted(() => {
     justify-content: space-between;
     align-items: center;
     padding: 20px 30px;
-    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     position: relative;
     overflow: hidden;
@@ -1263,8 +1351,15 @@ onUnmounted(() => {
 }
 
 @keyframes logoFloat {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-5px); }
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
 }
 
 .brand-text {
@@ -1392,20 +1487,20 @@ onUnmounted(() => {
     left: 50%;
     width: 0;
     height: 3px;
-    background: #fe2c55;
+    background: #667eea;
     transition: all 0.3s ease;
     transform: translateX(-50%);
 }
 
 .tab-item:hover {
-    color: #fe2c55;
-    background: rgba(254, 44, 85, 0.1);
+    color: #667eea;
+   
 }
 
 .tab-item.active {
     color: white;
-    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
-    box-shadow: 0 2px 8px rgba(254, 44, 85, 0.3);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    
 }
 
 .tab-item.active::before {
@@ -1476,8 +1571,15 @@ onUnmounted(() => {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .panel-header {
@@ -1545,10 +1647,10 @@ onUnmounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 50%;
     color: white;
-    box-shadow: 0 4px 12px rgba(254, 44, 85, 0.3);
+    box-shadow: 0 4px 12px rgba(102,126,234,0.25);
 }
 
 .card-header h3 {
@@ -1581,13 +1683,12 @@ onUnmounted(() => {
 }
 
 .card-btn.primary {
-    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
 }
 
 .card-btn.primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(254, 44, 85, 0.4);
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
 }
 
 .card-btn.success {
@@ -1619,15 +1720,20 @@ onUnmounted(() => {
 .spinner {
     width: 16px;
     height: 16px;
-    border: 2px solid #f3f3f3;
-    border-top: 2px solid #fe2c55;
+    border: 2px solid #e1e8ed;
+    border-top: 2px solid #667eea;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* 表单区域 */
@@ -1687,9 +1793,9 @@ onUnmounted(() => {
 
 .field-input:focus {
     outline: none;
-    border-color: #fe2c55;
+    border-color: #667eea;
     background: white;
-    box-shadow: 0 0 0 3px rgba(254, 44, 85, 0.1);
+    box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
 }
 
 .form-actions {
@@ -1726,9 +1832,9 @@ onUnmounted(() => {
 
 .modern-input:focus {
     outline: none;
-    border-color: #fe2c55;
+    border-color: #667eea;
     background: white;
-    box-shadow: 0 0 0 3px rgba(254, 44, 85, 0.1);
+    box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
 }
 
 .category-grid {
@@ -1762,9 +1868,9 @@ onUnmounted(() => {
 
 .modern-select:focus {
     outline: none;
-    border-color: #fe2c55;
+    border-color: #667eea;
     background: white;
-    box-shadow: 0 0 0 3px rgba(254, 44, 85, 0.1);
+    box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
 }
 
 .action-group {
@@ -1820,12 +1926,12 @@ onUnmounted(() => {
 }
 
 .action-btn.primary {
-    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
 }
 
 .action-btn.primary:hover {
-    background: linear-gradient(135deg, #e6254a 0%, #e55a8a 100%);
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
 }
 
 .action-btn.success {
@@ -1909,9 +2015,17 @@ onUnmounted(() => {
 }
 
 @keyframes pulse {
-    0% { box-shadow: 0 8px 25px rgba(103, 194, 58, 0.3); }
-    50% { box-shadow: 0 8px 25px rgba(103, 194, 58, 0.5); }
-    100% { box-shadow: 0 8px 25px rgba(103, 194, 58, 0.3); }
+    0% {
+        box-shadow: 0 8px 25px rgba(103, 194, 58, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 8px 25px rgba(103, 194, 58, 0.5);
+    }
+
+    100% {
+        box-shadow: 0 8px 25px rgba(103, 194, 58, 0.3);
+    }
 }
 
 /* 日志区域 */
@@ -1952,7 +2066,7 @@ onUnmounted(() => {
     margin-bottom: 8px;
     background: rgba(255, 255, 255, 0.9);
     border-radius: 8px;
-    border-left: 4px solid #fe2c55;
+    border-left: 4px solid #667eea;
     font-size: 0.9rem;
 }
 
@@ -2112,7 +2226,7 @@ onUnmounted(() => {
 
 .status-icon {
     font-size: 1.2rem;
-    color: #fe2c55;
+    color: #667eea;
     flex-shrink: 0;
 }
 
@@ -2170,7 +2284,7 @@ onUnmounted(() => {
     background: rgba(255, 255, 255, 0.9);
     border-radius: 8px;
     font-size: 0.9rem;
-    border-left: 3px solid #fe2c55;
+    border-left: 3px solid #667eea;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -2222,7 +2336,7 @@ onUnmounted(() => {
 
 .status-icon {
     font-size: 1.2rem;
-    color: #fe2c55;
+    color: #667eea;
     flex-shrink: 0;
 }
 
@@ -2354,7 +2468,7 @@ onUnmounted(() => {
 }
 
 .tutorial-step h3 {
-    color: #fe2c55;
+    color: #667eea;
     margin-bottom: 15px;
     font-size: 1.5rem;
     font-weight: 700;
@@ -2409,7 +2523,7 @@ onUnmounted(() => {
 }
 
 .next-btn {
-    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
 }
 
@@ -2465,7 +2579,7 @@ onUnmounted(() => {
 }
 
 .progress-dot.active {
-    background: #fe2c55;
+    background: #667eea;
     transform: scale(1.2);
 }
 
@@ -2479,7 +2593,7 @@ onUnmounted(() => {
     position: absolute;
     width: 200px;
     height: 50px;
-    border: 3px solid #fe2c55;
+    border: 3px solid #667eea;
     border-radius: 12px;
     background: rgba(254, 44, 85, 0.15);
     animation: tutorialPulse 2s infinite;
@@ -2495,19 +2609,21 @@ onUnmounted(() => {
     height: 0;
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
-    border-bottom: 20px solid #fe2c55;
+    border-bottom: 20px solid #667eea;
 }
 
 @keyframes tutorialPulse {
-    0% { 
+    0% {
         box-shadow: 0 0 0 0 rgba(254, 44, 85, 0.7);
         transform: scale(1);
     }
-    50% { 
+
+    50% {
         box-shadow: 0 0 0 10px rgba(254, 44, 85, 0);
         transform: scale(1.05);
     }
-    100% { 
+
+    100% {
         box-shadow: 0 0 0 0 rgba(254, 44, 85, 0);
         transform: scale(1);
     }
@@ -2518,6 +2634,7 @@ onUnmounted(() => {
         opacity: 0;
         transform: translateY(-20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -2528,6 +2645,7 @@ onUnmounted(() => {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -2538,6 +2656,7 @@ onUnmounted(() => {
         opacity: 0;
         transform: translateX(100%);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -2583,7 +2702,7 @@ onUnmounted(() => {
     position: fixed;
     top: 20px;
     right: 20px;
-    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 15px 20px;
     border-radius: 10px;
@@ -2706,7 +2825,7 @@ onUnmounted(() => {
 
 .step-number {
     background: white;
-    color: #fe2c55;
+    color: #667eea;
     width: 20px;
     height: 20px;
     border-radius: 50%;
@@ -2723,6 +2842,7 @@ onUnmounted(() => {
         opacity: 0;
         transform: translate(-50%, -60%);
     }
+
     to {
         opacity: 1;
         transform: translate(-50%, -50%);
@@ -2734,6 +2854,7 @@ onUnmounted(() => {
         opacity: 0;
         transform: translateX(100%);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -2745,7 +2866,7 @@ onUnmounted(() => {
     position: fixed;
     top: 20px;
     right: 20px;
-    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 16px 20px;
     border-radius: 12px;
@@ -2830,6 +2951,7 @@ onUnmounted(() => {
         opacity: 0;
         transform: translate(-50%, -60%);
     }
+
     to {
         opacity: 1;
         transform: translate(-50%, -50%);
@@ -2841,6 +2963,7 @@ onUnmounted(() => {
         opacity: 0;
         transform: translateX(100%);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -2853,11 +2976,11 @@ onUnmounted(() => {
         margin: 10px;
         border-radius: 20px;
     }
-    
+
     .panel-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .stream-info-section {
         grid-template-columns: 1fr;
     }
@@ -2869,78 +2992,78 @@ onUnmounted(() => {
         flex-direction: column;
         gap: 15px;
     }
-    
+
     .nav-brand {
         flex-direction: column;
         text-align: center;
     }
-    
+
     .brand-title {
         font-size: 1.5rem;
     }
-    
+
     .nav-actions {
         width: 100%;
         justify-content: center;
     }
-    
+
     .tab-list {
         flex-direction: column;
         gap: 0;
     }
-    
+
     .tab-item {
         min-height: 70px;
         padding: 15px 10px;
     }
-    
+
     .tab-name {
         font-size: 0.9rem;
     }
-    
+
     .tab-desc {
         font-size: 0.7rem;
     }
-    
+
     .main-content {
         padding: 20px;
     }
-    
+
     .panel-title {
         font-size: 1.6rem;
     }
-    
+
     .input-group {
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .category-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .action-group {
         flex-direction: column;
     }
-    
+
     .export-actions,
     .control-actions {
         flex-direction: column;
     }
-    
+
     .status-bar {
         flex-direction: column;
         gap: 15px;
         align-items: stretch;
         margin: 15px 20px 20px 20px;
     }
-    
+
     .smart-tip {
         left: 20px;
         right: 20px;
         max-width: none;
     }
-    
+
     .quick-actions {
         width: 90%;
         max-width: 320px;
@@ -2951,34 +3074,34 @@ onUnmounted(() => {
     .brand-title {
         font-size: 1.3rem;
     }
-    
+
     .brand-subtitle {
         font-size: 0.8rem;
     }
-    
+
     .douyin-logo {
         width: 35px;
         height: 34px;
     }
-    
+
     .panel-title {
         font-size: 1.4rem;
     }
-    
+
     .title-icon {
         font-size: 1.5rem;
     }
-    
+
     .feature-card {
         padding: 20px;
     }
-    
+
     .card-icon {
         width: 50px;
         height: 50px;
         font-size: 2rem;
     }
-    
+
     .setting-section,
     .form-section,
     .log-section,
@@ -2986,16 +3109,16 @@ onUnmounted(() => {
     .control-section {
         padding: 20px;
     }
-    
+
     .live-btn {
         padding: 16px 32px;
         font-size: 1.1rem;
     }
-    
+
     .live-icon {
         font-size: 1.3rem;
     }
-    
+
     .live-text {
         font-size: 1.1rem;
     }

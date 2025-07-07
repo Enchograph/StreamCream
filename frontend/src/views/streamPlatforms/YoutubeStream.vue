@@ -36,7 +36,7 @@
         <span class="yt-warning-icon">⚠️</span>
         <span>注意：不要公开你的推流码，否则他人可能会用你的账号直播！</span>
       </div>
-      <p class="yt-tip">推荐搭配 <strong>OBS Studio</strong> 使用，在设置中选择服务为 "YouTube"，然后粘贴推流码即可。</p>
+      <p class="yt-tip">获取推流码和推流地址后，选择直播平台为 "YouTube"，然后粘贴推流码和推流地址即可。</p>
     </div>
   </div>
 </template>
@@ -49,7 +49,7 @@
 /* 顶部渐变背景和logo */
 .yt-bg {
   min-height: 100vh;
-  background: linear-gradient(120deg, #fff 0%, #ffe5ea 40%, #ffb3c6 100%);
+  background: #f5f5f7;
   padding: 0;
 }
 .yt-header {

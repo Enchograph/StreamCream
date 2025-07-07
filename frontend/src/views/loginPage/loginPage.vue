@@ -2,6 +2,7 @@
     <TopBanner />
     <div class="page-container">
         <div class="page-bg-animated"></div>
+<<<<<<< HEAD
         <!-- 语言切换器和主题切换按钮 -->
         <div style="position: absolute; top: 20px; right: 20px; z-index: 10; display: flex; gap: 12px; align-items: center;">
             <LanguageSwitcher />
@@ -13,16 +14,21 @@
                 <span v-else>&#x1F319;</span> <!-- 月亮 -->
             </button>
         </div>
+=======
+        <!-- 语言切换器 -->
+        <!-- <div style="position: absolute; top: 20px; right: 20px; z-index: 10;">
+            <LanguageSwitcher />
+        </div> -->
+>>>>>>> 07a94825d062f79ffc13cd0636437fb9d487876f
         <div class="welcome-message">
             <h2>{{ $t('login.title') }}</h2>
         </div>
         <div class="app-container">
             <!-- 表单内容 -->
-            <div class="container"
-                 :class="[
-                     { active: isRegistering, 'forgot-active': isForgotPassword },
-                     transitionDirection
-                 ]">
+            <div class="container" :class="[
+                { active: isRegistering, 'forgot-active': isForgotPassword },
+                transitionDirection
+            ]">
                 <div class="toggle-container">
                     <button class="toggle-btn" @click="toggleForm" :disabled="isLoading" v-if="!isForgotPassword">
                         {{ isRegistering ? $t('login.login') : $t('login.register') }}
@@ -31,34 +37,22 @@
                         {{ $t('login.login') }}
                     </button>
                 </div>
-             <!-- 登录表单 -->
+                <!-- 登录表单 -->
                 <div class="form-container login-container">
                     <h1>{{ $t('login.login') }}</h1>
                     <div class="input-group">
                         <!-- <label for="loginUsername">用户名</label> -->
-                        <input
-                            type="text"
-                            id="loginUsername"
-                            v-model="loginForm.username"
+                        <input type="text" id="loginUsername" v-model="loginForm.username"
                             @keyup.enter="!isLoading && handleLogin()"
-                            :style="loginErrors.username ? errorInputStyle : {}"
-                            required
-                            :placeholder="$t('login.inputUsername')"
-                            :disabled="isLoading"
-                        >
+                            :style="loginErrors.username ? errorInputStyle : {}" required
+                            :placeholder="$t('login.inputUsername')" :disabled="isLoading">
                     </div>
                     <div class="error-message" v-if="loginErrors.username">{{ loginErrors.username }}</div>
 
                     <div class="input-group" style="position: relative;">
-                        <el-input
-                            v-model="loginForm.password"
-                            type="password"
-                            :placeholder="$t('login.inputPassword')"
-                            @keyup.enter="!isLoading && handleLogin()"
-                            :disabled="isLoading"
-                            show-password
-                            :class="{ 'error-style': loginErrors.password }"
-                        />
+                        <el-input v-model="loginForm.password" type="password" :placeholder="$t('login.inputPassword')"
+                            @keyup.enter="!isLoading && handleLogin()" :disabled="isLoading" show-password
+                            :class="{ 'error-style': loginErrors.password }" />
                     </div>
                     <div class="error-message" v-if="loginErrors.password">{{ loginErrors.password }}</div>
 
@@ -83,7 +77,7 @@
                             <i>t</i>
                         </div>
                     </div>
-                    
+
                 </div>
 
                 <!-- 注册表单 -->
@@ -91,51 +85,31 @@
                     <h1>{{ $t('login.register') }}</h1>
                     <div class="input-group">
                         <!-- <label for="registerUsername">用户名</label> -->
-                        <input
-                            type="text"
-                            id="registerUsername"
-                            v-model="registerForm.username"
-                            @keyup.enter="handleRegister"
-                            :style="registerErrors.username ? errorInputStyle : {}"
-                            required
-                            :placeholder="$t('login.inputUsername')"
-                        >
+                        <input type="text" id="registerUsername" v-model="registerForm.username"
+                            @keyup.enter="handleRegister" :style="registerErrors.username ? errorInputStyle : {}"
+                            required :placeholder="$t('login.inputUsername')">
                     </div>
                     <div class="error-message" v-if="registerErrors.username">{{ registerErrors.username }}</div>
 
                     <div class="input-group">
-                        <el-input
-                            v-model="registerForm.email"
-                            type="email"
-                            :placeholder="$t('login.inputEmail')"
-                            @keyup.enter="handleRegister"
-                            :class="{ 'error-style': registerErrors.email }"
-                        />
+                        <el-input v-model="registerForm.email" type="email" :placeholder="$t('login.inputEmail')"
+                            @keyup.enter="handleRegister" :class="{ 'error-style': registerErrors.email }" />
                     </div>
                     <div class="error-message" v-if="registerErrors.email">{{ registerErrors.email }}</div>
 
                     <div class="input-group" style="position: relative;">
-                        <el-input
-                            v-model="registerForm.password"
-                            type="password"
-                                                         :placeholder="$t('login.inputPassword')"
+                        <el-input v-model="registerForm.password" type="password"
+                            :placeholder="$t('login.inputPassword')"
                             @input="e => checkPasswordStrength(registerForm.password, passwordStrength)"
-                            @keyup.enter="handleRegister"
-                            show-password
-                            :class="{ 'error-style': registerErrors.password }"
-                        />
+                            @keyup.enter="handleRegister" show-password
+                            :class="{ 'error-style': registerErrors.password }" />
                         <!-- 密码强度指示器 -->
                         <div v-if="registerForm.password" class="password-strength">
                             <div class="strength-bars">
-                                <div 
-                                    v-for="n in 4" 
-                                    :key="n"
-                                    class="strength-bar"
-                                    :class="[
-                                        { active: passwordStrength.score >= n },
-                                        passwordStrength.score >= n ? passwordStrength.className : ''
-                                    ]"
-                                ></div>
+                                <div v-for="n in 4" :key="n" class="strength-bar" :class="[
+                                    { active: passwordStrength.score >= n },
+                                    passwordStrength.score >= n ? passwordStrength.className : ''
+                                ]"></div>
                             </div>
                             <span class="strength-text" :class="passwordStrength.className">
                                 {{ passwordStrength.message }}
@@ -145,14 +119,9 @@
                     <div class="error-message" v-if="registerErrors.password">{{ registerErrors.password }}</div>
 
                     <div class="input-group">
-                        <el-input
-                            v-model="registerForm.confirmPassword"
-                            type="password"
-                                                         :placeholder="$t('login.confirmPassword')"
-                            @keyup.enter="handleRegister"
-                            show-password
-                            :class="{ 'error-style': registerErrors.confirmPassword }"
-                        />
+                        <el-input v-model="registerForm.confirmPassword" type="password"
+                            :placeholder="$t('login.confirmPassword')" @keyup.enter="handleRegister" show-password
+                            :class="{ 'error-style': registerErrors.confirmPassword }" />
                     </div>
                     <div class="error-message" v-if="registerErrors.confirmPassword">
                         {{ registerErrors.confirmPassword }}
@@ -160,140 +129,105 @@
 
                     <!-- 邮箱验证码输入框 -->
                     <div class="input-group verification-group" v-if="showVerificationCode">
-                        <input
-                            type="text"
-                            id="verificationCode"
-                            v-model="registerForm.verificationCode"
+                        <input type="text" id="verificationCode" v-model="registerForm.verificationCode"
                             @keyup.enter="handleVerifyEmail"
-                            :style="registerErrors.verificationCode ? errorInputStyle : {}"
-                            required
-                            :placeholder="$t('login.inputVerificationCode')"
-                            maxlength="6"
-                        >
-                        <button 
-                            type="button" 
-                            class="resend-btn" 
-                            @click="handleResendVerification"
-                            :disabled="resendCooldown > 0"
-                        >
-                                                         {{ resendCooldown > 0 ? `${resendCooldown}s` : $t('login.resendCode') }}
+                            :style="registerErrors.verificationCode ? errorInputStyle : {}" required
+                            :placeholder="$t('login.inputVerificationCode')" maxlength="6">
+                        <button type="button" class="resend-btn" @click="handleResendVerification"
+                            :disabled="resendCooldown > 0">
+                            {{ resendCooldown > 0 ? `${resendCooldown}s` : $t('login.resendCode') }}
                         </button>
                     </div>
                     <div class="error-message" v-if="registerErrors.verificationCode">
                         {{ registerErrors.verificationCode }}
                     </div>
 
-                                         <button class="btn" @click="handleRegister" v-if="!showVerificationCode">{{ $t('login.register') }}</button>
-                     <button class="btn" @click="handleVerifyEmail" v-if="showVerificationCode">{{ $t('login.verifyEmail') }}</button>
+                    <button class="btn" @click="handleRegister"
+                        v-if="!showVerificationCode">{{ $t('login.register') }}</button>
+                    <button class="btn" @click="handleVerifyEmail"
+                        v-if="showVerificationCode">{{ $t('login.verifyEmail') }}</button>
                 </div>
 
                 <!-- 找回密码表单 -->
                 <div class="form-container forgot-password-container">
                     <h1>{{ $t('login.forgotPassword') }}</h1>
-                    
+
                     <!-- 第一步：输入用户名和邮箱 -->
                     <div v-if="forgotPasswordStep === 1">
                         <div class="input-group">
-                            <input
-                                type="text"
-                                id="forgotUsername"
-                                v-model="forgotPasswordForm.username"
-                                :style="forgotPasswordErrors.username ? errorInputStyle : {}"
-                                required
-                                :placeholder="$t('login.inputUsername')"
-                                :disabled="isLoading"
-                            >
+                            <input type="text" id="forgotUsername" v-model="forgotPasswordForm.username"
+                                :style="forgotPasswordErrors.username ? errorInputStyle : {}" required
+                                :placeholder="$t('login.inputUsername')" :disabled="isLoading">
                         </div>
-                        <div class="error-message" v-if="forgotPasswordErrors.username">{{ forgotPasswordErrors.username }}</div>
+                        <div class="error-message" v-if="forgotPasswordErrors.username">
+                            {{ forgotPasswordErrors.username }}</div>
 
                         <div class="input-group">
-                            <input
-                                type="email"
-                                id="forgotEmail"
-                                v-model="forgotPasswordForm.email"
-                                :style="forgotPasswordErrors.email ? errorInputStyle : {}"
-                                required
-                                :placeholder="$t('login.inputEmail')"
-                                :disabled="isLoading"
-                            >
+                            <input type="email" id="forgotEmail" v-model="forgotPasswordForm.email"
+                                :style="forgotPasswordErrors.email ? errorInputStyle : {}" required
+                                :placeholder="$t('login.inputEmail')" :disabled="isLoading">
                         </div>
-                        <div class="error-message" v-if="forgotPasswordErrors.email">{{ forgotPasswordErrors.email }}</div>
+                        <div class="error-message" v-if="forgotPasswordErrors.email">{{ forgotPasswordErrors.email }}
+                        </div>
 
                         <button class="btn" @click="handleForgotPassword" :disabled="isLoading">
                             <span v-if="isLoading" class="loading-spinner"></span>
-                                                         {{ isLoading ? $t('login.sending') : $t('login.sendVerificationCode') }}
+                            {{ isLoading ? $t('login.sending') : $t('login.sendVerificationCode') }}
                         </button>
                     </div>
 
                     <!-- 第二步：输入验证码 -->
                     <div v-if="forgotPasswordStep === 2">
                         <div class="input-group">
-                            <input
-                                type="text"
-                                id="resetCode"
-                                v-model="forgotPasswordForm.code"
-                                :style="forgotPasswordErrors.code ? errorInputStyle : {}"
-                                required
-                                :placeholder="$t('login.inputVerificationCode')"
-                                maxlength="6"
-                                :disabled="isLoading"
-                            >
+                            <input type="text" id="resetCode" v-model="forgotPasswordForm.code"
+                                :style="forgotPasswordErrors.code ? errorInputStyle : {}" required
+                                :placeholder="$t('login.inputVerificationCode')" maxlength="6" :disabled="isLoading">
                         </div>
-                        <div class="error-message" v-if="forgotPasswordErrors.code">{{ forgotPasswordErrors.code }}</div>
+                        <div class="error-message" v-if="forgotPasswordErrors.code">{{ forgotPasswordErrors.code }}
+                        </div>
 
                         <button class="btn" @click="handleVerifyResetCode" :disabled="isLoading">
                             <span v-if="isLoading" class="loading-spinner"></span>
-                                                         {{ isLoading ? $t('login.verifying') : $t('login.verifyCode') }}
+                            {{ isLoading ? $t('login.verifying') : $t('login.verifyCode') }}
                         </button>
                     </div>
 
                     <!-- 第三步：输入新密码 -->
                     <div v-if="forgotPasswordStep === 3">
                         <div class="input-group" style="position: relative;">
-                            <el-input
-                                v-model="forgotPasswordForm.newPassword"
-                                type="password"
+                            <el-input v-model="forgotPasswordForm.newPassword" type="password"
                                 :placeholder="$t('login.inputNewPassword')"
                                 @input="e => checkPasswordStrength(forgotPasswordForm.newPassword, forgotPasswordStrength)"
-                                show-password
-                                :class="{ 'error-style': forgotPasswordErrors.newPassword }"
-                                :disabled="isLoading"
-                            />
+                                show-password :class="{ 'error-style': forgotPasswordErrors.newPassword }"
+                                :disabled="isLoading" />
                             <!-- 密码强度指示器 -->
                             <div v-if="forgotPasswordForm.newPassword" class="password-strength">
                                 <div class="strength-bars">
-                                    <div 
-                                        v-for="n in 4" 
-                                        :key="n"
-                                        class="strength-bar"
-                                        :class="[
-                                            { active: forgotPasswordStrength.score >= n },
-                                            forgotPasswordStrength.score >= n ? forgotPasswordStrength.className : ''
-                                        ]"
-                                    ></div>
+                                    <div v-for="n in 4" :key="n" class="strength-bar" :class="[
+                                        { active: forgotPasswordStrength.score >= n },
+                                        forgotPasswordStrength.score >= n ? forgotPasswordStrength.className : ''
+                                    ]"></div>
                                 </div>
                                 <span class="strength-text" :class="forgotPasswordStrength.className">
                                     {{ forgotPasswordStrength.message }}
                                 </span>
                             </div>
                         </div>
-                        <div class="error-message" v-if="forgotPasswordErrors.newPassword">{{ forgotPasswordErrors.newPassword }}</div>
+                        <div class="error-message" v-if="forgotPasswordErrors.newPassword">
+                            {{ forgotPasswordErrors.newPassword }}</div>
 
                         <div class="input-group">
-                            <el-input
-                                v-model="forgotPasswordForm.confirmNewPassword"
-                                type="password"
-                                :placeholder="$t('login.confirmNewPassword')"
-                                show-password
+                            <el-input v-model="forgotPasswordForm.confirmNewPassword" type="password"
+                                :placeholder="$t('login.confirmNewPassword')" show-password
                                 :class="{ 'error-style': forgotPasswordErrors.confirmNewPassword }"
-                                :disabled="isLoading"
-                            />
+                                :disabled="isLoading" />
                         </div>
-                        <div class="error-message" v-if="forgotPasswordErrors.confirmNewPassword">{{ forgotPasswordErrors.confirmNewPassword }}</div>
+                        <div class="error-message" v-if="forgotPasswordErrors.confirmNewPassword">
+                            {{ forgotPasswordErrors.confirmNewPassword }}</div>
 
                         <button class="btn" @click="handleResetPassword" :disabled="isLoading">
                             <span v-if="isLoading" class="loading-spinner"></span>
-                                                         {{ isLoading ? $t('login.resetting') : $t('login.resetPassword') }}
+                            {{ isLoading ? $t('login.resetting') : $t('login.resetPassword') }}
                         </button>
                     </div>
                 </div>
@@ -308,7 +242,7 @@
 import { ref, reactive, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '/src/stores/auth.js'
-import {useRoute} from 'vue-router'
+import { useRoute } from 'vue-router'
 import api from '/src/api/index.js'
 import TopBanner from '/src/components/TopBanner.vue'
 import LanguageSwitcher from '/src/components/LanguageSwitcher.vue'
@@ -431,7 +365,7 @@ const isLoading = ref(false);
 // 登录处理
 const handleLogin = async () => {
     if (isLoading.value) return;
-    
+
     let isValid = true;
 
     // 验证用户名
@@ -458,18 +392,18 @@ const handleLogin = async () => {
                 username: loginForm.username,
                 password: loginForm.password
             })
-            
+
             if (response.success) {
                 // 保存 token
                 localStorage.setItem('token', response.token)
                 auth.login(response.token)
-                
+
                 // 获取用户信息
                 const userResponse = await api.getProtectedData()
                 if (userResponse.success) {
                     auth.setUser(userResponse.user)
                 }
-                
+
                 // 确保认证状态正确设置
                 console.log('登录成功，认证状态:', auth.isAuthenticated)
 
@@ -498,7 +432,7 @@ const handleLogin = async () => {
                 } catch (e) {
                     // 忽略偏好获取失败
                 }
-                
+
                 ElMessage.success({
                     message: t('login.loginSuccess'),
                     duration: 2500,
@@ -531,7 +465,7 @@ const handleLogin = async () => {
 // 注册处理
 const handleRegister = async () => {
     if (isLoading.value) return;
-    
+
     let isValid = true;
 
     // 验证用户名
@@ -594,18 +528,18 @@ const handleRegister = async () => {
                 email: registerForm.email,
                 password: registerForm.password
             })
-            
+
             if (response.success) {
                 ElMessage.success({
                     message: response.message || t('login.emailSent'),
                     duration: 3500,
                     type: 'success'
                 });
-                
+
                 // 保存邮箱并显示验证码输入框
                 currentEmail.value = response.email;
                 showVerificationCode.value = true;
-                
+
                 // 开始重新发送验证码的倒计时
                 resendCooldown.value = 60;
                 const timer = setInterval(() => {
@@ -637,7 +571,7 @@ const handleRegister = async () => {
 // 邮箱验证处理
 const handleVerifyEmail = async () => {
     if (isLoading.value) return;
-    
+
     // 验证验证码
     if (registerForm.verificationCode.trim() === '') {
         registerErrors.verificationCode = t('login.invalidCode');
@@ -648,31 +582,31 @@ const handleVerifyEmail = async () => {
     } else {
         registerErrors.verificationCode = '';
     }
-    
+
     isLoading.value = true;
     try {
         const response = await api.verifyEmail({
             email: currentEmail.value,
             code: registerForm.verificationCode
         });
-        
+
         if (response.success) {
             ElMessage.success({
                 message: t('login.registerSuccess'),
                 duration: 2500,
                 type: 'success'
             });
-            
+
             // 保存token并登录
             localStorage.setItem('token', response.token);
             auth.login(response.token);
-            
+
             // 获取用户信息
             const userResponse = await api.getProtectedData();
             if (userResponse.success) {
                 auth.setUser(userResponse.user);
             }
-            
+
             // 跳转到主页面
             router.push('/mainPage');
             clearForms();
@@ -699,19 +633,19 @@ const handleVerifyEmail = async () => {
 // 重新发送验证码
 const handleResendVerification = async () => {
     if (resendCooldown.value > 0) return;
-    
+
     try {
         const response = await api.resendVerification({
             email: currentEmail.value
         });
-        
+
         if (response.success) {
             ElMessage.success({
                 message: t('login.resendSuccess'),
                 duration: 2500,
                 type: 'success'
             });
-            
+
             // 开始倒计时
             resendCooldown.value = 60;
             const timer = setInterval(() => {
@@ -827,17 +761,17 @@ const clearForgotPasswordForm = () => {
 // 处理找回密码第一步：发送验证码
 const handleForgotPassword = async () => {
     if (isLoading.value) return;
-    
+
     // 验证输入
     let isValid = true;
-    
+
     if (forgotPasswordForm.username.trim() === '') {
         forgotPasswordErrors.username = t('login.invalidUsername');
         isValid = false;
     } else {
         forgotPasswordErrors.username = '';
     }
-    
+
     if (forgotPasswordForm.email.trim() === '') {
         forgotPasswordErrors.email = t('login.invalidEmail');
         isValid = false;
@@ -847,7 +781,7 @@ const handleForgotPassword = async () => {
     } else {
         forgotPasswordErrors.email = '';
     }
-    
+
     if (isValid) {
         isLoading.value = true;
         try {
@@ -855,7 +789,7 @@ const handleForgotPassword = async () => {
                 username: forgotPasswordForm.username,
                 email: forgotPasswordForm.email
             });
-            
+
             if (response.success) {
                 ElMessage.success({
                     message: response.message || t('login.emailSent'),
@@ -886,7 +820,7 @@ const handleForgotPassword = async () => {
 // 处理找回密码第二步：验证验证码
 const handleVerifyResetCode = async () => {
     if (isLoading.value) return;
-    
+
     if (forgotPasswordForm.code.trim() === '') {
         forgotPasswordErrors.code = t('login.invalidCode');
         return;
@@ -896,7 +830,7 @@ const handleVerifyResetCode = async () => {
     } else {
         forgotPasswordErrors.code = '';
     }
-    
+
     isLoading.value = true;
     try {
         const response = await api.verifyResetCode({
@@ -904,20 +838,20 @@ const handleVerifyResetCode = async () => {
             email: forgotPasswordForm.email,
             code: forgotPasswordForm.code
         });
-        
+
         if (response.success) {
-                            ElMessage.success({
-                    message: response.message || t('login.verificationSuccess'),
-                    duration: 2500,
-                    type: 'success'
-                });
+            ElMessage.success({
+                message: response.message || t('login.verificationSuccess'),
+                duration: 2500,
+                type: 'success'
+            });
             forgotPasswordStep.value = 3;
         } else {
-                            ElMessage.error({
-                    message: response.message || t('login.verificationFailed'),
-                    duration: 3500,
-                    type: 'error'
-                });
+            ElMessage.error({
+                message: response.message || t('login.verificationFailed'),
+                duration: 3500,
+                type: 'error'
+            });
         }
     } catch (error) {
         console.error('验证找回密码验证码失败:', error);
@@ -934,10 +868,10 @@ const handleVerifyResetCode = async () => {
 // 处理找回密码第三步：重置密码
 const handleResetPassword = async () => {
     if (isLoading.value) return;
-    
+
     // 验证新密码
     let isValid = true;
-    
+
     if (forgotPasswordForm.newPassword.trim() === '') {
         forgotPasswordErrors.newPassword = t('login.inputNewPassword');
         isValid = false;
@@ -950,7 +884,7 @@ const handleResetPassword = async () => {
     } else {
         forgotPasswordErrors.newPassword = '';
     }
-    
+
     if (forgotPasswordForm.confirmNewPassword.trim() === '') {
         forgotPasswordErrors.confirmNewPassword = t('login.confirmNewPassword');
         isValid = false;
@@ -960,7 +894,7 @@ const handleResetPassword = async () => {
     } else {
         forgotPasswordErrors.confirmNewPassword = '';
     }
-    
+
     if (isValid) {
         isLoading.value = true;
         try {
@@ -970,14 +904,14 @@ const handleResetPassword = async () => {
                 code: forgotPasswordForm.code,
                 new_password: forgotPasswordForm.newPassword
             });
-            
+
             if (response.success) {
                 ElMessage.success({
                     message: response.message || t('login.passwordResetSuccess'),
                     duration: 2500,
                     type: 'success'
                 });
-                
+
                 // 重置表单并返回登录
                 clearForgotPasswordForm();
                 isForgotPassword.value = false;
@@ -1055,9 +989,11 @@ defineExpose({
     background: transparent;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;  /* 改为从顶部开始布局 */
+    justify-content: flex-start;
+    /* 改为从顶部开始布局 */
     align-items: center;
-    padding: 40px 0 20px;  /* 调整上下内边距 */
+    padding: 40px 0 20px;
+    /* 调整上下内边距 */
 }
 
 /* 色彩流动背景动画 */
@@ -1071,16 +1007,30 @@ defineExpose({
     pointer-events: none;
     background: linear-gradient(120deg, #667eea, #ff9a9e, #fad0c4, #764ba2, #43e97b, #38f9d7, #667eea 90%);
     background-size: 300% 300%;
-    animation: gradientFlow 18s cubic-bezier(0.4,0.2,0.2,1) infinite alternate;
+    animation: gradientFlow 18s cubic-bezier(0.4, 0.2, 0.2, 1) infinite alternate;
     filter: blur(0px);
 }
 
 @keyframes gradientFlow {
-    0% {background-position: 0% 50%;}
-    25% {background-position: 50% 100%;}
-    50% {background-position: 100% 50%;}
-    75% {background-position: 50% 0%;}
-    100% {background-position: 0% 50%;}
+    0% {
+        background-position: 0% 50%;
+    }
+
+    25% {
+        background-position: 50% 100%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    75% {
+        background-position: 50% 0%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .app-container {
@@ -1090,7 +1040,8 @@ defineExpose({
     align-items: center;
     flex: 1;
     width: 100%;
-    min-height: auto;  /* 移除固定高度限制 */
+    min-height: auto;
+    /* 移除固定高度限制 */
     padding-top: 40px;
 }
 
@@ -1098,14 +1049,15 @@ defineExpose({
     position: relative;
     width: 400px;
     height: 500px;
-    background: rgba(255, 255, 255, 0.35); /* 降低透明度 */
+    background: rgba(255, 255, 255, 0.35);
+    /* 降低透明度 */
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     overflow: hidden;
     /* 高斯模糊效果 */
     backdrop-filter: blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255,255,255,0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     z-index: 1;
     justify-content: center;
     align-items: center;
@@ -1303,7 +1255,8 @@ h1 {
 .social-login {
     display: flex;
     justify-content: center;
-    margin-top: 10px; /* 缩小与上方的间距 */
+    margin-top: 10px;
+    /* 缩小与上方的间距 */
 }
 
 .social-icon {
@@ -1375,7 +1328,8 @@ h1 {
 .divider {
     border: none;
     border-top: 1px solid #eee;
-    margin: 16px 0 8px 0; /* 缩小上下间距 */
+    margin: 16px 0 8px 0;
+    /* 缩小上下间距 */
     width: 100%;
 }
 
@@ -1383,8 +1337,10 @@ h1 {
     color: #aaa;
     font-size: 14px;
     text-align: center;
-    margin-top: 10px;   /* 缩小上间距 */
-    margin-bottom: 6px; /* 缩小下间距 */
+    margin-top: 10px;
+    /* 缩小上间距 */
+    margin-bottom: 6px;
+    /* 缩小下间距 */
     letter-spacing: 1px;
 }
 
@@ -1534,7 +1490,8 @@ h1 {
     color: rgba(255, 255, 255, 0.8);
     font-size: 14px;
     padding: 20px 0;
-    margin-top: auto;  /* 将版权信息推到容器底部 */
+    margin-top: auto;
+    /* 将版权信息推到容器底部 */
     z-index: 2;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }

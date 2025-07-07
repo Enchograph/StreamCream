@@ -8,6 +8,7 @@ import ElementPlus from 'element-plus'
 import { ElMessage } from 'element-plus'
 import 'element-plus/dist/index.css'
 import i18n from './i18n'
+import { useThemeStore } from './stores/theme'
 
 // Vuetify
 import 'vuetify/styles'
@@ -32,6 +33,11 @@ app.use(router)
 app.use(vuetify)
 app.use(ElementPlus)
 app.use(i18n)
+
+// 初始化主题
+const themeStore = useThemeStore()
+themeStore.setTheme(themeStore.theme)
+
 app.mount('#app')
 
 //错误处理

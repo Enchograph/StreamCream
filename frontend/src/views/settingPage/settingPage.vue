@@ -1,6 +1,6 @@
 <template>
     <v-container class="pa-4 setting-bg-glass">
-        <v-card flat class="mx-auto setting-card-glass" max-width="820">
+        <v-card flat class="mx-auto setting-card-glass" max-width="1000">
             <v-card-title class="text-h5 font-weight-medium setting-title-glass">
                 <span class="title-bar-gradient"><v-icon color="#fff" size="28">mdi-cog</v-icon></span>设置
             </v-card-title>

@@ -4,19 +4,19 @@
             <div class="logo-section" @click="goToHome">
                 <div class="logo-text">
                     <span class="logo-main">StreamCream</span>
-                    <span class="logo-subtitle">AI直播助手</span>
+                    <span class="logo-subtitle">{{ $t('topBanner.logoSubtitle') }}</span>
                 </div>
             </div>
             
         <nav class="nav-links">
-                <a href="#" class="nav-link" @click.prevent="goToHelp" title="使用帮助">
-                    <span class="nav-text">帮助</span>
+                <a href="#" class="nav-link" @click.prevent="goToHelp" :title="$t('topBanner.helpTitle')">
+                    <span class="nav-text">{{ $t('topBanner.help') }}</span>
                 </a>
-                <a href="#" class="nav-link" @click.prevent="goToSettings" title="系统设置">
-                    <span class="nav-text">设置</span>
+                <a href="#" class="nav-link" @click.prevent="goToSettings" :title="$t('topBanner.settingsTitle')">
+                    <span class="nav-text">{{ $t('topBanner.settings') }}</span>
                 </a>
-                <button v-if="showLogout" class="logout-btn" @click="handleLogout" title="退出登录">
-                    <span class="btn-text">登出</span>
+                <button v-if="showLogout" class="logout-btn" @click="handleLogout" :title="$t('topBanner.logoutTitle')">
+                    <span class="btn-text">{{ $t('topBanner.logout') }}</span>
                 </button>
         </nav>
         </div>
@@ -77,9 +77,11 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js'
 import { computed, ref, onMounted } from 'vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 
 const router = useRouter()
 const auth = useAuthStore()
+const { t: $t } = useI18n()
 
 const showLogout = computed(() => {
   return auth.isLoggedIn && router.currentRoute.value.path !== '/loginPage'
@@ -136,18 +138,18 @@ function goToSettings() {
 async function handleLogout() {
     try {
         await ElMessageBox.confirm(
-            '确定要登出吗？',
-            '提示',
+            $t('topBanner.logoutConfirm'),
+            $t('topBanner.logoutTitle'),
             {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
+                confirmButtonText: $t('topBanner.logoutConfirmText'),
+                cancelButtonText: $t('topBanner.logoutCancelText'),
                 type: 'warning',
                 center: true,
                 customClass: 'logout-messagebox'
             }
         )
         auth.logout()
-        ElMessage.success('已成功登出！')
+        ElMessage.success($t('topBanner.logoutSuccess'))
         router.push('/loginPage')
     } catch (e) {
         // 用户取消，无需处理

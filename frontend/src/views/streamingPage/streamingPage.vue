@@ -4,28 +4,28 @@
             <div class="container">
                 <!-- 第一列：主题设置和提纲生成 -->
                 <div class="column theme-column">
-                    <h3><span>主题设置与提纲生成</span></h3>
+                    <h3><span>{{ $t('streamingPage.topicAndOutline') }}</span></h3>
                     <div class="input-section">
                         <div class="topic-row">
-                            <input id=" topic" v-model="topic" placeholder="请输入直播主题" />
+                            <input id=" topic" v-model="topic" :placeholder="$t('streamingPage.inputLiveTopic')" />
                             <button @click="generateOutline" :disabled="!topic || isGeneratingOutline">
-                                {{ isGeneratingOutline ? '生成中...' : '生成提纲' }}
+                                {{ isGeneratingOutline ? $t('streamingPage.generating') : $t('streamingPage.generateOutline') }}
                             </button>
                         </div>
                     </div>
                     <div class="outline-section" style="display: flex; flex-direction: column; height: 100%;">
-                        <textarea id="outline" v-model="outline" rows="10" placeholder="您也可以在此输入您设计的提纲"
+                        <textarea id="outline" v-model="outline" rows="10" :placeholder="$t('streamingPage.inputOrEditOutline')"
                             style="font-family: sans-serif; flex-grow: 1;"></textarea>
                         <button class="confirmOutline" @click="confirmOutline"
                             :disabled="!outline || isConfirmingOutline">
-                            {{ isConfirmingOutline ? '处理中...' : '确认主题与提纲' }}
+                            {{ isConfirmingOutline ? $t('streamingPage.processing') : $t('streamingPage.confirmTopicAndOutline') }}
                         </button>
                     </div>
                 </div>
 
                 <!-- 第二列：提纲块管理（使用拖拽功能） -->
                 <div class="column outline-column">
-                    <h3><span>提纲管理</span></h3>
+                    <h3><span>{{ $t('streamingPage.outlineManagement') }}</span></h3>
                     <div class="blocks-container" :style="{ height: outlineSectionHeight }">
                         <draggable v-model="outlineBlocks" item-key="id" handle=".drag-handle" ghost-class="ghost-block"
                             @end="onDragEnd">
@@ -35,13 +35,14 @@
                                         <span @click="editBlockTitle(index)"
                                             class="block-title">{{ element.title }}</span>
                                         <div class="block-actions">
-                                            <button @click="removeBlock(index)" class="remove-btn">×</button>
+                                            <button @click="removeBlock(index)" class="remove-btn">{{ $t('streamingPage.removeBlock') }}</button>
                                             <div class="drag-handle">
                                                 <svg viewBox="0 0 24 24" width="24" height="24">
                                                     <path
                                                         d="M8,4 L16,4 L16,6 L8,6 L8,4 Z M8,11 L16,11 L16,13 L8,13 L8,11 Z M8,18 L16,18 L16,20 L8,20 L8,18 Z"
                                                         fill="currentColor"></path>
                                                 </svg>
+                                                <span>{{ $t('streamingPage.dragHandle') }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -55,7 +56,7 @@
                     </div>
                     <br></br>
                     <button v-if="outlineBlocks.length > 0" @click="addNewBlock" class="add-block-btn">+
-                        添加新章节</button>
+                        {{ $t('streamingPage.addBlock') }}</button>
                 </div>
 
                 <!-- 第三列：直播界面 -->

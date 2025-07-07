@@ -2,16 +2,26 @@
     <v-container class="pa-4 setting-bg-glass">
         <v-card flat class="mx-auto setting-card-glass" max-width="1000">
             <v-card-title class="text-h5 font-weight-medium setting-title-glass">
-                <div class="title-content">
-                    <span class="title-bar-gradient"><v-icon color="#fff" size="28">mdi-cog</v-icon></span>
-                    <span class="title-text">{{ $t('setting.title') }}</span>
-                </div>
-                <div class="language-switcher-container">
-                    <LanguageSwitcher :fixed-position="true" />
-                </div>
+                <span class="title-bar-gradient"><v-icon color="#fff" size="28">mdi-cog</v-icon></span>{{ $t('setting.title') }}
             </v-card-title>
             
             <v-row>
+                <v-col cols="12">
+                    <v-card flat class="mb-6 section-card-glass">
+                        <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">
+                            <span class="section-bar-gradient"><v-icon color="#fff" size="20">mdi-translate</v-icon></span>{{ $t('setting.languageTitle') }}
+                        </v-card-title>
+                        <v-card-text>
+                            <v-row>
+                                <v-col cols="12">
+                                    <div class="language-setting-container">
+                                        <LanguageSwitcher />
+                                    </div>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
                 <v-col cols="12">
                     <v-card flat class="mb-6 section-card-glass">
                         <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">
@@ -694,6 +704,13 @@ export default {
     right: 20px !important;
     z-index: 999999 !important;
     margin: 0 !important;
+}
+
+.language-setting-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
 }
 
 .title-bar-gradient {

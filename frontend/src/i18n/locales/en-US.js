@@ -689,6 +689,7 @@ If you encounter unsolvable problems, please contact the development team or ref
   },
 
   setting: {
+    
     title: 'Settings',
     languageTitle: 'Language Settings',
     debugTitle: 'Debug Settings',
@@ -731,7 +732,11 @@ If you encounter unsolvable problems, please contact the development team or ref
     saveSettings: 'Save Settings',
     ttsTitle: 'TTS Settings',
     live2dTitle: 'Live 2D Settings',
-    finish: 'Finish'
+    finish: 'Finish',
+    topBannerLayout: 'Navigation Bar Layout',
+    bannerLayout: 'Navigation Bar Layout',
+    bannerDisperse: 'Disperse',
+    bannerGather: 'Gather',
   },
 
   help: {

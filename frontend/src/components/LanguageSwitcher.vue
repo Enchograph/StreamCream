@@ -140,17 +140,17 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 6px 14px;
+  padding: 12px 28px;
   background: rgba(255, 255, 255, 0.18);
-  border: 1.5px solid #e3e8f7;
-  border-radius: 10px;
+  border: 2px solid #e3e8f7;
+  border-radius: 14px;
   color: #4a5fa7;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 22px;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.18s cubic-bezier(.4,0,.2,1);
   backdrop-filter: blur(8px);
-  min-width: 56px;
+  min-width: 80px;
   justify-content: center;
   box-shadow: 0 2px 8px 0 rgba(102,126,234,0.04);
 }

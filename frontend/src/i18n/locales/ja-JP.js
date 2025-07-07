@@ -153,7 +153,11 @@ export default {
     saveSettings: '設定を保存',
     ttsTitle: '音声合成設定',
     live2dTitle: 'Live2D設定',
-    finish: '完了'
+    finish: '完了',
+    topBannerLayout: 'ナビゲーションバーのレイアウト',
+    bannerDisperse: '分散',
+    bannerGather: '集中',
+    bannerLayout: 'ナビゲーションバーのレイアウト',
   },
   bilibili: {
     title: 'ビリビリ配信キー取得ツール',

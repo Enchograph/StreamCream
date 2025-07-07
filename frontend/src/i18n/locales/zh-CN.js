@@ -731,7 +731,11 @@ export default {
     saveSettings: '保存设置',
     ttsTitle: '语音转换设置',
     live2dTitle: 'Live 2D 设置',
-    finish: '完成'
+    finish: '完成',
+    bannerLayout: '导航栏布局',
+    topBannerLayout: '导航栏布局',
+    bannerDisperse: '分散',
+    bannerGather: '聚合',
   },
 
   help: {

@@ -1377,5 +1377,40 @@ If you encounter unsolvable problems, please contact the development team or ref
     currentLang: '中',
     currentLangEn: 'En',
     selectLanguage: 'Select Language'
+  },
+
+  xiaohongshu: {
+    title: "Xiaohongshu Live",
+    subtitle: "All-in-one Xiaohongshu Live Streaming Management",
+    tabs: {
+      account: { name: "Account Settings", description: "Account Login & Authentication" },
+      live: { name: "Live Settings", description: "Live Configuration & Management" }
+    },
+    account: {
+      manualInput: "Manual Account Input",
+      userId: "User ID",
+      userIdPlaceholder: "Enter Xiaohongshu User ID",
+      token: "Token",
+      tokenPlaceholder: "Enter Token",
+      saveSettings: "Save Settings",
+      viewHelp: "View Help"
+    },
+    live: {
+      title: "Live Settings",
+      titleInput: "Live Title",
+      titlePlaceholder: "Enter live title",
+      updateTitle: "Update Title",
+      streamKey: "Stream Key",
+      getStreamKey: "Get Stream Key",
+      sendBullet: "Send Bullet Message",
+      bulletInput: "Bullet Message",
+      bulletPlaceholder: "Enter bullet message",
+      startLive: "Start Live",
+      operationLog: "Operation Log",
+      noLogs: "No logs yet"
+    },
+    help: {
+      title: "Help Documentation"
+    }
   }
 } 

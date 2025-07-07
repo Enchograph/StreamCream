@@ -1421,4 +1421,39 @@ export default {
     chooseFile: '选择文件',
     pathInputBtn: '路径填入',
   },
+
+  xiaohongshu: {
+    title: "小红书直播",
+    subtitle: "一站式小红书直播推流管理",
+    tabs: {
+      account: { name: "账号设置", description: "账号登录与认证" },
+      live: { name: "直播设置", description: "直播配置与管理" }
+    },
+    account: {
+      manualInput: "手动输入账号信息",
+      userId: "用户ID",
+      userIdPlaceholder: "请输入小红书用户ID",
+      token: "Token",
+      tokenPlaceholder: "请输入Token",
+      saveSettings: "保存设置",
+      viewHelp: "查看帮助"
+    },
+    live: {
+      title: "直播设置",
+      titleInput: "直播标题",
+      titlePlaceholder: "请输入直播标题",
+      updateTitle: "更新标题",
+      streamKey: "推流码",
+      getStreamKey: "获取推流码",
+      sendBullet: "发送弹幕",
+      bulletInput: "弹幕内容",
+      bulletPlaceholder: "请输入弹幕内容",
+      startLive: "开始直播",
+      operationLog: "操作日志",
+      noLogs: "暂无日志"
+    },
+    help: {
+      title: "帮助文档"
+    }
+  }
 } 

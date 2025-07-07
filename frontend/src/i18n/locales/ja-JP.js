@@ -968,4 +968,38 @@ export default {
       restartServices: '関連バックエンドサービスを再起動'
     }
   },
+  xiaohongshu: {
+    title: "小紅書ライブ",
+    subtitle: "ワンストップ小紅書ライブ配信管理",
+    tabs: {
+      account: { name: "アカウント設定", description: "アカウントログインと認証" },
+      live: { name: "ライブ設定", description: "ライブ構成と管理" }
+    },
+    account: {
+      manualInput: "アカウント情報の手動入力",
+      userId: "ユーザーID",
+      userIdPlaceholder: "小紅書ユーザーIDを入力してください",
+      token: "トークン",
+      tokenPlaceholder: "トークンを入力してください",
+      saveSettings: "設定を保存",
+      viewHelp: "ヘルプを見る"
+    },
+    live: {
+      title: "ライブ設定",
+      titleInput: "ライブタイトル",
+      titlePlaceholder: "ライブタイトルを入力してください",
+      updateTitle: "タイトルを更新",
+      streamKey: "配信キー",
+      getStreamKey: "配信キーを取得",
+      sendBullet: "弾幕を送信",
+      bulletInput: "弾幕内容",
+      bulletPlaceholder: "弾幕内容を入力してください",
+      startLive: "ライブ開始",
+      operationLog: "操作ログ",
+      noLogs: "ログはありません"
+    },
+    help: {
+      title: "ヘルプドキュメント"
+    }
+  }
 }

@@ -122,7 +122,6 @@
     
     *   导航到VS Code侧边栏的"扩展"视图（快捷键 `Ctrl+Shift+X`），搜索 `Python`，找到Microsoft发布的扩展并点击"安装"。
     
-
 2.  **Ruff 扩展 (charliermarsh.ruff)**：官方的Ruff扩展，可以在VS Code中实时显示Ruff的诊断信息（Linting），并允许使用Ruff作为格式化工具（Formatter）。
 
 
@@ -137,7 +136,7 @@
 
 ### 项目结构与虚拟环境
 
-基于StreamCream项目的实际结构，推荐的基础项目结构如下：
+基于StreamCream项目的逻辑结构，我们组织项目结构如下：
 
 ```
 streamcream/
@@ -197,13 +196,13 @@ source .venv/bin/activate
 
 激活后，终端提示符前通常会显示 `(.venv)`。
 
-**(可选) 使用 Miniconda/Anaconda**：
+**使用 Miniconda/Anaconda**：
 
-如果你偏好使用conda，可以创建conda环境：
+对于GPT-SoVITS相关服务，我们使用了conda来创建虚拟环境：
 
 ```bash
-conda create --name streamcream python=3.11  # 推荐Python 3.11
-conda activate streamcream
+conda create --name sovits python=3.11
+conda activate sovits
 ```
 
 ### 依赖管理 (pip + requirements.txt)
@@ -833,7 +832,7 @@ class UserRegistration(BaseModel):
 from flask_cors import CORS
 
 CORS(app, 
-     origins=['http://localhost:5173', 'https://yourdomain.com'],
+     origins=['http://localhost:5173'],
      supports_credentials=True,
      methods=['GET', 'POST', 'PUT', 'DELETE'],
      allow_headers=['Content-Type', 'Authorization'])
@@ -873,11 +872,11 @@ CORS(app,
    python -m pip install --upgrade pip
    
    # 使用国内镜像
-cd backend
-pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
-cd ..
+   cd backend
+   pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
+   cd ..
 ```
-   ```
+```
 
 ## 总结
 

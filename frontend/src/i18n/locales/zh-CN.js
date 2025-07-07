@@ -323,6 +323,44 @@ export default {
     }
   },
 
+  // 直播页面
+  streamingPage: {
+    topicAndOutline: '主题设置与提纲生成',
+    inputLiveTopic: '请输入直播主题',
+    generating: '生成中...',
+    generateOutline: '生成提纲',
+    inputOrEditOutline: '您也可以在此输入您设计的提纲',
+    processing: '处理中...',
+    confirmTopicAndOutline: '确认主题与提纲',
+    outlineManagement: '提纲管理',
+    addNewSection: '添加新章节',
+    generateOutlineFailed: '生成提纲失败，请重试',
+    processOutlineFailed: '处理提纲失败，请重试',
+    unnamedSection: '未命名章节',
+    generateContentFailed: '生成章节内容失败，请重试',
+    confirmDeleteSection: '确定要删除这个章节吗？',
+    enterNewSectionTitle: '请输入新章节标题：',
+    aiSystemPrompt: '你是一个专业的直播内容助手，擅长生成结构清晰、通俗易懂的内容。',
+    generateOutlinePrompt: '为主题"{topic}"生成一个直播提纲，包含5-8个章节，每个章节用一个短标题概括。格式为：\n1. 章节一\n2. 章节二\n以此类推。',
+    generateContentPrompt: '为直播主题"{topic}"的"{sectionTitle}"章节生成详细讲解内容。内容要通俗易懂，语气轻松自然，适合直播朗读。每个句子都要简短，便于字幕显示。',
+    apiCallFailed: 'API调用失败: {status} {statusText}',
+    invalidApiResponse: '无效的API响应格式',
+    generatingContentFor: '现在生成',
+    contentGenerationComplete: '的内容生成完成',
+    regeneratingSectionContent: '重新生成章节内容:',
+    index: '(索引:',
+    sectionContentComplete: '章节 "{title}" 内容生成完成，共 {count} 句',
+    sentencePlayed: '句子播放完成 - 章节: {blockIndex}, 句子: {sentenceIndex}',
+    generateSectionContentError: '生成章节 "{title}" 内容出错:',
+    preGenerateNextSectionError: '预生成下一章内容出错:',
+    deleteAudioFilesFailed: '删除音频文件失败:',
+    deleteAudioFilesError: '删除音频文件出错:',
+    generateOutlineError: '生成提纲出错:',
+    confirmOutlineError: '确认提纲出错:',
+    generateContentError: '生成章节内容出错:',
+    apiCallError: 'API调用出错:'
+  },
+
   // 版权信息
   copyright: {
     text: '© 2025 Made by <a href="https://whucsgitlab.whu.edu.cn/2025se-deepsleep" target="_blank" rel="noopener" style="color: rgba(255,255,255,0.9); text-decoration: underline; transition: color 0.3s ease;">DeepSleep</a>. All rights reserved.'
@@ -388,16 +426,7 @@ export default {
     speechTestFeatureDev: '讲稿测试功能将在后续实现',
   },
 
-  streamingPage: {
-    topicAndOutline: '主题设置与提纲生成',
-    inputLiveTopic: '请输入直播主题',
-    generating: '生成中...',
-    generateOutline: '生成提纲',
-    inputOrEditOutline: '您也可以在此输入您设计的提纲',
-    processing: '处理中...',
-    confirmTopicAndOutline: '确认主题与提纲',
-    addNewSection: '添加新章节'
-  },
+
 
   setting: {
     title: '设置',

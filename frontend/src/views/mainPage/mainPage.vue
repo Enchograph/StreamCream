@@ -589,7 +589,7 @@ p {
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-    text-transform: uppercase;
+    text-transform: none;
     letter-spacing: 0.5px;
     min-width: 120px;
     height: 48px;
@@ -1070,7 +1070,7 @@ input[type="file"]::file-selector-button:hover {
     font-size: 12px;
     font-weight: 600;
     margin-left: 10px;
-    text-transform: uppercase;
+    text-transform: none;
     letter-spacing: 0.5px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;

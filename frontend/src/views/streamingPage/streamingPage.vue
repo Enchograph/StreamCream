@@ -4,28 +4,28 @@
             <div class="container">
                 <!-- 第一列：主题设置和提纲生成 -->
                 <div class="column theme-column">
-                    <h3><span>主题设置与提纲生成</span></h3>
+                    <h3><span>{{ $t('streamingPage.topicAndOutline') }}</span></h3>
                     <div class="input-section">
                         <div class="topic-row">
-                            <input id=" topic" v-model="topic" placeholder="请输入直播主题" />
+                            <input id=" topic" v-model="topic" :placeholder="$t('streamingPage.inputLiveTopic')" />
                             <button @click="generateOutline" :disabled="!topic || isGeneratingOutline">
-                                {{ isGeneratingOutline ? '生成中...' : '生成提纲' }}
+                                {{ isGeneratingOutline ? $t('streamingPage.generating') : $t('streamingPage.generateOutline') }}
                             </button>
                         </div>
                     </div>
                     <div class="outline-section" style="display: flex; flex-direction: column; height: 100%;">
-                        <textarea id="outline" v-model="outline" rows="10" placeholder="您也可以在此输入您设计的提纲"
+                        <textarea id="outline" v-model="outline" rows="10" :placeholder="$t('streamingPage.inputOrEditOutline')"
                             style="font-family: sans-serif; flex-grow: 1;"></textarea>
                         <button class="confirmOutline" @click="confirmOutline"
                             :disabled="!outline || isConfirmingOutline">
-                            {{ isConfirmingOutline ? '处理中...' : '确认主题与提纲' }}
+                            {{ isConfirmingOutline ? $t('streamingPage.processing') : $t('streamingPage.confirmTopicAndOutline') }}
                         </button>
                     </div>
                 </div>
 
                 <!-- 第二列：提纲块管理（使用拖拽功能） -->
                 <div class="column outline-column">
-                    <h3><span>提纲管理</span></h3>
+                    <h3><span>{{ $t('streamingPage.outlineManagement') }}</span></h3>
                     <div class="blocks-container" :style="{ height: outlineSectionHeight }">
                         <draggable v-model="outlineBlocks" item-key="id" handle=".drag-handle" ghost-class="ghost-block"
                             @end="onDragEnd">
@@ -55,7 +55,7 @@
                     </div>
                     <br></br>
                     <button v-if="outlineBlocks.length > 0" @click="addNewBlock" class="add-block-btn">+
-                        添加新章节</button>
+                        {{ $t('streamingPage.addNewSection') }}</button>
                 </div>
 
                 <!-- 第三列：直播界面 -->
@@ -73,12 +73,17 @@ import { defineComponent } from 'vue';
 import draggable from 'vuedraggable';
 import BroadcastInterface from './BroadcastInterface.vue';
 import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
     name: 'LiveStreamingAssistant',
     components: {
         draggable,
         BroadcastInterface
+    },
+    setup() {
+        const { t } = useI18n()
+        return { t }
     },
     data() {
         // 从localStorage读取AI设置
@@ -126,7 +131,7 @@ export default defineComponent({
 
         handleSentencePlayed({ blockIndex, sentenceIndex }) {
             // 可以记录播放进度或执行其他操作
-            console.log(`句子播放完成 - 章节: ${blockIndex}, 句子: ${sentenceIndex}`);
+            console.log(this.t('streamingPage.sentencePlayed', { blockIndex, sentenceIndex }));
 
             // 当前章节开始播放第一句时，预生成下一章内容
             if (blockIndex < this.outlineBlocks.length - 1 &&
@@ -142,11 +147,11 @@ export default defineComponent({
             this.isGeneratingOutline = true;
 
             try {
-                const response = await this.callOpenAI(`为主题"${this.topic}"生成一个直播提纲，包含5-8个章节，每个章节用一个短标题概括。格式为：\n1. 章节一\n2. 章节二\n以此类推。`);
+                const response = await this.callOpenAI(this.t('streamingPage.generateOutlinePrompt', { topic: this.topic }));
                 this.outline = response;
             } catch (error) {
-                console.error('生成提纲出错:', error);
-                ElMessage.error('生成提纲失败，请重试');
+                console.error(this.t('streamingPage.generateOutlineError'), error);
+                ElMessage.error(this.t('streamingPage.generateOutlineFailed'));
             } finally {
                 this.isGeneratingOutline = false;
             }
@@ -184,8 +189,8 @@ export default defineComponent({
 
                 this.outlineConfirmed = true;
             } catch (error) {
-                console.error('确认提纲出错:', error);
-                ElMessage.error('处理提纲失败，请重试');
+                console.error(this.t('streamingPage.confirmOutlineError'), error);
+                ElMessage.error(this.t('streamingPage.processOutlineFailed'));
             } finally {
                 this.isConfirmingOutline = false;
             }
@@ -206,7 +211,7 @@ export default defineComponent({
             if (this.editingBlockIndex >= 0) {
                 // 保存标题修改
                 const oldTitle = this.outlineBlocks[this.editingBlockIndex].title;
-                this.outlineBlocks[this.editingBlockIndex].title = this.editingBlockTitle || '未命名章节';
+                this.outlineBlocks[this.editingBlockIndex].title = this.editingBlockTitle || this.t('streamingPage.unnamedSection');
 
                 // 保存当前正在编辑的索引
                 const modifiedBlockIndex = this.editingBlockIndex;
@@ -225,21 +230,21 @@ export default defineComponent({
             if (blockIndex < 0 || blockIndex >= this.outlineBlocks.length) return;
 
             const targetBlock = this.outlineBlocks[blockIndex];
-            console.log('重新生成章节内容:', targetBlock.title, '(索引:', blockIndex, ')');
+            console.log(this.t('streamingPage.regeneratingSectionContent'), targetBlock.title, this.t('streamingPage.index'), blockIndex);
 
             // 清空该章节的现有内容
             targetBlock.content = [];
 
             try {
-                const prompt = `为直播主题"${this.topic}"的"${targetBlock.title}"章节生成详细讲解内容。内容要通俗易懂，语气轻松自然，适合直播朗读。每个句子都要简短，便于字幕显示。`;
+                const prompt = this.t('streamingPage.generateContentPrompt', { topic: this.topic, sectionTitle: targetBlock.title });
                 const content = await this.callOpenAI(prompt);
 
                 // 分句处理
                 targetBlock.content = this.splitIntoSentences(content);
-                console.log(`章节 "${targetBlock.title}" 内容生成完成，共 ${targetBlock.content.length} 句`);
+                console.log(this.t('streamingPage.sectionContentComplete', { title: targetBlock.title, count: targetBlock.content.length }));
             } catch (error) {
-                console.error(`生成章节 "${targetBlock.title}" 内容出错:`, error);
-                ElMessage.error('生成章节内容失败，请重试');
+                console.error(this.t('streamingPage.generateSectionContentError', { title: targetBlock.title }), error);
+                ElMessage.error(this.t('streamingPage.generateContentFailed'));
             }
         },
 
@@ -274,7 +279,7 @@ export default defineComponent({
         },
 
         removeBlock(index) {
-            if (confirm('确定要删除这个章节吗？')) {
+            if (confirm(this.t('streamingPage.confirmDeleteSection'))) {
                 // 保存被删除块的ID，以便更新currentBlockIndex
                 this.outlineBlocks.splice(index, 1);
 
@@ -292,7 +297,7 @@ export default defineComponent({
         },
 
         addNewBlock() {
-            const newBlockTitle = prompt('请输入新章节标题：');
+            const newBlockTitle = prompt(this.t('streamingPage.enterNewSectionTitle'));
             if (newBlockTitle && newBlockTitle.trim()) {
                 this.outlineBlocks.push({
                     id: Date.now() + Math.random().toString(36).substr(2, 9),
@@ -309,24 +314,24 @@ export default defineComponent({
             this.isGeneratingContent = true;
             const targetBlock = this.outlineBlocks[blockIndex];
 
-            console.log('现在生成', targetBlock.title, '的内容');
+            console.log(this.t('streamingPage.generatingContentFor'), targetBlock.title);
 
             try {
-                const prompt = `为直播主题"${this.topic}"的"${targetBlock.title}"章节生成详细讲解内容。内容要通俗易懂，语气轻松自然，适合直播朗读。每个句子都要简短，便于字幕显示。`;
+                const prompt = this.t('streamingPage.generateContentPrompt', { topic: this.topic, sectionTitle: targetBlock.title });
                 const content = await this.callOpenAI(prompt);
 
                 // 分句处理
                 targetBlock.content = this.splitIntoSentences(content);
 
-                console.log(targetBlock.title, '的内容生成完成');
+                console.log(this.t('streamingPage.contentGenerationComplete'), targetBlock.title);
 
                 // 预生成下一章内容
                 if (blockIndex < this.outlineBlocks.length - 1 && !this.outlineBlocks[blockIndex + 1].content.length) {
                     this.generateNextBlockContent(blockIndex + 1);
                 }
             } catch (error) {
-                console.error('生成章节内容出错:', error);
-                ElMessage.error('生成章节内容失败，请重试');
+                console.error(this.t('streamingPage.generateContentError'), error);
+                ElMessage.error(this.t('streamingPage.generateContentFailed'));
             } finally {
                 this.isGeneratingContent = false;
             }
@@ -339,16 +344,16 @@ export default defineComponent({
             const nextBlock = this.outlineBlocks[nextIndex];
             if (nextBlock.content && nextBlock.content.length > 0) return;
 
-            console.log('现在生成', nextBlock.title, '的内容');
+            console.log(this.t('streamingPage.generatingContentFor'), nextBlock.title);
 
             try {
-                const prompt = `为直播主题"${this.topic}"的"${nextBlock.title}"章节生成详细讲解内容。内容要通俗易懂，语气轻松自然，适合直播朗读。每个句子都要简短，便于字幕显示。`;
+                const prompt = this.t('streamingPage.generateContentPrompt', { topic: this.topic, sectionTitle: nextBlock.title });
                 const content = await this.callOpenAI(prompt);
                 nextBlock.content = this.splitIntoSentences(content);
 
-                console.log(nextBlock.title, '的内容生成完成');
+                console.log(this.t('streamingPage.contentGenerationComplete'), nextBlock.title);
             } catch (error) {
-                console.error('预生成下一章内容出错:', error);
+                console.error(this.t('streamingPage.preGenerateNextSectionError'), error);
             }
         },
 
@@ -383,7 +388,7 @@ export default defineComponent({
                         messages: [
                             {
                                 role: 'system',
-                                content: '你是一个专业的直播内容助手，擅长生成结构清晰、通俗易懂的内容。'
+                                content: this.t('streamingPage.aiSystemPrompt')
                             },
                             {
                                 role: 'user',
@@ -395,16 +400,16 @@ export default defineComponent({
                 });
 
                 if (!response.ok) {
-                    throw new Error(`API调用失败: ${response.status} ${response.statusText}`);
+                    throw new Error(this.t('streamingPage.apiCallFailed', { status: response.status, statusText: response.statusText }));
                 }
 
                 const data = await response.json();
                 if (!data.choices || !data.choices[0]) {
-                    throw new Error('无效的API响应格式');
+                    throw new Error(this.t('streamingPage.invalidApiResponse'));
                 }
                 return data.choices[0].message.content.trim();
             } catch (error) {
-                console.error('API调用出错:', error);
+                console.error(this.t('streamingPage.apiCallError'), error);
                 throw error; // 重新抛出错误以便上层处理
             }
         },
@@ -426,10 +431,10 @@ export default defineComponent({
                     method: 'DELETE'
                 });
                 if (!response.ok) {
-                    console.error('删除音频文件失败:', response.statusText);
+                    console.error(this.t('streamingPage.deleteAudioFilesFailed'), response.statusText);
                 }
             } catch (error) {
-                console.error('删除音频文件出错:', error);
+                console.error(this.t('streamingPage.deleteAudioFilesError'), error);
             }
         },
 
@@ -491,7 +496,7 @@ h3 {
     display: flex;
     align-items: center;
     justify-content: center;
-    text-transform: uppercase;
+    text-transform: none;
     font-size: 2.5rem;
     /* 约 40px，可根据需求调整 */
     font-weight: bold;
@@ -736,7 +741,7 @@ button {
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-    text-transform: uppercase;
+    text-transform: none;
     letter-spacing: 0.5px;
     min-width: 120px;
     height: 48px;

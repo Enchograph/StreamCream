@@ -989,7 +989,7 @@ export default {
   border-radius: 4px;
   font-size: 0.8rem;
   font-weight: 600;
-  text-transform: uppercase;
+  text-transform: none;
   min-width: 60px;
   text-align: center;
 }

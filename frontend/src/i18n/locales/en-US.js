@@ -49,7 +49,7 @@ export default {
     streaming: 'Streaming',
     settings: 'Settings',
     help: 'Help',
-    about: 'About Us'
+    about: 'About us'
   },
 
   // Login page
@@ -63,7 +63,7 @@ export default {
     password: 'Password',
     email: 'Email',
 
-    verificationCode: 'Verification Code',
+    verificationCode: 'Verification code',
     resendCode: 'Resend',
     loginSuccess: 'Login successful!',
     registerSuccess: 'Registration successful!',
@@ -85,9 +85,9 @@ export default {
     pleaseLogin: 'Please login first!!!',
     otherLoginMethods: 'Other login methods',
     socialLogin: {
-      facebook: 'Facebook Login',
-      google: 'Google Login',
-      twitter: 'Twitter Login'
+          facebook: 'Facebook login',
+    google: 'Google login',
+    twitter: 'Twitter login'
     },
     inputUsername: 'Enter username',
     inputPassword: 'Enter password',
@@ -96,7 +96,7 @@ export default {
     inputVerificationCode: 'Enter verification code',
     loggingIn: 'Logging in...',
     forgotPassword: 'Forgot password?',
-    verifyEmail: 'Verify Email',
+    verifyEmail: 'Verify email',
     sending: 'Sending...',
     sendVerificationCode: 'Send verification code',
     verifying: 'Verifying...',
@@ -106,11 +106,11 @@ export default {
     resetting: 'Resetting...',
     resetPassword: 'Reset password',
     passwordStrength: {
-      veryWeak: 'Very Weak',
-      weak: 'Weak',
-      medium: 'Medium',
-      strong: 'Strong',
-      veryStrong: 'Very Strong'
+          veryWeak: 'Very weak',
+    weak: 'Weak',
+    medium: 'Medium',
+    strong: 'Strong',
+    veryStrong: 'Very strong'
     },
     serverError: 'Server error',
     resendSuccess: 'Verification code resent',
@@ -124,9 +124,9 @@ export default {
     // Navigation actions
     actions: {
       help: 'Help',
-      quickActions: 'Quick Actions',
+      quickActions: 'Quick actions',
       tutorial: 'Tutorial',
-      resetTutorial: 'Reset Tutorial'
+      resetTutorial: 'Reset tutorial'
     },
     // Tabs
     tabs: {
@@ -151,14 +151,14 @@ export default {
       cookiesImport: {
         title: 'Cookies File Import',
         description: 'Import Cookies information from local file',
-        selectFile: 'Select File'
+        selectFile: 'Select file'
       },
       // Auto get
       autoGet: {
-        title: 'Auto Get',
+        title: 'Auto get',
         description: 'Automatically get account information through QR code scanning',
         getting: 'Getting...',
-        startGet: 'Start Get',
+        startGet: 'Start get',
         gettingInfo: 'Getting account information...'
       },
       // Manual input
@@ -323,6 +323,44 @@ If you encounter unsolvable problems, please contact the development team or ref
     }
   },
 
+  // Streaming Page
+  streamingPage: {
+    topicAndOutline: 'Topic Setting and Outline Generation',
+    inputLiveTopic: 'Please enter live streaming topic',
+    generating: 'Generating...',
+    generateOutline: 'Generate Outline',
+    inputOrEditOutline: 'You can also input your designed outline here',
+    processing: 'Processing...',
+    confirmTopicAndOutline: 'Confirm Topic and Outline',
+    outlineManagement: 'Outline Management',
+    addNewSection: 'Add New Section',
+    generateOutlineFailed: 'Failed to generate outline, please try again',
+    processOutlineFailed: 'Failed to process outline, please try again',
+    unnamedSection: 'Unnamed Section',
+    generateContentFailed: 'Failed to generate section content, please try again',
+    confirmDeleteSection: 'Are you sure you want to delete this section?',
+    enterNewSectionTitle: 'Please enter new section title:',
+    aiSystemPrompt: 'You are a professional live streaming content assistant, skilled at generating clear and easy-to-understand content.',
+    generateOutlinePrompt: 'Generate a live streaming outline for topic "{topic}" with 5-8 sections, each section summarized with a short title. Format: \n1. Section One\n2. Section Two\nAnd so on.',
+    generateContentPrompt: 'Generate detailed explanation content for the "{sectionTitle}" section of live streaming topic "{topic}". Content should be easy to understand, natural in tone, suitable for live streaming reading. Each sentence should be short for subtitle display.',
+    apiCallFailed: 'API call failed: {status} {statusText}',
+    invalidApiResponse: 'Invalid API response format',
+    generatingContentFor: 'Now generating content for',
+    contentGenerationComplete: 'content generation complete',
+    regeneratingSectionContent: 'Regenerating section content:',
+    index: '(Index:',
+    sectionContentComplete: 'Section "{title}" content generation complete, total {count} sentences',
+    sentencePlayed: 'Sentence played - Section: {blockIndex}, Sentence: {sentenceIndex}',
+    generateSectionContentError: 'Error generating section "{title}" content:',
+    preGenerateNextSectionError: 'Error pre-generating next section content:',
+    deleteAudioFilesFailed: 'Failed to delete audio files:',
+    deleteAudioFilesError: 'Error deleting audio files:',
+    generateOutlineError: 'Error generating outline:',
+    confirmOutlineError: 'Error confirming outline:',
+    generateContentError: 'Error generating content:',
+    apiCallError: 'API call error:'
+  },
+
   // Copyright
   copyright: {
     text: '© 2025 Made by <a href="https://whucsgitlab.whu.edu.cn/2025se-deepsleep" target="_blank" rel="noopener" style="color: rgba(255,255,255,0.9); text-decoration: underline; transition: color 0.3s ease;">DeepSleep</a>. All rights reserved.'
@@ -388,16 +426,7 @@ If you encounter unsolvable problems, please contact the development team or ref
     speechTestFeatureDev: 'Speech test feature will be implemented later',
   },
 
-  streamingPage: {
-    topicAndOutline: 'Topic & Outline Generation',
-    inputLiveTopic: 'Enter live topic',
-    generating: 'Generating...',
-    generateOutline: 'Generate Outline',
-    inputOrEditOutline: 'You can also enter or edit your outline here',
-    processing: 'Processing...',
-    confirmTopicAndOutline: 'Confirm Topic & Outline',
-    addNewSection: 'Add New Section'
-  },
+
 
   setting: {
     title: 'Settings',
@@ -756,9 +785,9 @@ If you encounter unsolvable problems, please contact the development team or ref
     // Navigation actions
     actions: {
       help: 'Help',
-      quickActions: 'Quick Actions',
+      quickActions: 'Quick actions',
       tutorial: 'Tutorial',
-      resetTutorial: 'Reset Tutorial'
+      resetTutorial: 'Reset tutorial'
     },
     // Tabs
     tabs: {
@@ -783,14 +812,14 @@ If you encounter unsolvable problems, please contact the development team or ref
       cookiesImport: {
         title: 'Cookies File Import',
         description: 'Import Cookies information from local file',
-        selectFile: 'Select File'
+        selectFile: 'Select file'
       },
       // Auto get
       autoGet: {
-        title: 'Auto Get',
+        title: 'Auto get',
         description: 'Automatically get account information via QR code scanning',
         getting: 'Getting...',
-        startGet: 'Start Get',
+        startGet: 'Start get',
         gettingInfo: 'Getting account information...'
       },
       // Manual input

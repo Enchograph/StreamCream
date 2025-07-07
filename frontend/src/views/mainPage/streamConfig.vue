@@ -376,7 +376,7 @@ input[type="text"] {
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-    text-transform: uppercase;
+    text-transform: none;
     letter-spacing: 0.5px;
     min-width: 120px;
     height: 48px;

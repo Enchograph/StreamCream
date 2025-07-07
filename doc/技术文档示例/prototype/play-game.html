@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏中 - 俄罗斯方块</title>
+    <!-- TailwindCSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome via Cloudflare CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* Ensure canvas has a border or background for visibility */
+        #gameCanvas {
+            border: 2px solid #333;
+            background-color: #f0f0f0; /* Light background for the game area */
+        }
+        #nextPieceCanvas {
+             border: 1px solid #ccc;
+             background-color: #f8f8f8;
+        }
+        /* Optional: Consistent height for info boxes */
+        .info-box {
+            min-height: 100px; /* Adjust as needed */
+        }
+        /* Custom gradient for the background */
+        body {
+             background: linear-gradient(to bottom right, #4a5568, #2d3748); /* Darker gradient for focus */
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-800 text-white">
+
+    <!-- Game Container -->
+    <div class="flex flex-col md:flex-row gap-4 md:gap-8 items-start max-w-4xl w-full">
+
+        <!-- Left Side: Game Board -->
+        <div class="w-full md:w-auto flex justify-center">
+            <!-- Canvas for the game rendering -->
+            <!-- Dimensions are placeholders, set by JS later based on block size -->
+            <canvas id="gameCanvas" width="300" height="600" class="rounded shadow-lg"></canvas>
+            <!-- Alternative: Grid using divs (more complex to manage) -->
+            <!-- <div id="gameGrid" class="grid grid-cols-10 border-2 border-black bg-gray-200" style="width: 300px; height: 600px;"> -->
+                <!-- Grid cells would be added dynamically by JS -->
+            <!-- </div> -->
+        </div>
+
+        <!-- Right Side: Info Panel -->
+        <div class="w-full md:w-48 flex flex-col gap-4">
+
+            <!-- Score Box -->
+            <div class="bg-gray-700 p-4 rounded-lg shadow-md text-center info-box">
+                <h2 class="text-lg font-semibold text-blue-300 mb-2">
+                    <i class="fas fa-star mr-1"></i> 分数
+                </h2>
+                <p id="scoreDisplay" class="text-3xl font-bold text-white">0</p>
+            </div>
+
+            <!-- Next Piece Box -->
+            <div class="bg-gray-700 p-4 rounded-lg shadow-md text-center info-box">
+                <h2 class="text-lg font-semibold text-green-300 mb-2">
+                    <i class="fas fa-shapes mr-1"></i> 下一个
+                </h2>
+                <!-- Canvas for rendering the next piece -->
+                <div class="flex justify-center items-center h-full">
+                     <canvas id="nextPieceCanvas" width="100" height="100"></canvas>
+                </div>
+            </div>
+
+            <!-- (Optional) Level Box -->
+            <div class="bg-gray-700 p-4 rounded-lg shadow-md text-center info-box">
+                <h2 class="text-lg font-semibold text-yellow-300 mb-2">
+                    <i class="fas fa-tachometer-alt mr-1"></i> 等级
+                </h2>
+                <p id="levelDisplay" class="text-3xl font-bold text-white">1</p>
+            </div>
+
+            <!-- Control Buttons -->
+            <div class="mt-4 flex flex-col gap-2">
+                 <button id="pauseBtn" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center transition duration-200">
+                    <i class="fas fa-pause mr-2"></i> 暂停
+                </button>
+                 <button id="quitBtn" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm flex items-center justify-center transition duration-200">
+                    <i class="fas fa-sign-out-alt mr-2"></i> 退出
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- JavaScript for game logic and interactions -->
+    <script>
+        const gameCanvas = document.getElementById('gameCanvas');
+        const ctx = gameCanvas.getContext('2d');
+        const nextPieceCanvas = document.getElementById('nextPieceCanvas');
+        const nextCtx = nextPieceCanvas.getContext('2d');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const levelDisplay = document.getElementById('levelDisplay');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const quitBtn = document.getElementById('quitBtn');
+
+        // --- Placeholder Drawing ---
+        // Draw a simple grid or placeholder on the main canvas
+        ctx.fillStyle = '#e0e0e0'; // Lighter grid lines
+        for (let x = 0; x < gameCanvas.width; x += 30) { // Assuming 30px blocks
+            ctx.fillRect(x - 1, 0, 1, gameCanvas.height);
+        }
+        for (let y = 0; y < gameCanvas.height; y += 30) {
+             ctx.fillRect(0, y - 1, gameCanvas.width, 1);
+        }
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.font = '20px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('游戏区域', gameCanvas.width / 2, gameCanvas.height / 2);
+
+        // Draw placeholder on next piece canvas
+        nextCtx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        nextCtx.font = '14px Arial';
+        nextCtx.textAlign = 'center';
+        nextCtx.fillText('下一个', nextPieceCanvas.width / 2, nextPieceCanvas.height / 2);
+        // --- End Placeholder Drawing ---
+
+
+        let isPaused = false;
+
+        pauseBtn.addEventListener('click', () => {
+            isPaused = !isPaused;
+            if (isPaused) {
+                pauseBtn.innerHTML = '<i class="fas fa-play mr-2"></i> 继续';
+                pauseBtn.classList.replace('bg-yellow-500', 'bg-green-500');
+                pauseBtn.classList.replace('hover:bg-yellow-600', 'hover:bg-green-600');
+                console.log('游戏已暂停');
+                // TODO: Add actual pause logic (stop game loop)
+            } else {
+                pauseBtn.innerHTML = '<i class="fas fa-pause mr-2"></i> 暂停';
+                pauseBtn.classList.replace('bg-green-500', 'bg-yellow-500');
+                pauseBtn.classList.replace('hover:bg-green-600', 'hover:bg-yellow-600');
+                console.log('游戏已继续');
+                // TODO: Add actual resume logic (restart game loop)
+            }
+        });
+
+         quitBtn.addEventListener('click', () => {
+            console.log('退出游戏按钮被点击');
+            if (confirm('确定要退出当前游戏吗？进度将不会保存。')) {
+                 // TODO: Navigate back to the start screen or handle game exit
+                 window.location.href = '/'; // Example: back to home
+            }
+        });
+
+        // TODO: Implement actual game loop, drawing, score updates, etc.
+        // Example score update:
+        // scoreDisplay.textContent = newScore;
+        // levelDisplay.textContent = newLevel;
+
+    </script>
+
+</body>
+</html>

@@ -4,19 +4,19 @@
             <div class="logo-section" @click="goToHome">
                 <div class="logo-text">
                     <span class="logo-main">StreamCream</span>
-                    <span class="logo-subtitle">{{ $t('topBanner.logoSubtitle') }}</span>
+                    <span class="logo-subtitle">{{ $t('topBanner.subtitle') }}</span>
                 </div>
             </div>
             
         <nav class="nav-links">
-                <a href="#" class="nav-link" @click.prevent="goToHelp" :title="$t('topBanner.helpTitle')">
-                    <span class="nav-text">{{ $t('topBanner.help') }}</span>
+                <a href="#" class="nav-link" @click.prevent="goToHelp" :title="$t('topBanner.help.tooltip')">
+                    <span class="nav-text">{{ $t('topBanner.help.text') }}</span>
                 </a>
-                <a href="#" class="nav-link" @click.prevent="goToSettings" :title="$t('topBanner.settingsTitle')">
-                    <span class="nav-text">{{ $t('topBanner.settings') }}</span>
+                <a href="#" class="nav-link" @click.prevent="goToSettings" :title="$t('topBanner.settings.tooltip')">
+                    <span class="nav-text">{{ $t('topBanner.settings.text') }}</span>
                 </a>
-                <button v-if="showLogout" class="logout-btn" @click="handleLogout" :title="$t('topBanner.logoutTitle')">
-                    <span class="btn-text">{{ $t('topBanner.logout') }}</span>
+                <button v-if="showLogout" class="logout-btn" @click="handleLogout" :title="$t('topBanner.logout.tooltip')">
+                    <span class="btn-text">{{ $t('topBanner.logout.text') }}</span>
                 </button>
         </nav>
         </div>
@@ -79,6 +79,8 @@ import { computed, ref, onMounted } from 'vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
+
 const router = useRouter()
 const auth = useAuthStore()
 const { t: $t } = useI18n()
@@ -138,18 +140,18 @@ function goToSettings() {
 async function handleLogout() {
     try {
         await ElMessageBox.confirm(
-            $t('topBanner.logoutConfirm'),
-            $t('topBanner.logoutTitle'),
+            t('topBanner.logout.confirmMessage'),
+            t('topBanner.logout.confirmTitle'),
             {
-                confirmButtonText: $t('topBanner.logoutConfirmText'),
-                cancelButtonText: $t('topBanner.logoutCancelText'),
+                confirmButtonText: t('topBanner.logout.confirmButton'),
+                cancelButtonText: t('topBanner.logout.cancelButton'),
                 type: 'warning',
                 center: true,
                 customClass: 'logout-messagebox'
             }
         )
         auth.logout()
-        ElMessage.success($t('topBanner.logoutSuccess'))
+        ElMessage.success(t('topBanner.logout.successMessage'))
         router.push('/loginPage')
     } catch (e) {
         // 用户取消，无需处理

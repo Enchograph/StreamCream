@@ -1222,7 +1222,7 @@ h3 {
     display: flex;
     align-items: center;
     justify-content: center;
-    text-transform: uppercase;
+    text-transform: none;
     font-size: 2.5rem;
     /* 约 40px，可根据需求调整 */
     font-weight: bold;
@@ -1348,7 +1348,7 @@ h3 span::after {
     position: relative;
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    text-transform: uppercase;
+    text-transform: none;
     letter-spacing: 0.5px;
     min-height: 48px;
     display: flex;

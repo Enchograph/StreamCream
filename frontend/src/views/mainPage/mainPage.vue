@@ -8,8 +8,8 @@
                     <h2>{{ $t('mainPage.voiceLibTitle') }}</h2>
                     <p>{{ $t('mainPage.voiceLibDesc') }}</p>
 
-                    <!-- 挂载ModelSelector.vue的容器 -->
-                    <div id="model-selector"></div>
+                    <!-- 语音模型选择器 -->
+                    <ModelSelector />
 
                     <div class="file-upload">
                         <label>{{ $t('mainPage.uploadVoiceModel') }}</label>
@@ -179,6 +179,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { createApp } from 'vue';
+import { useI18n } from 'vue-i18n';
 import ModelSelector from './ModelSelector.vue';
 import Live2DIframeContainer from '../../components/Live2DIframeContainer.vue';
 import streamConfig from './streamConfig.vue';
@@ -196,6 +197,9 @@ export default {
     setup() {
         // 获取路由实例
         const router = useRouter();
+
+        // 获取i18n实例
+        const { t } = useI18n();
 
         // 获取Live2D状态管理
         const live2DStore = useLive2DStore();
@@ -261,7 +265,7 @@ export default {
         };
 
         const applyCustomModel = () => {
-            ElMessage.info($t('mainPage.customModelFeatureDev'))
+            ElMessage.info(t('mainPage.customModelFeatureDev'))
         }
 
         // 声音模型上传处理
@@ -269,32 +273,32 @@ export default {
             const files = Array.from(event.target.files);
             uploadedVoiceModels.value = files.map(file => ({
                 name: file.name,
-                type: file.name.endsWith('.ckpt') ? $t('mainPage.gptModel') : $t('mainPage.sovitsModel'),
+                type: file.name.endsWith('.ckpt') ? t('mainPage.gptModel') : t('mainPage.sovitsModel'),
                 file: file
             }));
-            console.log($t('mainPage.uploadedVoiceModels'), uploadedVoiceModels.value);
+            console.log(t('mainPage.uploadedVoiceModels'), uploadedVoiceModels.value);
         };
 
         const applyVoiceModel = async () => {
             if (uploadedVoiceModels.value.length === 0) {
-                ElMessage.warning($t('mainPage.selectModelFileWarning'));
+                ElMessage.warning(t('mainPage.selectModelFileWarning'));
                 return;
             }
 
             try {
                 // 这里应该实现文件上传到后端的逻辑
                 // 目前先显示提示信息
-                ElMessage.info($t('mainPage.voiceModelUploadFeatureDev'));
-                console.log($t('mainPage.preparingApplyVoiceModel'), uploadedVoiceModels.value);
+                ElMessage.info(t('mainPage.voiceModelUploadFeatureDev'));
+                console.log(t('mainPage.preparingApplyVoiceModel'), uploadedVoiceModels.value);
             } catch (error) {
-                console.error($t('mainPage.applyVoiceModelFailed'), error);
-                ElMessage.error($t('mainPage.applyVoiceModelFailed'));
+                console.error(t('mainPage.applyVoiceModelFailed'), error);
+                ElMessage.error(t('mainPage.applyVoiceModelFailed'));
             }
         };
 
         const getCurrentModelName = () => {
             const currentModel = live2DStore.availableModels.find(m => m.id === live2DStore.currentModel);
-            return currentModel ? currentModel.name : $t('mainPage.unknownModel');
+            return currentModel ? currentModel.name : t('mainPage.unknownModel');
         };
 
         // 刷新预览功能 - 添加防抖机制
@@ -360,7 +364,7 @@ export default {
         // AI讲稿生成相关方法
         const callOpenAI = async (prompt) => {
             if (!apiKey.value) {
-                ElMessage.warning($t('mainPage.configureApiKeyWarning'))
+                ElMessage.warning(t('mainPage.configureApiKeyWarning'))
                 return '';
             }
 
@@ -382,7 +386,7 @@ export default {
                 });
 
                 if (!response.ok) {
-                    throw new Error($t('mainPage.apiRequestFailed') + response.status);
+                    throw new Error(t('mainPage.apiRequestFailed') + response.status);
                 }
 
                 const data = await response.json();
@@ -407,7 +411,7 @@ export default {
                 generatedSpeech.value = await callOpenAI(prompt);
             } catch (error) {
                 console.error('生成讲稿出错:', error);
-                ElMessage.error($t('mainPage.generateSpeechFailed'))
+                ElMessage.error(t('mainPage.generateSpeechFailed'))
             } finally {
                 isGenerating.value = false;
             }
@@ -415,24 +419,19 @@ export default {
 
         const testSpeech = () => {
             if (!generatedSpeech.value) {
-                ElMessage.warning($t('mainPage.generateSpeechFirstWarning'))
+                ElMessage.warning(t('mainPage.generateSpeechFirstWarning'))
                 return;
             }
 
             // 这里可以添加讲稿测试逻辑
-            ElMessage.info($t('mainPage.speechTestFeatureDev'))
+            ElMessage.info(t('mainPage.speechTestFeatureDev'))
         };
 
-        // 动态挂载ModelSelector到html容器
-        onMounted(() => {
-            const container = document.getElementById('model-selector');
-            if (container) {
-                createApp(ModelSelector).mount(container);
-            }
-        });
+        // 移除动态挂载，改为直接在模板中使用组件
 
         // 返回需要在模板中使用的变量和方法
         return {
+            t, // 添加t函数到返回值中
             selectedModel,
             revolutionPreference,
             handleModelChange,

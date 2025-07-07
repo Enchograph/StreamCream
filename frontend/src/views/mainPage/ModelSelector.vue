@@ -3,6 +3,7 @@
     <div class="model-dropdown">
       <!-- 一级：模型组 -->
       <select v-model="selectedGroupName" class="model-select" @change="onGroupChange">
+        <option v-if="modelGroups.length === 0" value="" disabled>加载中...</option>
         <option v-for="group in modelGroups" :key="group.name" :value="group.name">
           {{ group.name }}
         </option>
@@ -15,6 +16,7 @@
         class="model-select"
         style="margin-left: 10px;"
       >
+        <option v-if="Object.keys(selectedGroup.pairs).length === 0" value="" disabled>无可用模型</option>
         <option v-for="key in Object.keys(selectedGroup.pairs)" :key="key" :value="key">
           {{ key }}
         </option>
@@ -32,6 +34,8 @@
     <div class="model-dropdown" style="margin-bottom: 18px;">
       <label style="margin-right: 10px; white-space: nowrap; font-weight: 500;">{{ $t('modelSelector.referenceAudio') }}：</label>
       <select v-model="selectedAudio" :disabled="audioLoading" class="model-select">
+        <option v-if="audioLoading" value="" disabled>加载中...</option>
+        <option v-if="!audioLoading && audioList.length === 0" value="" disabled>无可用音频</option>
         <option v-for="audio in audioList" :key="audio.path" :value="audio.path">
           {{ audio.file_name }}<span v-if="audio.is_current">{{ $t('modelSelector.currentAudio') }}</span>
         </option>
@@ -60,6 +64,9 @@
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue';
 import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
   
 const API_BASE = 'http://localhost:9880';
   
@@ -80,19 +87,36 @@ const audioLoading = ref(false);
 // 模型状态相关
 const modelStatus = ref({ current_model_pair: '', current_ref_audio: '' });
 const fetchModelStatus = async () => {
-  const res = await fetch(`${API_BASE}/get_current_status`);
-  modelStatus.value = await res.json();
+  try {
+    const res = await fetch(`${API_BASE}/get_current_status`);
+    if (!res.ok) {
+      console.error('获取模型状态失败:', res.status, res.statusText);
+      return;
+    }
+    modelStatus.value = await res.json();
+  } catch (error) {
+    console.error('获取模型状态出错:', error);
+  }
 };
 
 const fetchAudioList = async () => {
-  audioLoading.value = true;
-  const res = await fetch(`${API_BASE}/list_available_ref_audios`);
-  const data = await res.json();
-  audioList.value = data.available_audios || [];
-  currentAudio.value = data.current_ref_audio || '';
-  // 默认选中当前音频
-  selectedAudio.value = currentAudio.value;
-  audioLoading.value = false;
+  try {
+    audioLoading.value = true;
+    const res = await fetch(`${API_BASE}/list_available_ref_audios`);
+    if (!res.ok) {
+      console.error('加载音频列表失败:', res.status, res.statusText);
+      return;
+    }
+    const data = await res.json();
+    audioList.value = data.available_audios || [];
+    currentAudio.value = data.current_ref_audio || '';
+    // 默认选中当前音频
+    selectedAudio.value = currentAudio.value;
+  } catch (error) {
+    console.error('加载音频列表出错:', error);
+  } finally {
+    audioLoading.value = false;
+  }
 };
 
 const onSwitchAudio = async () => {
@@ -101,27 +125,52 @@ const onSwitchAudio = async () => {
   await fetch(`${API_BASE}/set_refer_audio?refer_audio_path=${encodeURIComponent(selectedAudio.value)}`);
   currentAudio.value = selectedAudio.value;
   audioLoading.value = false;
-  ElMessage.success('参考音频切换成功！')
+  ElMessage.success(t('modelSelector.switchAudioSuccess'))
   await fetchAudioList();
   await fetchModelStatus();
 };
   
 onMounted(async () => {
-  // 原有模型组加载
-  const res = await fetch(`${API_BASE}/list_model_groups`);
-  modelGroups.value = await res.json();
-  if (modelGroups.value.length > 0) {
-    selectedGroupName.value = modelGroups.value[0].name;
-    selectedGroup.value = modelGroups.value[0];
-    const keys = Object.keys(selectedGroup.value.pairs);
-    if (keys.length > 0) {
-      selectedPairKey.value = keys[0];
+  try {
+    // 测试API连接
+    console.log('测试API连接...');
+    const testRes = await fetch(`${API_BASE}/list_model_groups`);
+    console.log('API连接测试结果:', testRes.status, testRes.statusText);
+    
+    if (!testRes.ok) {
+      console.error('API连接失败:', testRes.status, testRes.statusText);
+      ElMessage.error('无法连接到语音模型服务，请确保GPT-SoVITS服务已启动');
+      return;
     }
+    
+    // 原有模型组加载
+    console.log('正在加载模型组...');
+    const res = await fetch(`${API_BASE}/list_model_groups`);
+    if (!res.ok) {
+      console.error('加载模型组失败:', res.status, res.statusText);
+      ElMessage.error('加载模型组失败，请检查后端服务是否运行');
+      return;
+    }
+    modelGroups.value = await res.json();
+    console.log('模型组加载成功:', modelGroups.value);
+    
+    if (modelGroups.value.length > 0) {
+      selectedGroupName.value = modelGroups.value[0].name;
+      selectedGroup.value = modelGroups.value[0];
+      const keys = Object.keys(selectedGroup.value.pairs);
+      if (keys.length > 0) {
+        selectedPairKey.value = keys[0];
+      }
+    }
+    
+    // 新增：加载音频
+    await fetchAudioList();
+    // 新增：加载模型状态
+    await fetchModelStatus();
+  } catch (error) {
+    console.error('ModelSelector初始化失败:', error);
+    ElMessage.error('语音模型选择器初始化失败，请检查网络连接和后端服务');
   }
-  // 新增：加载音频
-  await fetchAudioList();
-  // 新增：加载模型状态
-  await fetchModelStatus();
 });
   
 const onGroupChange = () => {
@@ -136,12 +185,12 @@ const onGroupChange = () => {
   
 const onSwitch = async () => {
   if (!selectedPair.value) {
-    ElMessage.warning('请选择模型')
+            ElMessage.warning(t('modelSelector.selectModel'))
     return
   }
   await fetch(`${API_BASE}/set_gpt_weights?weights_path=${encodeURIComponent(selectedPair.value.gpt_path)}`);
   await fetch(`${API_BASE}/set_sovits_weights?weights_path=${encodeURIComponent(selectedPair.value.sovits_path)}`);
-  ElMessage.success('模型切换成功！')
+  ElMessage.success(t('modelSelector.switchModelSuccess'))
   await fetchModelStatus();
 };
 
@@ -156,7 +205,7 @@ const generateSample = async () => {
   try {
     // 示例文本可自定义
     const params = new URLSearchParams({
-      text: '你好，这是一条示例语音,早上好，中午好，下午好。',
+      text: t('modelSelector.sampleText'),
       text_lang: 'zh',
       prompt_lang: 'ja',
       prompt_text: '',
@@ -167,7 +216,7 @@ const generateSample = async () => {
     const blob = await res.blob();
     sampleUrl.value = URL.createObjectURL(blob);
   } catch (e) {
-    sampleError.value = $t('modelSelector.generateSampleFailed');
+    sampleError.value = t('modelSelector.generateSampleFailed');
   }
   sampleLoading.value = false;
 };

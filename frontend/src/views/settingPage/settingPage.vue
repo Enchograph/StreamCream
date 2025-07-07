@@ -7,7 +7,7 @@
                     <span class="title-text">{{ $t('setting.title') }}</span>
                 </div>
                 <div class="language-switcher-container">
-                    <LanguageSwitcher />
+                    <LanguageSwitcher :fixed-position="true" />
                 </div>
             </v-card-title>
             
@@ -682,10 +682,20 @@ export default {
 
 .language-switcher-container {
     position: relative;
-    z-index: 99999;
+    z-index: 999999;
     margin-left: 16px;
     margin-top: -8px;
 }
+
+/* 当使用固定定位时，隐藏原始容器 */
+.language-switcher-container .language-switcher.fixed-position {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    z-index: 999999 !important;
+    margin: 0 !important;
+}
+
 .title-bar-gradient {
     display: inline-flex;
     align-items: center;

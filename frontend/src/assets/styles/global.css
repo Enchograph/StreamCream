@@ -61,6 +61,50 @@ body {
     padding: 0;
 }
 
+/* 全局文件输入按钮多语言支持 */
+input[type="file"]::file-selector-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+}
+
+/* 英文环境下的文件选择按钮文本 */
+html[lang="en"] input[type="file"]::file-selector-button {
+    content: "Choose File";
+}
+
+/* 中文环境下的文件选择按钮文本 */
+html[lang="zh-CN"] input[type="file"]::file-selector-button {
+    content: "选择文件";
+}
+
+input[type="file"]::file-selector-button:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    transform: translateY(-1px);
+}
+
+/* 语言选择器层级优先级 - 确保在所有元素之上 */
+.language-switcher,
+.language-switcher *,
+.language-toggle,
+.language-dropdown {
+    z-index: 999999 !important;
+}
+
+/* 确保语言选择器在 Vuetify 组件之上 */
+.v-menu__content,
+.v-overlay,
+.v-dialog,
+.v-tooltip,
+.v-select__menu {
+    z-index: 999998 !important;
+}
 
 main {
     flex: 1;

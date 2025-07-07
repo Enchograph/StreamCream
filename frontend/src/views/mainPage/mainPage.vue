@@ -261,7 +261,7 @@ export default {
         };
 
         const applyCustomModel = () => {
-            ElMessage.info('自定义模型功能开发中...')
+            ElMessage.info($t('mainPage.customModelFeatureDev'))
         }
 
         // 声音模型上传处理
@@ -269,32 +269,32 @@ export default {
             const files = Array.from(event.target.files);
             uploadedVoiceModels.value = files.map(file => ({
                 name: file.name,
-                type: file.name.endsWith('.ckpt') ? 'GPT模型' : 'SoVITS模型',
+                type: file.name.endsWith('.ckpt') ? $t('mainPage.gptModel') : $t('mainPage.sovitsModel'),
                 file: file
             }));
-            console.log('上传的声音模型文件:', uploadedVoiceModels.value);
+            console.log($t('mainPage.uploadedVoiceModels'), uploadedVoiceModels.value);
         };
 
         const applyVoiceModel = async () => {
             if (uploadedVoiceModels.value.length === 0) {
-                ElMessage.warning('请先选择模型文件');
+                ElMessage.warning($t('mainPage.selectModelFileWarning'));
                 return;
             }
 
             try {
                 // 这里应该实现文件上传到后端的逻辑
                 // 目前先显示提示信息
-                ElMessage.info('声音模型上传功能开发中...');
-                console.log('准备应用的声音模型:', uploadedVoiceModels.value);
+                ElMessage.info($t('mainPage.voiceModelUploadFeatureDev'));
+                console.log($t('mainPage.preparingApplyVoiceModel'), uploadedVoiceModels.value);
             } catch (error) {
-                console.error('应用声音模型失败:', error);
-                ElMessage.error('应用声音模型失败');
+                console.error($t('mainPage.applyVoiceModelFailed'), error);
+                ElMessage.error($t('mainPage.applyVoiceModelFailed'));
             }
         };
 
         const getCurrentModelName = () => {
             const currentModel = live2DStore.availableModels.find(m => m.id === live2DStore.currentModel);
-            return currentModel ? currentModel.name : '未知模型';
+            return currentModel ? currentModel.name : $t('mainPage.unknownModel');
         };
 
         // 刷新预览功能 - 添加防抖机制
@@ -360,7 +360,7 @@ export default {
         // AI讲稿生成相关方法
         const callOpenAI = async (prompt) => {
             if (!apiKey.value) {
-                ElMessage.warning('请先配置API Key')
+                ElMessage.warning($t('mainPage.configureApiKeyWarning'))
                 return '';
             }
 
@@ -382,7 +382,7 @@ export default {
                 });
 
                 if (!response.ok) {
-                    throw new Error(`API请求失败: ${response.status}`);
+                    throw new Error($t('mainPage.apiRequestFailed') + response.status);
                 }
 
                 const data = await response.json();
@@ -407,7 +407,7 @@ export default {
                 generatedSpeech.value = await callOpenAI(prompt);
             } catch (error) {
                 console.error('生成讲稿出错:', error);
-                ElMessage.error('生成讲稿失败，请重试')
+                ElMessage.error($t('mainPage.generateSpeechFailed'))
             } finally {
                 isGenerating.value = false;
             }
@@ -415,12 +415,12 @@ export default {
 
         const testSpeech = () => {
             if (!generatedSpeech.value) {
-                ElMessage.warning('请先生成讲稿')
+                ElMessage.warning($t('mainPage.generateSpeechFirstWarning'))
                 return;
             }
 
             // 这里可以添加讲稿测试逻辑
-            ElMessage.info('讲稿测试功能将在后续实现')
+            ElMessage.info($t('mainPage.speechTestFeatureDev'))
         };
 
         // 动态挂载ModelSelector到html容器
@@ -1003,6 +1003,17 @@ input[type="file"]::file-selector-button {
     font-weight: 600;
     margin-right: 10px;
     transition: all 0.3s ease;
+    content: attr(data-button-text, "选择文件");
+}
+
+/* 英文环境下的文件选择按钮文本 */
+html[lang="en"] input[type="file"]::file-selector-button {
+    content: "Choose File";
+}
+
+/* 中文环境下的文件选择按钮文本 */
+html[lang="zh-CN"] input[type="file"]::file-selector-button {
+    content: "选择文件";
 }
 
 input[type="file"]::file-selector-button:hover {

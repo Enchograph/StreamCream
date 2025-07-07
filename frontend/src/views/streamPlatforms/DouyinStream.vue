@@ -26,7 +26,6 @@
                     </div>
                 </div>
                 <div class="nav-actions">
-                    <LanguageSwitcher />
                     <button class="nav-btn" @click="showHelp">
                         <span class="nav-btn-icon">📖</span>
                         {{ $t('douyin.actions.help') }}
@@ -39,7 +38,7 @@
                         <span class="nav-btn-icon">🎓</span>
                         {{ $t('douyin.actions.tutorial') }}
                     </button>
-                    <button class="nav-btn" @click="resetTutorial" title="重置教程状态">
+                    <button class="nav-btn" @click="resetTutorial" :title="$t('douyin.actions.resetTutorial')">
                         <span class="nav-btn-icon">🔄</span>
                         {{ $t('douyin.actions.resetTutorial') }}
                     </button>
@@ -49,23 +48,23 @@
             <!-- 标签页导航 -->
             <div class="tab-navigation">
                 <div class="tab-list">
-                                    <button v-for="tab in tabs" :key="tab.id" 
-                    :class="['tab-item', { 
-                        active: currentTab === tab.id,
-                        disabled: tab.id === 'stream' && !isLiveActive
-                    }]"
-                    @click="handleTabClick(tab.id)">
-                    <div class="tab-content">
-                        <span class="tab-icon">{{ tab.icon }}</span>
-                        <div class="tab-info">
-                            <span class="tab-name">{{ tab.name }}</span>
-                            <span class="tab-desc">{{ tab.description }}</span>
+                    <button v-for="tab in tabs" :key="tab.id" 
+                        :class="['tab-item', { 
+                            active: currentTab === tab.id,
+                            disabled: tab.id === 'stream' && !isLiveActive
+                        }]"
+                        @click="handleTabClick(tab.id)">
+                        <div class="tab-content">
+                            <span class="tab-icon">{{ tab.icon }}</span>
+                            <div class="tab-info">
+                                <span class="tab-name">{{ tab.name }}</span>
+                                <span class="tab-desc">{{ tab.description }}</span>
+                            </div>
                         </div>
-                    </div>
-                    <div v-if="tab.id === 'stream' && !isLiveActive" class="tab-lock">
-                        <span class="lock-icon">🔒</span>
-                    </div>
-                </button>
+                        <div v-if="tab.id === 'stream' && !isLiveActive" class="tab-lock">
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                    </button>
                 </div>
             </div>
 
@@ -76,9 +75,9 @@
                     <div class="panel-header">
                         <h2 class="panel-title">
                             <span class="title-icon">🔐</span>
-                            账号设置
+                            {{ $t('douyin.account.title') }}
                         </h2>
-                        <p class="panel-subtitle">配置您的抖音账号信息，支持多种登录方式</p>
+                        <p class="panel-subtitle">{{ $t('douyin.account.subtitle') }}</p>
                     </div>
 
                     <div class="panel-grid">
@@ -86,12 +85,12 @@
                         <div class="feature-card">
                             <div class="card-header">
                                 <div class="card-icon">📂</div>
-                                <h3>Cookies文件导入</h3>
+                                <h3>{{ $t('douyin.account.cookiesImport.title') }}</h3>
                             </div>
-                            <p class="card-desc">从本地文件导入Cookies信息</p>
+                            <p class="card-desc">{{ $t('douyin.account.cookiesImport.description') }}</p>
                             <button class="card-btn primary" @click="loadCookiesFile">
                                 <span class="btn-icon">📂</span>
-                                选择文件
+                                {{ $t('douyin.account.cookiesImport.selectFile') }}
                             </button>
                         </div>
 
@@ -99,16 +98,16 @@
                         <div class="feature-card">
                             <div class="card-header">
                                 <div class="card-icon">🔍</div>
-                                <h3>自动获取</h3>
+                                <h3>{{ $t('douyin.account.autoGet.title') }}</h3>
                             </div>
-                            <p class="card-desc">通过扫码自动获取账号信息</p>
+                            <p class="card-desc">{{ $t('douyin.account.autoGet.description') }}</p>
                             <button class="card-btn success" @click="autoGetAccount" :disabled="autoGetLoading">
                                 <span class="btn-icon">{{ autoGetLoading ? '⏳' : '🔍' }}</span>
-                                {{ autoGetLoading ? '获取中...' : '开始获取' }}
+                                {{ autoGetLoading ? $t('douyin.account.autoGet.getting') : $t('douyin.account.autoGet.startGet') }}
                             </button>
                             <div v-if="autoGetLoading" class="loading-indicator">
                                 <div class="spinner"></div>
-                                <span>正在获取账号信息...</span>
+                                <span>{{ $t('douyin.account.autoGet.gettingInfo') }}</span>
                             </div>
                         </div>
                     </div>
@@ -116,34 +115,34 @@
                     <!-- 手动输入表单 -->
                     <div class="form-section">
                         <div class="section-header">
-                            <h3>手动输入</h3>
-                            <p>如果您已有账号信息，可以直接输入</p>
+                            <h3>{{ $t('douyin.account.manualInput.title') }}</h3>
+                            <p>{{ $t('douyin.account.manualInput.description') }}</p>
                         </div>
                         
                         <div class="form-grid">
                             <div class="form-field">
-                                <label class="field-label">房间ID</label>
+                                <label class="field-label">{{ $t('douyin.account.manualInput.roomId') }}</label>
                                 <input type="password" v-model="accountInfo.room_id" 
-                                    class="field-input" placeholder="请输入房间ID" />
+                                    class="field-input" :placeholder="$t('douyin.account.manualInput.roomIdPlaceholder')" />
                             </div>
                             
                             <div class="form-field">
-                                <label class="field-label">Cookies</label>
+                                <label class="field-label">{{ $t('douyin.account.manualInput.cookies') }}</label>
                                 <input type="password" v-model="accountInfo.cookie_str" 
-                                    class="field-input" placeholder="请输入Cookies字符串" />
+                                    class="field-input" :placeholder="$t('douyin.account.manualInput.cookiesPlaceholder')" />
                             </div>
                             
                             <div class="form-field">
-                                <label class="field-label">Session ID</label>
+                                <label class="field-label">{{ $t('douyin.account.manualInput.sessionId') }}</label>
                                 <input type="password" v-model="accountInfo.session_id" 
-                                    class="field-input" placeholder="请输入Session ID" />
+                                    class="field-input" :placeholder="$t('douyin.account.manualInput.sessionIdPlaceholder')" />
                             </div>
                         </div>
 
                         <div class="form-actions">
                             <button class="action-btn primary" @click="saveAccountSettings">
                                 <span class="btn-icon">💾</span>
-                                保存设置
+                                {{ $t('douyin.account.manualInput.saveSettings') }}
                             </button>
                         </div>
                     </div>
@@ -154,23 +153,23 @@
                     <div class="panel-header">
                         <h2 class="panel-title">
                             <span class="title-icon">📡</span>
-                            直播设置
+                            {{ $t('douyin.live.title') }}
                         </h2>
-                        <p class="panel-subtitle">配置直播标题、分类和互动功能</p>
+                        <p class="panel-subtitle">{{ $t('douyin.live.subtitle') }}</p>
                     </div>
 
                     <!-- 直播标题设置 -->
                     <div class="setting-section">
                         <div class="section-header">
-                            <h3>直播标题</h3>
-                            <p>设置您的直播标题</p>
+                            <h3>{{ $t('douyin.live.titleSetting.title') }}</h3>
+                            <p>{{ $t('douyin.live.titleSetting.description') }}</p>
                         </div>
                         <div class="input-group">
                             <input type="text" v-model="liveSettings.live_title" 
-                                class="modern-input" placeholder="输入直播标题" />
+                                class="modern-input" :placeholder="$t('douyin.live.titleSetting.placeholder')" />
                             <button class="action-btn primary" @click="updateTitle">
                                 <span class="btn-icon">🔄</span>
-                                更新标题
+                                {{ $t('douyin.live.titleSetting.updateTitle') }}
                             </button>
                         </div>
                     </div>
@@ -178,21 +177,21 @@
                     <!-- 直播分类设置 -->
                     <div class="setting-section">
                         <div class="section-header">
-                            <h3>直播分类</h3>
-                            <p>选择适合的直播分类</p>
+                            <h3>{{ $t('douyin.live.category.title') }}</h3>
+                            <p>{{ $t('douyin.live.category.description') }}</p>
                         </div>
                         <div class="category-grid">
                             <div class="select-group">
-                                <label class="select-label">主分类</label>
+                                <label class="select-label">{{ $t('douyin.live.category.mainCategory') }}</label>
                                 <select v-model="liveSettings.selected_category" @change="updateSubCategories" class="modern-select">
-                                    <option value="">请选择分类</option>
+                                    <option value="">{{ $t('douyin.live.category.selectCategory') }}</option>
                                     <option v-for="category in mainCategories" :key="category" :value="category">{{ category }}</option>
                                 </select>
                             </div>
                             <div class="select-group">
-                                <label class="select-label">子分类</label>
+                                <label class="select-label">{{ $t('douyin.live.category.subCategory') }}</label>
                                 <select v-model="liveSettings.selected_sub_category" class="modern-select">
-                                    <option value="">请选择子分类</option>
+                                    <option value="">{{ $t('douyin.live.category.selectSubCategory') }}</option>
                                     <option v-for="subCategory in subCategories" :key="subCategory" :value="subCategory">{{ subCategory }}</option>
                                 </select>
                             </div>
@@ -200,11 +199,11 @@
                         <div class="action-group">
                             <button class="action-btn primary" @click="updateCategory">
                                 <span class="btn-icon">✅</span>
-                                更新分类
+                                {{ $t('douyin.live.category.updateCategory') }}
                             </button>
                             <button class="action-btn secondary" @click="refreshCategories">
                                 <span class="btn-icon">🔄</span>
-                                刷新分类
+                                {{ $t('douyin.live.category.refreshCategories') }}
                             </button>
                         </div>
                     </div>
@@ -212,15 +211,15 @@
                     <!-- 评论发送 -->
                     <div class="setting-section">
                         <div class="section-header">
-                            <h3>发送评论</h3>
-                            <p>与观众互动</p>
+                            <h3>{{ $t('douyin.live.comment.title') }}</h3>
+                            <p>{{ $t('douyin.live.comment.description') }}</p>
                         </div>
                         <div class="input-group">
                             <input type="text" v-model="commentMessage" 
-                                class="modern-input" placeholder="输入评论内容" />
+                                class="modern-input" :placeholder="$t('douyin.live.comment.placeholder')" />
                             <button class="action-btn success" @click="sendComment">
                                 <span class="btn-icon">📤</span>
-                                发送评论
+                                {{ $t('douyin.live.comment.sendComment') }}
                             </button>
                         </div>
                     </div>
@@ -229,22 +228,22 @@
                     <div class="live-action">
                         <button class="live-btn" @click="startLiveAndRedirect">
                             <span class="live-icon">🎬</span>
-                            <span class="live-text">开始直播</span>
+                            <span class="live-text">{{ $t('douyin.live.startLive.text') }}</span>
                         </button>
                     </div>
 
                     <!-- 操作日志 -->
                     <div class="log-section">
                         <div class="section-header">
-                            <h3>操作日志</h3>
+                            <h3>{{ $t('douyin.logs.title') }}</h3>
                             <div class="log-actions">
                                 <button class="action-btn small secondary" @click="clearLogs">
                                     <span class="btn-icon">🗑️</span>
-                                    清空
+                                    {{ $t('douyin.logs.clear') }}
                                 </button>
                                 <button class="action-btn small secondary" @click="exportLogs">
                                     <span class="btn-icon">📄</span>
-                                    导出
+                                    {{ $t('douyin.logs.export') }}
                                 </button>
                             </div>
                         </div>
@@ -256,7 +255,7 @@
                             </div>
                             <div v-if="logs.length === 0" class="empty-log">
                                 <span class="empty-icon">📝</span>
-                                <span>暂无操作日志</span>
+                                <span>{{ $t('douyin.logs.empty') }}</span>
                             </div>
                         </div>
                     </div>
@@ -267,50 +266,50 @@
                     <div class="panel-header">
                         <h2 class="panel-title">
                             <span class="title-icon">📊</span>
-                            推流信息
+                            {{ $t('douyin.stream.title') }}
                         </h2>
-                        <p class="panel-subtitle">获取和管理您的直播推流信息</p>
+                        <p class="panel-subtitle">{{ $t('douyin.stream.subtitle') }}</p>
                     </div>
 
                     <!-- 推流信息展示 -->
                     <div class="stream-info-section">
                         <div class="info-card">
                             <div class="card-header">
-                                <h3>推流地址</h3>
+                                <h3>{{ $t('douyin.stream.server.title') }}</h3>
                                 <button class="copy-btn" @click="copyServer">
                                     <span class="btn-icon">📋</span>
-                                    复制
+                                    {{ $t('douyin.stream.server.copy') }}
                                 </button>
                             </div>
-                            <div class="info-value">{{ streamInfo.server || '暂无推流地址' }}</div>
+                            <div class="info-value">{{ streamInfo.server || $t('douyin.stream.server.empty') }}</div>
                         </div>
 
                         <div class="info-card">
                             <div class="card-header">
-                                <h3>推流密钥</h3>
+                                <h3>{{ $t('douyin.stream.code.title') }}</h3>
                                 <button class="copy-btn" @click="copyCode">
                                     <span class="btn-icon">📋</span>
-                                    复制
+                                    {{ $t('douyin.stream.code.copy') }}
                                 </button>
                             </div>
-                            <div class="info-value">{{ streamInfo.code || '暂无推流密钥' }}</div>
+                            <div class="info-value">{{ streamInfo.code || $t('douyin.stream.code.empty') }}</div>
                         </div>
                     </div>
 
                     <!-- 导出选项 -->
                     <div class="export-section">
                         <div class="section-header">
-                            <h3>导出选项</h3>
-                            <p>将推流信息保存到本地</p>
+                            <h3>{{ $t('douyin.stream.export.title') }}</h3>
+                            <p>{{ $t('douyin.stream.export.description') }}</p>
                         </div>
                         <div class="export-actions">
-                            <button class="action-btn secondary" @click="exportToDesktop">
-                                <span class="btn-icon">💾</span>
-                                导出到桌面
+                            <button class="action-btn primary" @click="exportToDesktop">
+                                <span class="btn-icon">🖥️</span>
+                                {{ $t('douyin.stream.export.exportToDesktop') }}
                             </button>
                             <button class="action-btn secondary" @click="exportToFile">
-                                <span class="btn-icon">📄</span>
-                                导出到文件
+                                <span class="btn-icon">📁</span>
+                                {{ $t('douyin.stream.export.exportToFile') }}
                             </button>
                         </div>
                     </div>
@@ -318,17 +317,17 @@
                     <!-- 直播控制 -->
                     <div class="control-section">
                         <div class="section-header">
-                            <h3>直播控制</h3>
-                            <p>管理直播状态</p>
+                            <h3>{{ $t('douyin.stream.control.title') }}</h3>
+                            <p>{{ $t('douyin.stream.control.description') }}</p>
                         </div>
                         <div class="control-actions">
-                            <button class="action-btn danger" @click="stopLive">
+                            <button class="action-btn warning" @click="stopLive">
                                 <span class="btn-icon">⏹️</span>
-                                停止直播
+                                {{ $t('douyin.stream.control.stopLive') }}
                             </button>
-                            <button class="action-btn secondary" @click="refreshStreamInfo">
+                            <button class="action-btn primary" @click="refreshStreamInfo">
                                 <span class="btn-icon">🔄</span>
-                                刷新推流信息
+                                {{ $t('douyin.stream.control.refreshStream') }}
                             </button>
                         </div>
                     </div>
@@ -337,102 +336,71 @@
 
             <!-- 状态栏 -->
             <div class="status-bar">
-                <div class="status-content">
-                    <span class="status-icon">📊</span>
+                <div class="status-left">
                     <span class="status-text">{{ statusMessage }}</span>
                 </div>
-                <div class="status-actions">
-                    <button class="nav-btn small" @click="startTutorial">
-                        <span class="nav-btn-icon">🎓</span>
-                        教程
-                    </button>
-                    <button class="nav-btn small" @click="resetTutorial" title="重置教程状态">
-                        <span class="nav-btn-icon">🔄</span>
-                        重置
-                    </button>
+                <div class="status-right">
+                    <div class="status-actions">
+                        <button class="nav-btn small" @click="startTutorial">
+                            <span class="nav-btn-icon">🎓</span>
+                            {{ $t('douyin.status.tutorial') }}
+                        </button>
+                        <button class="nav-btn small" @click="resetTutorial" :title="$t('douyin.actions.resetTutorial')">
+                            <span class="nav-btn-icon">🔄</span>
+                            {{ $t('douyin.status.reset') }}
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <!-- 智能提示 -->
             <div v-if="showSmartTip" class="smart-tip">
-                <span class="tip-icon">💡</span>
-                <span class="tip-text">{{ currentTip }}</span>
-                <button class="tip-close" @click="showSmartTip = false">×</button>
+                <div class="tip-content">
+                    <span class="tip-icon">💡</span>
+                    <span class="tip-text">{{ currentTip }}</span>
+                </div>
             </div>
         </div>
 
         <!-- 二维码对话框 -->
-        <el-dialog v-model="showQRCode" title="扫码登录" width="30%" class="qr-dialog">
-            <div class="qr-container">
-                <canvas ref="qrcodeCanvas" v-if="qrcodeUrl" class="qr-canvas"></canvas>
-                <p class="qr-tip">请使用抖音APP扫描二维码登录</p>
+        <el-dialog v-model="showQRCode" :title="$t('douyin.qrDialog.title')" width="30%" class="qr-dialog">
+            <div class="qr-content">
+                <p class="qr-tip">{{ $t('douyin.qrDialog.tip') }}</p>
+                <canvas ref="qrcodeCanvas" class="qr-canvas"></canvas>
                 <div class="qr-steps">
-                    <div class="step">
+                    <div class="step-item">
                         <span class="step-number">1</span>
-                        <span>打开抖音APP</span>
+                        <span>{{ $t('douyin.qrDialog.step1') }}</span>
                     </div>
-                    <div class="step">
+                    <div class="step-item">
                         <span class="step-number">2</span>
-                        <span>点击右上角"+"号</span>
+                        <span>{{ $t('douyin.qrDialog.step2') }}</span>
                     </div>
-                    <div class="step">
+                    <div class="step-item">
                         <span class="step-number">3</span>
-                        <span>选择"扫一扫"</span>
+                        <span>{{ $t('douyin.qrDialog.step3') }}</span>
                     </div>
-                    <div class="step">
+                    <div class="step-item">
                         <span class="step-number">4</span>
-                        <span>扫描上方二维码</span>
+                        <span>{{ $t('douyin.qrDialog.step4') }}</span>
                     </div>
                 </div>
             </div>
         </el-dialog>
 
         <!-- 帮助对话框 -->
-        <el-dialog v-model="showHelpDialog" title="使用说明" width="640px" class="help-dialog" :lock-scroll="false" :auto-focus="false">
+        <el-dialog v-model="showHelpDialog" :title="$t('douyin.helpDialog.title')" width="640px" class="help-dialog" :lock-scroll="false" :auto-focus="false">
             <div class="help-content">
-                <pre>{{ helpContent }}</pre>
+                <pre class="help-text">{{ $t('douyin.helpDialog.content') }}</pre>
             </div>
         </el-dialog>
 
         <!-- 新手引导遮罩 -->
-        <div v-if="showTutorial" class="tutorial-overlay" @click="closeTutorial">
-            <div class="tutorial-content" @click.stop>
-                <div class="tutorial-step" v-if="tutorialStep === 1">
-                    <h3>欢迎使用抖音直播推流工具！</h3>
-                    <p>让我来帮你快速上手这个工具</p>
-                    <button class="action-btn primary" @click="nextTutorialStep">开始教程</button>
-                </div>
-                <div class="tutorial-step" v-if="tutorialStep === 2">
-                    <h3>第一步：账号设置</h3>
-                    <p>首先需要设置你的抖音账号信息，支持多种登录方式</p>
-                    <button class="action-btn primary" @click="nextTutorialStep">下一步</button>
-                </div>
-                <div class="tutorial-step" v-if="tutorialStep === 3">
-                    <h3>第二步：直播设置</h3>
-                    <p>设置直播标题、分类和互动功能</p>
-                    <button class="action-btn primary" @click="nextTutorialStep">下一步</button>
-                </div>
-                <div class="tutorial-step" v-if="tutorialStep === 4">
-                    <h3>第三步：开始直播</h3>
-                    <p>获取推流信息并开始直播</p>
-                    <button class="action-btn primary" @click="finishTutorial">完成教程</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 快捷操作面板 -->
-        <div class="quick-actions" v-if="showQuickActions">
-            <div class="quick-action-item" @click="quickAction('copyStreamInfo')">
-                <span class="action-icon">📋</span>
-                <span>复制推流信息</span>
-            </div>
-            <div class="quick-action-item" @click="quickAction('exportInfo')">
-                <span class="action-icon">💾</span>
-                <span>导出配置</span>
-            </div>
-            <div class="quick-action-item" @click="quickAction('refreshData')">
-                <span class="action-icon">🔄</span>
-                <span>刷新数据</span>
+        <div v-if="showTutorial" class="tutorial-overlay">
+            <div class="tutorial-content">
+                <h3>{{ $t('douyin.tutorial.welcome') }}</h3>
+                <p>{{ $t('douyin.tutorial.description') }}</p>
+                <!-- 其他教程内容 -->
             </div>
         </div>
     </div>
@@ -444,7 +412,6 @@ import { useI18n } from 'vue-i18n';
 import axios from 'axios';
 import QRCode from 'qrcode';
 import { useRouter } from 'vue-router';
-import LanguageSwitcher from '/src/components/LanguageSwitcher.vue';
 
 // API 基础 URL
 const API_BASE = 'http://localhost:9702/api';
@@ -2086,7 +2053,7 @@ onUnmounted(() => {
     align-items: center;
 }
 
-.status-content {
+.status-left {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -2102,6 +2069,23 @@ onUnmounted(() => {
     color: #333;
     font-weight: 500;
     word-break: break-word;
+}
+
+.status-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.status-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn.small {
+    padding: 8px 16px;
+    font-size: 12px;
+    min-height: 32px;
 }
 
 /* 分隔线 */
@@ -2179,7 +2163,7 @@ onUnmounted(() => {
     margin: 20px 30px 30px 30px;
 }
 
-.status-content {
+.status-left {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -2195,6 +2179,23 @@ onUnmounted(() => {
     color: #333;
     font-weight: 500;
     word-break: break-word;
+}
+
+.status-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn.small {
+    padding: 8px 16px;
+    font-size: 12px;
+    min-height: 32px;
 }
 
 /* 推流信息样式 */
@@ -2238,7 +2239,7 @@ onUnmounted(() => {
     border-radius: 15px;
 }
 
-.qr-container {
+.qr-content {
     text-align: center;
     padding: 20px;
 }

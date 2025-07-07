@@ -18,7 +18,7 @@
                                 fill="#000" />
                             <path fill-rule="evenodd" clip-rule="evenodd"
                                 d="M35 17a6 6 0 0 1-6-6h-5v18.5a3.5 3.5 0 1 1-3.5-3.5H22v-5h-1.5a8.5 8.5 0 1 0 8.5 8.5v-9.279A10.948 10.948 0 0 0 35 22h.5v-5H35Z"
-                                fill="#FA1E5C" />
+                                fill="#667eea" />
                             <path fill-rule="evenodd" clip-rule="evenodd"
                                 d="M34 16a6 6 0 0 1-6-6h-5v18.5a3.5 3.5 0 1 1-3.5-3.5H21v-5h-1.5a8.5 8.5 0 1 0 8.5 8.5v-9.279A10.948 10.948 0 0 0 34 21h.5v-5H34Z"
                                 fill="#5FFDFF" />
@@ -1142,6 +1142,77 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+:root {
+  --primary-color: #667eea;
+  --primary-hover: #764ba2;
+}
+
+.top-nav {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-bottom: 1px solid #e1e8ed;
+}
+
+.tab-item.active, .action-btn.primary, .card-btn.primary {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+  color: #fff;
+  border: none;
+}
+
+.tab-item, .action-btn, .card-btn {
+  background: #fafdff;
+  color: #222;
+  border: 1px solid #e1e8ed;
+}
+
+input, select, .modern-input, .modern-select, .field-input {
+  background: #fff;
+  border: 1.5px solid #e1e8ed;
+  color: #222;
+}
+
+.feature-card, .content-panel, .setting-section, .form-section, .log-section, .export-section, .control-section {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  border: 1px solid #f0f0f0;
+}
+
+.card-icon, .tab-icon, .title-icon {
+  color: var(--primary-color);
+}
+
+.brand-title, .brand-subtitle {
+  color: var(--primary-color);
+}
+
+.action-btn.success, .card-btn.success {
+  background: linear-gradient(135deg, #67c23a 0%, #85ce61 100%);
+  color: #fff;
+}
+
+.action-btn.secondary, .card-btn.secondary {
+  background: #f8f9fa;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.tab-item.active {
+  box-shadow: 0 4px 12px rgba(102,126,234,0.25);
+}
+
+.tab-item:hover, .action-btn:hover, .card-btn:hover {
+  background: rgba(102,126,234,0.08);
+  color: #667eea;
+}
+
+input:focus, select:focus, .modern-input:focus, .modern-select:focus, .field-input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102,126,234,0.12);
+}
+
+/* 保留原有装饰和动画，logo原色不变 */
+
 /* 全局样式 */
 * {
     box-sizing: border-box;
@@ -1150,7 +1221,7 @@ onUnmounted(() => {
 /* 页面容器 */
 .page-container {
     min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #fafdff;
     font-family: 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     position: relative;
     overflow-x: hidden;
@@ -1239,7 +1310,7 @@ onUnmounted(() => {
     justify-content: space-between;
     align-items: center;
     padding: 20px 30px;
-    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     position: relative;
     overflow: hidden;
@@ -1416,20 +1487,20 @@ onUnmounted(() => {
     left: 50%;
     width: 0;
     height: 3px;
-    background: #fe2c55;
+    background: #667eea;
     transition: all 0.3s ease;
     transform: translateX(-50%);
 }
 
 .tab-item:hover {
-    color: #fe2c55;
-    background: rgba(254, 44, 85, 0.1);
+    color: #667eea;
+   
 }
 
 .tab-item.active {
     color: white;
-    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
-    box-shadow: 0 2px 8px rgba(254, 44, 85, 0.3);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    
 }
 
 .tab-item.active::before {
@@ -1576,10 +1647,10 @@ onUnmounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 50%;
     color: white;
-    box-shadow: 0 4px 12px rgba(254, 44, 85, 0.3);
+    box-shadow: 0 4px 12px rgba(102,126,234,0.25);
 }
 
 .card-header h3 {
@@ -1612,13 +1683,12 @@ onUnmounted(() => {
 }
 
 .card-btn.primary {
-    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
 }
 
 .card-btn.primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(254, 44, 85, 0.4);
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
 }
 
 .card-btn.success {
@@ -1650,8 +1720,8 @@ onUnmounted(() => {
 .spinner {
     width: 16px;
     height: 16px;
-    border: 2px solid #f3f3f3;
-    border-top: 2px solid #fe2c55;
+    border: 2px solid #e1e8ed;
+    border-top: 2px solid #667eea;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -1723,9 +1793,9 @@ onUnmounted(() => {
 
 .field-input:focus {
     outline: none;
-    border-color: #fe2c55;
+    border-color: #667eea;
     background: white;
-    box-shadow: 0 0 0 3px rgba(254, 44, 85, 0.1);
+    box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
 }
 
 .form-actions {
@@ -1762,9 +1832,9 @@ onUnmounted(() => {
 
 .modern-input:focus {
     outline: none;
-    border-color: #fe2c55;
+    border-color: #667eea;
     background: white;
-    box-shadow: 0 0 0 3px rgba(254, 44, 85, 0.1);
+    box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
 }
 
 .category-grid {
@@ -1798,9 +1868,9 @@ onUnmounted(() => {
 
 .modern-select:focus {
     outline: none;
-    border-color: #fe2c55;
+    border-color: #667eea;
     background: white;
-    box-shadow: 0 0 0 3px rgba(254, 44, 85, 0.1);
+    box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
 }
 
 .action-group {
@@ -1856,12 +1926,12 @@ onUnmounted(() => {
 }
 
 .action-btn.primary {
-    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
 }
 
 .action-btn.primary:hover {
-    background: linear-gradient(135deg, #e6254a 0%, #e55a8a 100%);
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
 }
 
 .action-btn.success {
@@ -1996,7 +2066,7 @@ onUnmounted(() => {
     margin-bottom: 8px;
     background: rgba(255, 255, 255, 0.9);
     border-radius: 8px;
-    border-left: 4px solid #fe2c55;
+    border-left: 4px solid #667eea;
     font-size: 0.9rem;
 }
 
@@ -2156,7 +2226,7 @@ onUnmounted(() => {
 
 .status-icon {
     font-size: 1.2rem;
-    color: #fe2c55;
+    color: #667eea;
     flex-shrink: 0;
 }
 
@@ -2214,7 +2284,7 @@ onUnmounted(() => {
     background: rgba(255, 255, 255, 0.9);
     border-radius: 8px;
     font-size: 0.9rem;
-    border-left: 3px solid #fe2c55;
+    border-left: 3px solid #667eea;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -2266,7 +2336,7 @@ onUnmounted(() => {
 
 .status-icon {
     font-size: 1.2rem;
-    color: #fe2c55;
+    color: #667eea;
     flex-shrink: 0;
 }
 
@@ -2398,7 +2468,7 @@ onUnmounted(() => {
 }
 
 .tutorial-step h3 {
-    color: #fe2c55;
+    color: #667eea;
     margin-bottom: 15px;
     font-size: 1.5rem;
     font-weight: 700;
@@ -2453,7 +2523,7 @@ onUnmounted(() => {
 }
 
 .next-btn {
-    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
 }
 
@@ -2509,7 +2579,7 @@ onUnmounted(() => {
 }
 
 .progress-dot.active {
-    background: #fe2c55;
+    background: #667eea;
     transform: scale(1.2);
 }
 
@@ -2523,7 +2593,7 @@ onUnmounted(() => {
     position: absolute;
     width: 200px;
     height: 50px;
-    border: 3px solid #fe2c55;
+    border: 3px solid #667eea;
     border-radius: 12px;
     background: rgba(254, 44, 85, 0.15);
     animation: tutorialPulse 2s infinite;
@@ -2539,7 +2609,7 @@ onUnmounted(() => {
     height: 0;
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
-    border-bottom: 20px solid #fe2c55;
+    border-bottom: 20px solid #667eea;
 }
 
 @keyframes tutorialPulse {
@@ -2632,7 +2702,7 @@ onUnmounted(() => {
     position: fixed;
     top: 20px;
     right: 20px;
-    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 15px 20px;
     border-radius: 10px;
@@ -2755,7 +2825,7 @@ onUnmounted(() => {
 
 .step-number {
     background: white;
-    color: #fe2c55;
+    color: #667eea;
     width: 20px;
     height: 20px;
     border-radius: 50%;
@@ -2796,7 +2866,7 @@ onUnmounted(() => {
     position: fixed;
     top: 20px;
     right: 20px;
-    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 16px 20px;
     border-radius: 12px;

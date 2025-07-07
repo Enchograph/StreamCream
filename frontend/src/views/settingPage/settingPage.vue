@@ -2,32 +2,39 @@
     <v-container class="pa-4 setting-bg-glass">
         <v-card flat class="mx-auto setting-card-glass" max-width="820">
             <v-card-title class="text-h5 font-weight-medium setting-title-glass">
-                <span class="title-bar-gradient"><v-icon color="#fff" size="28">mdi-cog</v-icon></span>设置
+                <div class="title-content">
+                    <span class="title-bar-gradient"><v-icon color="#fff" size="28">mdi-cog</v-icon></span>
+                    <span class="title-text">{{ $t('setting.title') }}</span>
+                </div>
+                <div class="language-switcher-container">
+                    <LanguageSwitcher />
+                </div>
             </v-card-title>
+            
             <v-row>
                 <v-col cols="12">
                     <v-card flat class="mb-6 section-card-glass">
                         <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">
-                            <span class="section-bar-gradient"><v-icon color="#fff" size="20">mdi-tools</v-icon></span>调试设置
+                            <span class="section-bar-gradient"><v-icon color="#fff" size="20">mdi-tools</v-icon></span>{{ $t('setting.debugTitle') }}
                         </v-card-title>
                         <v-card-text>
                             <v-row>
                                 <v-col cols="12">
                                     <v-btn color="primary" variant="elevated" @click="resetPreferences" class="rounded-btn-glass">
-                                        重置所有偏好设置
+                                        {{ $t('setting.resetAll') }}
                                     </v-btn>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-switch v-model="debugMode" label="调试模式" color="primary"
-                                        :messages="debugMode ? '已开启' : '已关闭'" class="rounded-switch-glass"></v-switch>
+                                    <v-switch v-model="debugMode" :label="$t('setting.debugMode')" color="primary"
+                                        :messages="debugMode ? $t('setting.enabled') : $t('setting.disabled')" class="rounded-switch-glass"></v-switch>
                                 </v-col>
                                 <v-col cols="12">
                                     <v-select v-model="bannerColor" :items="[
-                                        { text: '默认', value: 'default' },
-                                        { text: '红色', value: 'red' },
-                                        { text: '蓝色', value: 'blue' },
-                                        { text: '紫色', value: 'purple' }
-                                    ]" item-title="text" item-value="value" label="TopBanner颜色" outlined
+                                        { text: $t('setting.bannerDefault'), value: 'default' },
+                                        { text: $t('setting.bannerRed'), value: 'red' },
+                                        { text: $t('setting.bannerBlue'), value: 'blue' },
+                                        { text: $t('setting.bannerPurple'), value: 'purple' }
+                                    ]" item-title="text" item-value="value" :label="$t('setting.bannerColor')" outlined
                                         dense class="rounded-input-glass"></v-select>
                                 </v-col>
                             </v-row>
@@ -37,7 +44,7 @@
                 <v-col cols="12">
                     <v-card flat class="mb-6 section-card-glass">
                         <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">
-                            <span class="section-bar-gradient"><v-icon color="#fff" size="20">mdi-robot</v-icon></span>AI设置
+                            <span class="section-bar-gradient"><v-icon color="#fff" size="20">mdi-robot</v-icon></span>{{ $t('setting.aiTitle') }}
                         </v-card-title>
                         <v-card-text>
                             <v-row>
@@ -51,15 +58,15 @@
                                         { text: '火山方舟', value: 'https://ark.volcengineapi.com/v1/chat/completions' },
                                         { text: '腾讯云', value: 'https://hunyuan.cloud.tencent.com/hyllm/v1/chat/completions' },
                                         { text: 'SORUX', value: 'https://api.soruxgpt.com/v1/chat/completions' },
-                                        { text: '自定义', value: 'custom' }
-                                    ]" item-title="text" item-value="value" label="模型提供商" outlined dense class="rounded-input-glass" @change="handleProviderChange"></v-select>
+                                        { text: $t('setting.providerCustom'), value: 'custom' }
+                                    ]" item-title="text" item-value="value" :label="$t('setting.provider')" outlined dense class="rounded-input-glass" @change="handleProviderChange"></v-select>
                                     <v-text-field v-if="aiSettings.provider === 'custom'"
-                                        v-model="aiSettings.customProvider" label="API端点URL"
-                                        placeholder="https://api.soruxgpt.com/v1/chat/completions" outlined dense
+                                        v-model="aiSettings.customProvider" :label="$t('setting.apiEndpoint')"
+                                        :placeholder="$t('setting.apiEndpointPlaceholder')" outlined dense
                                         class="mt-2 rounded-input-glass"></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field v-model="aiSettings.apiKey" label="API 密钥" placeholder="输入API密钥"
+                                    <v-text-field v-model="aiSettings.apiKey" :label="$t('setting.apiKey')" :placeholder="$t('setting.apiKeyPlaceholder')"
                                         type="password" outlined dense class="rounded-input-glass"></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
@@ -112,19 +119,19 @@
                                         { text: 'O3', value: 'o3', group: '其他' },
                                         { text: 'O3 All', value: 'o3-all', group: '其他' },
                                         { text: 'Text Embedding Ada 002', value: 'text-embedding-ada-002', group: '其他' }
-                                    ]" label="模型名称" outlined dense item-title="text" item-value="value"
+                                    ]" :label="$t('setting.modelName')" outlined dense item-title="text" item-value="value"
                                         :filter="modelFilter" :search-input.sync="modelSearch" clearable
-                                        no-data-text="没有找到匹配的模型" class="rounded-input-glass">
+                                        :no-data-text="$t('setting.noModelFound')" class="rounded-input-glass">
                                         <template v-slot:prepend-item>
-                                            <v-text-field v-model="modelSearch" label="搜索模型"
+                                            <v-text-field v-model="modelSearch" :label="$t('setting.searchModel')"
                                                 prepend-inner-icon="mdi-magnify" clearable hide-details
                                                 class="px-4 rounded-input-glass"></v-text-field>
                                         </template>
                                     </v-select>
                                 </v-col>
                                 <v-col cols="12" v-if="aiSettings.modelName === 'custom'">
-                                    <v-text-field v-model="aiSettings.customModelName" label="自定义模型名称"
-                                        placeholder="输入自定义模型名称" outlined dense class="rounded-input-glass"></v-text-field>
+                                    <v-text-field v-model="aiSettings.customModelName" :label="$t('setting.customModelName')"
+                                        :placeholder="$t('setting.customModelNamePlaceholder')" outlined dense class="rounded-input-glass"></v-text-field>
                                 </v-col>
                             </v-row>
                         </v-card-text>
@@ -142,7 +149,7 @@
                 <v-col cols="12">
                     <v-card flat class="mb-6 section-card-glass">
                         <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">
-                            <span class="section-bar-gradient"><v-icon color="#fff" size="20">mdi-video-wireless</v-icon></span>直播设置
+                            <span class="section-bar-gradient"><v-icon color="#fff" size="20">mdi-video-wireless</v-icon></span>{{ $t('setting.liveTitle') }}
                         </v-card-title>
                         <v-card-text>
                             <v-row>
@@ -152,58 +159,58 @@
                                         { text: '1280×720 (16:9)', value: '1280x720' },
                                         { text: '2048×1080 (≈17:9)', value: '2048x1080' },
                                         { text: '1080×1920 (=9:16)', value: '1080x1920' }
-                                    ]" item-title="text" item-value="value" label="直播分辨率" outlined dense class="rounded-input-glass"></v-select>
+                                    ]" item-title="text" item-value="value" :label="$t('setting.resolution')" outlined dense class="rounded-input-glass"></v-select>
                                 </v-col>
                                 <v-col cols="12" md="6">
                                     <v-select v-model="fpsPreference" :items="[
                                         { text: '30fps', value: '30' },
                                         { text: '60fps', value: '60' }
-                                    ]" item-title="text" item-value="value" label="直播帧率" outlined dense class="rounded-input-glass"></v-select>
+                                    ]" item-title="text" item-value="value" :label="$t('setting.fps')" outlined dense class="rounded-input-glass"></v-select>
                                 </v-col>
                                 <v-col cols="12" md="6">
                                     <v-select v-model="bgPreference" :items="[
-                                        { text: '默认', value: 'default' },
+                                        { text: $t('setting.bgDefault'), value: 'default' },
                                         ...customBackgrounds.map(bg => ({ text: bg, value: bg }))
-                                    ]" item-title="text" item-value="value" label="直播背景" outlined dense class="rounded-input-glass"></v-select>
+                                    ]" item-title="text" item-value="value" :label="$t('setting.bg')" outlined dense class="rounded-input-glass"></v-select>
                                 </v-col>
                                 <v-col cols="12" md="6">
                                     <v-btn color="primary" variant="elevated" block height="44"
                                         @click="$refs.bgUpload.click()" class="rounded-btn-glass">
-                                        上传背景
+                                        {{ $t('setting.uploadBg') }}
                                     </v-btn>
                                     <input type="file" ref="bgUpload" @change="handleBgUpload" accept="image/*"
                                         style="display: none">
                                 </v-col>
                                 <v-col cols="12" md="6">
                                     <v-select v-model="platformPreference" :items="[
-                                        { text: '哔哩哔哩', value: 'bilibili' },
+                                        { text: $t('setting.platformBilibili'), value: 'bilibili' },
                                         { text: '抖音', value: 'douyin' },
                                         { text: '快手', value: 'kuaishou' },
                                         { text: '虎牙', value: 'huya' },
                                         { text: '斗鱼', value: 'douyu' },
                                         { text: 'YY直播', value: 'yy' }
-                                    ]" item-title="text" item-value="value" label="直播平台" outlined dense class="rounded-input-glass"></v-select>
+                                    ]" item-title="text" item-value="value" :label="$t('setting.platform')" outlined dense class="rounded-input-glass"></v-select>
                                 </v-col>
                                 <v-col cols="12" md="6">
                                     <v-btn color="secondary" variant="elevated" block height="44" class="mb-4 rounded-btn-glass">
-                                        获取推流码
+                                        {{ $t('setting.getStreamKey') }}
                                     </v-btn>
                                 </v-col>
                                 <v-col cols="12" md="6">
-                                    <v-text-field v-model="streamDomain" label="推流地址" placeholder="请输入推流地址" outlined
+                                    <v-text-field v-model="streamDomain" :label="$t('setting.streamDomain')" :placeholder="$t('setting.inputStreamDomain')" outlined
                                         dense class="rounded-input-glass"></v-text-field>
                                 </v-col>
                                 <v-col cols="12" md="6">
-                                    <v-text-field v-model="streamKey" label="推流码" placeholder="请输入推流码" outlined
+                                    <v-text-field v-model="streamKey" :label="$t('setting.streamKey')" :placeholder="$t('setting.inputStreamKey')" outlined
                                         dense class="rounded-input-glass"></v-text-field>
                                 </v-col>
                                 <v-col cols="12" class="text-center">
                                     <v-btn color="primary" class="mr-4" @click="testStreamConnection">
-                                        测试连接
+                                        {{ $t('setting.testConnection') }}
                                     </v-btn>
                                     <v-btn color="success" @click="saveStreamSettings"
                                         @update:model-value="handleResolutionChange">
-                                        保存设置
+                                        {{ $t('setting.saveSettings') }}
                                     </v-btn>
                                 </v-col>
                             </v-row>
@@ -214,7 +221,7 @@
             <v-row>
                 <v-col cols="12">
                     <v-card class="mb-4" outlined>
-                        <v-card-title class="text-h5">语音转换设置</v-card-title>
+                        <v-card-title class="text-h5">{{ $t('setting.ttsTitle') }}</v-card-title>
                         <v-card-text>
                             <!-- 预留内容 -->
                         </v-card-text>
@@ -224,7 +231,7 @@
             <v-row>
                 <v-col cols="12">
                     <v-card class="mb-4" outlined>
-                        <v-card-title class="text-h5">Live 2D 设置</v-card-title>
+                        <v-card-title class="text-h5">{{ $t('setting.live2dTitle') }}</v-card-title>
                         <v-card-text>
                             <!-- 预留内容 -->
                         </v-card-text>
@@ -233,7 +240,7 @@
             </v-row>
             <div class="finish-btn-wrapper">
                 <v-btn color="primary" variant="elevated" @click="completeSetting" class="rounded-btn-glass">
-                    完成
+                    {{ $t('setting.finish') }}
                 </v-btn>
             </div>
         </v-card>
@@ -245,9 +252,11 @@ import api from '/src/api/index.js'
 import { useRouter } from 'vue-router'
 import { useLive2DStore } from '../../stores/live2d';
 import { ElMessage } from 'element-plus';
+import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
 
 export default {
     name: 'settingPage',
+    components: { LanguageSwitcher },
     data() {
         return {
             debugMode: localStorage.getItem('debugMode') === 'true',
@@ -647,14 +656,35 @@ export default {
     padding: 40px 32px 32px 32px;
     background: rgba(255,255,255,0.55);
     border: 1.5px solid #e3e8f7;
+    position: relative;
+    z-index: 1;
 }
 .setting-title-glass {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     font-size: 2.4rem;
     margin-bottom: 28px;
     letter-spacing: 2px;
     font-weight: 700;
+    position: relative;
+    z-index: 1;
+}
+
+.title-content {
+    display: flex;
+    align-items: center;
+}
+
+.title-text {
+    margin-left: 18px;
+}
+
+.language-switcher-container {
+    position: relative;
+    z-index: 99999;
+    margin-left: 16px;
+    margin-top: -8px;
 }
 .title-bar-gradient {
     display: inline-flex;

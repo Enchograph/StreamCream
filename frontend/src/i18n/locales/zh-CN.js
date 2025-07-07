@@ -381,4 +381,319 @@ export default {
     addNewSection: '添加新章节'
   },
 
+  setting: {
+    title: '设置',
+    debugTitle: '调试设置',
+    resetAll: '重置所有偏好设置',
+    debugMode: '调试模式',
+    enabled: '已开启',
+    disabled: '已关闭',
+    bannerDefault: '默认',
+    bannerRed: '红色',
+    bannerBlue: '蓝色',
+    bannerPurple: '紫色',
+    bannerColor: 'TopBanner颜色',
+    aiTitle: 'AI设置',
+    provider: '模型提供商',
+    providerCustom: '自定义',
+    apiEndpoint: 'API端点URL',
+    apiEndpointPlaceholder: 'https://api.soruxgpt.com/v1/chat/completions',
+    apiKey: 'API 密钥',
+    apiKeyPlaceholder: '输入API密钥',
+    modelName: '模型名称',
+    noModelFound: '没有找到匹配的模型',
+    searchModel: '搜索模型',
+    customModelName: '自定义模型名称',
+    customModelNamePlaceholder: '输入自定义模型名称',
+    liveTitle: '直播设置',
+    resolution: '直播分辨率',
+    resolution1080p: '1920×1080 (16:9)',
+    fps: '直播帧率',
+    bg: '直播背景',
+    bgDefault: '默认',
+    uploadBg: '上传背景',
+    platform: '直播平台',
+    platformBilibili: '哔哩哔哩',
+    getStreamKey: '获取推流码',
+    streamDomain: '推流地址',
+    inputStreamDomain: '请输入推流地址',
+    streamKey: '推流码',
+    inputStreamKey: '请输入推流码',
+    testConnection: '测试连接',
+    saveSettings: '保存设置',
+    ttsTitle: '语音转换设置',
+    live2dTitle: 'Live 2D 设置',
+    finish: '完成'
+  },
+
+  help: {
+    title: 'StreamCream 使用指南',
+    subtitle: 'AI直播助手的完整使用说明',
+    quickStart: '快速开始',
+    mainPageFeatures: '主页面功能',
+    streamKeyPage: '推流码获取页面',
+    settingsPage: '设置页面',
+    streamingPage: '直播页面',
+    faq: '常见问题',
+    techSupport: '技术支持',
+    back: '返回',
+    
+    // 快速开始步骤
+    step1: {
+      title: '登录系统',
+      content: '打开StreamCream平台首页，点击右上角"登录"按钮。输入账号和密码后点击"登录"进入系统。如果没有账号，请先点击"注册"，填写邮箱、密码等信息完成注册。'
+    },
+    step2: {
+      title: '配置设置',
+      content: '进入"设置"页面，在"AI设置"区域选择模型提供商（如OpenAI、Claude等），填写API密钥。在"直播设置"区域选择直播平台（如B站），填写推流地址和推流码，设置分辨率、帧率等参数。可根据需要自定义Banner颜色、开启调试模式等。'
+    },
+    step3: {
+      title: '声音库与Live2D模型选择',
+      content: '在主页面"声音库选择"区域，选择或上传GPT/SoVITS模型和参考音频。在"Live2D模型"区域，选择或上传虚拟形象模型，实时预览效果。'
+    },
+    step4: {
+      title: 'AI讲稿生成与测试',
+      content: '在"AI讲稿生成"区域，输入讲稿主题，选择风格，点击"生成讲稿"。可在下方预览和测试AI生成的讲稿内容。'
+    },
+    step5: {
+      title: '开始直播',
+      content: '在主页面确认所有配置无误后，点击"开始直播"按钮。直播页面会显示Live2D形象、AI语音、讲稿管理等功能。可实时发送弹幕、与观众互动，随时停止直播。'
+    },
+
+    // 主页面功能
+    voiceLibrary: {
+      title: '声音库选择',
+      modelSelection: '模型选择：从下拉菜单选择已训练好的GPT和SoVITS模型',
+      referenceAudio: '参考音频：选择参考音频文件，用于语音合成',
+      uploadModel: '上传模型：支持上传自定义的.ckpt和.pth模型文件',
+      generateExample: '生成示例：点击"生成示例语音"测试当前模型效果'
+    },
+    live2dModel: {
+      title: 'Live2D模型',
+      modelSelection: '模型选择：选择不同的Live2D虚拟形象',
+      customModel: '自定义模型：上传.model3.json格式的Live2D模型',
+      realTimePreview: '实时预览：在右侧预览区域查看模型效果'
+    },
+    streamingConfig: {
+      title: '直播配置',
+      platformSelection: '平台选择：选择直播平台（B站、抖音等）',
+      streamSettings: '推流设置：配置推流地址和推流码',
+      resolutionSettings: '分辨率设置：选择直播分辨率和帧率',
+      backgroundSettings: '背景设置：选择或上传直播背景'
+    },
+    aiScriptGeneration: {
+      title: 'AI讲稿生成',
+      topicInput: '主题输入：输入讲稿主题',
+      styleSelection: '风格选择：选择讲稿风格（轻松、专业、可爱等）',
+      generateScript: '生成讲稿：点击生成AI讲稿',
+      testFunction: '测试功能：测试生成的讲稿效果'
+    },
+
+    // 推流码获取
+    streamKeyProcess: {
+      title: '推流码获取流程',
+      accountSetup: '账号设置：进入"账号设置"页面，完成Cookies导入或扫码登录。',
+      autoGet: '自动获取：切换到"直播设置"页面，系统会自动获取并显示你的B站推流码和推流服务器地址。',
+      securityTip: '安全提示：推流码仅用于本次直播，请勿泄露给他人。',
+      troubleshooting: '故障排查：如推流码获取失败，请检查账号状态或重新登录。'
+    },
+
+    // 设置页面
+    debugSettings: {
+      title: '调试设置',
+      debugMode: '调试模式：开启/关闭调试模式',
+      resetSettings: '重置设置：重置所有偏好设置',
+      bannerColor: 'Banner颜色：自定义顶部横幅颜色'
+    },
+    aiSettings: {
+      title: 'AI设置',
+      modelProvider: '模型提供商：选择AI服务提供商（OpenAI、Claude等）',
+      apiKey: 'API密钥：配置API访问密钥',
+      modelName: '模型名称：选择具体的AI模型',
+      customEndpoint: '自定义端点：配置自定义API端点'
+    },
+    liveSettings: {
+      title: '直播设置',
+      resolution: '分辨率：设置直播分辨率（1920x1080等）',
+      fps: '帧率：设置直播帧率（30fps/60fps）',
+      background: '背景：选择或上传直播背景',
+      streamInfo: '推流信息：配置推流地址和推流码'
+    },
+
+    // 直播页面
+    streamingFeatures: {
+      title: '直播界面功能',
+      live2dDisplay: 'Live2D显示：实时显示Live2D虚拟形象',
+      voiceSynthesis: '语音合成：将文本转换为语音并同步嘴型',
+      scriptManagement: '讲稿管理：管理和播放AI生成的讲稿',
+      realTimeInteraction: '实时互动：支持实时语音输入和响应',
+      streamControl: '推流控制：开始/停止直播推流'
+    },
+
+    // 常见问题
+    faq1: {
+      question: 'Q: 如何上传自定义声音模型？',
+      answer: 'A: 在主页面"声音库选择"区域，点击"选择文件"按钮，选择.ckpt（GPT模型）或.pth（SoVITS模型）文件，然后点击"应用声音模型"。'
+    },
+    faq2: {
+      question: 'Q: 如何配置推流信息？',
+      answer: 'A: 在设置页面的"直播设置"区域，选择直播平台，然后输入推流地址和推流码。也可以点击"获取推流码"按钮获取。'
+    },
+    faq3: {
+      question: 'Q: 如何生成AI讲稿？',
+      answer: 'A: 在主页面"AI讲稿生成测试"区域，输入讲稿主题，选择风格，然后点击"生成讲稿"按钮。'
+    },
+    faq4: {
+      question: 'Q: 如何切换Live2D模型？',
+      answer: 'A: 在主页面"Live2D模型选择"区域，从下拉菜单选择不同的模型，或上传自定义的.model3.json文件。'
+    },
+    faq5: {
+      question: 'Q: 如何配置AI模型？',
+      answer: 'A: 在设置页面的"AI设置"区域，选择模型提供商，输入API密钥，选择具体的模型名称。'
+    },
+
+    // 技术支持
+    supportInfo: {
+      title: '如果您在使用过程中遇到问题，请：',
+      checkNetwork: '检查网络连接是否正常',
+      checkApiKey: '确认API密钥配置是否正确',
+      checkConsole: '查看浏览器控制台的错误信息',
+      restartServices: '重启相关后端服务'
+    }
+  },
+
+  bilibili: {
+    title: 'B站推流码获取工具',
+    subtitle: '专业的B站直播推流码获取和管理工具',
+    tabs: {
+      account: {
+        name: '账号设置',
+        description: '账号登录与认证'
+      },
+      live: {
+        name: '直播设置',
+        description: '直播配置与管理'
+      }
+    },
+    account: {
+      title: '账号设置',
+      cookiesFile: 'Cookies文件',
+      useCookiesFile: '使用Cookies文件',
+      autoGet: '自动获取',
+      autoGetAccount: '自动获取账号信息',
+      getting: '获取中...',
+      gettingText: '获取中，请稍候...',
+      manualInput: '手动输入',
+      roomId: 'Room ID:',
+      roomIdPlaceholder: '请输入房间ID',
+      cookies: 'Cookies:',
+      cookiesPlaceholder: '请输入Cookies字符串',
+      csrfToken: 'CSRF Token:',
+      csrfTokenPlaceholder: '请输入CSRF Token',
+      saveSettings: '保存设置',
+      viewHelp: '查看使用说明'
+    },
+    live: {
+      title: '直播标题',
+      titleInput: '请输入直播标题:',
+      titlePlaceholder: '输入直播标题',
+      updateTitle: '更新标题',
+      defaultTitle: '我的B站直播',
+      area: '直播分区',
+      selectArea: '请选择分区',
+      selectSubArea: '请选择子分区',
+      updateArea: '更新分区',
+      refreshArea: '刷新分区',
+      sendBullet: '发送弹幕',
+      bulletInput: '输入弹幕内容:',
+      bulletPlaceholder: '输入弹幕内容',
+      startLive: '开始直播',
+      operationLog: '操作日志',
+      noLogs: '暂无操作日志',
+      config: '直播配置',
+      rtmpUrl: '推流地址:',
+      rtmpUrlPlaceholder: 'rtmp://live-push.bilivideo.com/live-bvc/...',
+      streamKey: '推流密钥:',
+      streamKeyPlaceholder: '请输入推流密钥',
+      saveConfig: '保存配置',
+      areas: {
+        entertainment: '娱乐',
+        game: '游戏',
+        mobileGame: '手游',
+        drawing: '绘画',
+        radio: '电台',
+        virtual: '虚拟主播',
+        life: '生活',
+        knowledge: '知识',
+        tech: '科技',
+        sports: '运动',
+        fashion: '时尚',
+        news: '资讯',
+        food: '美食',
+        animals: '动物圈',
+        cars: '汽车',
+        music: '音乐',
+        dance: '舞蹈',
+        kichiku: '鬼畜',
+        fashion2: '时尚',
+        entertainment2: '娱乐',
+        movie: '电影',
+        tv: '电视剧',
+        documentary: '纪录片',
+        anime: '番剧',
+        chineseAnime: '国创',
+        comic: '漫画',
+        novel: '小说',
+        original: '原创',
+        wildTech: '野生技术协会',
+        funScience: '趣味科普人文',
+        speech: '演讲公开课',
+        starSea: '星海',
+        mechanical: '机械',
+        cars2: '汽车',
+        design: '设计创意',
+        wildTech2: '野生技术协会',
+        funScience2: '趣味科普人文',
+        speech2: '演讲公开课',
+        starSea2: '星海',
+        mechanical2: '机械',
+        cars3: '汽车',
+        design2: '设计创意'
+      }
+    },
+    status: {
+      ready: '就绪',
+      loading: '加载中',
+      success: '成功',
+      error: '错误'
+    },
+    qrCode: {
+      title: '扫码登录',
+      tip: '请使用B站APP扫描二维码登录'
+    },
+    help: {
+      title: '使用说明',
+      content: `【B站推流码获取工具使用说明】
+
+1. 账号设置：
+- 支持Cookies文件导入、自动扫码获取、手动输入三种方式。
+- 建议优先使用自动扫码，安全便捷。
+
+2. 直播设置：
+- 可设置直播标题、分区、子分区。
+- 支持一键发送弹幕、开始直播。
+
+3. 推流信息：
+- 获取推流地址和推流密钥。
+- 支持一键复制和导出功能。
+
+4. 常见问题：
+- 若分区/子分区无法选择，请先刷新分区。
+- 若推流信息获取失败，请检查Cookies或账号状态。
+
+5. 技术支持：
+如遇到无法解决的问题，请联系开发团队或查阅项目文档。`
+    }
+  },
+
 } 

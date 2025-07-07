@@ -1,0 +1,34 @@
+@startuml
+' 设置标题
+title 俄罗斯方块游戏用例图
+
+' 设置布局方向 (可选, 默认是 top to bottom)
+left to right direction
+
+' 定义参与者 (Actor)
+actor Player as "玩家"
+
+' 定义系统边界和用例 (Use Cases)
+rectangle "俄罗斯方块系统" {
+  usecase startGame as "开始游戏"
+  usecase playGame as "玩游戏"
+  usecase submitScore as "提交分数"
+  usecase viewLeaderboard as "查看排行榜"
+}
+
+' 定义参与者与用例之间的关联
+' 玩家可以执行所有这些操作
+Player --> startGame
+Player --> playGame
+Player --> submitScore
+Player --> viewLeaderboard
+
+' (可选) 如果想表达更明确的流程或依赖关系，可以使用注释或关系
+' 例如，可以添加注释说明逻辑顺序
+' note right of playGame : "在 '开始游戏' 后进行"
+' note right of submitScore : "在 '玩游戏' 结束后进行"
+' 或者，如果认为提交分数是玩游戏的一个可选扩展点
+' playGame <.. submitScore : <<extend>>
+' 但在这个场景下，保持简单关联可能更清晰
+
+@enduml

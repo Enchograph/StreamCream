@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏结束 - 提交分数</title>
+    <!-- TailwindCSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome via Cloudflare CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+             /* Slightly different gradient to signify end state */
+             background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+        }
+        /* Style for loading spinner */
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            width: 16px; /* Adjust size */
+            height: 16px; /* Adjust size */
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        /* Hide spinner by default */
+        .spinner.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 bg-gray-900">
+    <!-- Main Content Card -->
+    <div class="bg-white rounded-xl shadow-2xl p-8 md:p-12 max-w-md w-full text-center transform transition-all duration-300">
+
+        <!-- Game Over Title -->
+        <h1 class="text-4xl md:text-5xl font-extrabold text-red-600 mb-4">
+            <i class="fas fa-skull-crossbones mr-2"></i> 游戏结束!
+        </h1>
+
+        <!-- Final Score Display -->
+        <div class="mb-6 bg-gray-100 p-4 rounded-lg shadow-inner">
+            <p class="text-lg text-gray-600">你的最终得分:</p>
+            <p id="finalScoreDisplay" class="text-5xl font-bold text-blue-600 mt-1">
+                <!-- Score will be dynamically inserted here by JS -->
+                12345
+            </p>
+        </div>
+
+        <!-- Score Submission Form -->
+        <form id="submitScoreForm" class="space-y-4">
+            <div>
+                <label for="playerName" class="block text-sm font-medium text-gray-700 mb-1 text-left">输入你的昵称:</label>
+                <input type="text" id="playerName" name="playerName" required maxlength="20" placeholder="最多 20 个字符"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+                 <p id="inputError" class="text-red-500 text-xs text-left mt-1 h-4"></p> <!-- Error message placeholder -->
+            </div>
+
+            <button type="submit" id="submitBtn"
+                    class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transform hover:scale-105 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 flex items-center justify-center text-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                <span id="submitBtnText">
+                    <i class="fas fa-paper-plane mr-2"></i> 提交分数
+                </span>
+                <div id="loadingSpinner" class="spinner hidden ml-2"></div> <!-- Loading Spinner -->
+            </button>
+        </form>
+
+        <!-- Optional Action Buttons -->
+        <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+            <button id="playAgainBtn" class="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-5 rounded-lg shadow-sm transition duration-200 flex items-center justify-center">
+                <i class="fas fa-redo mr-2"></i> 再玩一次
+            </button>
+            <button id="mainMenuBtn" class="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-5 rounded-lg shadow-sm transition duration-200 flex items-center justify-center">
+                <i class="fas fa-home mr-2"></i> 返回主菜单
+            </button>
+        </div>
+
+    </div>
+
+    <!-- JavaScript for form handling and interactions -->
+    <script>
+        const finalScoreDisplay = document.getElementById('finalScoreDisplay');
+        const submitScoreForm = document.getElementById('submitScoreForm');
+        const playerNameInput = document.getElementById('playerName');
+        const submitBtn = document.getElementById('submitBtn');
+        const submitBtnText = document.getElementById('submitBtnText');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const inputError = document.getElementById('inputError');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+        const mainMenuBtn = document.getElementById('mainMenuBtn');
+
+        // --- Assume final score is passed somehow (e.g., query param, local storage) ---
+        // --- Replace with actual score retrieval logic ---
+        const finalScore = 12345; // Example Score
+        finalScoreDisplay.textContent = finalScore.toLocaleString(); // Format score with commas
+        // --- End Score Retrieval ---
+
+        submitScoreForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent default form submission
+            inputError.textContent = ''; // Clear previous errors
+
+            const playerName = playerNameInput.value.trim();
+
+            if (!playerName) {
+                inputError.textContent = '昵称不能为空！';
+                playerNameInput.focus();
+                return;
+            }
+
+            // Disable button and show spinner
+            submitBtn.disabled = true;
+            submitBtnText.classList.add('hidden'); // Hide text
+            loadingSpinner.classList.remove('hidden'); // Show spinner
+
+            console.log(`准备提交分数: 玩家=${playerName}, 分数=${finalScore}`);
+
+            // --- Simulate API Call ---
+            try {
+                // Replace with actual fetch call to your backend API
+                // const response = await fetch('/api/scores', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify({ playerName: playerName, score: finalScore })
+                // });
+
+                // Mocking the API call with a delay
+                await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
+                const mockSuccess = Math.random() > 0.1; // Simulate 90% success rate
+
+                if (mockSuccess /* && response.ok */) {
+                    console.log('分数提交成功!');
+                    // Option 1: Redirect to Leaderboard
+                    // window.location.href = '/leaderboard.html';
+                    // Option 2: Show success message and maybe disable form
+                    alert(`分数 ${finalScore} 已为玩家 ${playerName} 成功提交！`);
+                    submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i> 已提交';
+                    submitBtn.classList.replace('bg-gradient-to-r', 'bg-green-600'); // Change color on success
+                    submitBtn.classList.remove('from-blue-500', 'to-indigo-600', 'hover:from-blue-600', 'hover:to-indigo-700');
+                    playerNameInput.disabled = true;
+
+                } else {
+                     console.error('分数提交失败!');
+                     // const errorData = await response.json(); // Get error details if available
+                     inputError.textContent = '提交失败，请稍后再试。'; // Show error to user
+                     // Re-enable button and hide spinner on failure
+                     submitBtn.disabled = false;
+                     submitBtnText.classList.remove('hidden');
+                     loadingSpinner.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('提交过程中发生网络错误:', error);
+                inputError.textContent = '网络错误，请检查连接。';
+                 // Re-enable button and hide spinner on network error
+                 submitBtn.disabled = false;
+                 submitBtnText.classList.remove('hidden');
+                 loadingSpinner.classList.add('hidden');
+            }
+            // --- End Simulate API Call ---
+        });
+
+        playAgainBtn.addEventListener('click', () => {
+            console.log('再玩一次按钮被点击');
+            // TODO: Navigate back to the Play Game screen (or reset game state)
+            // window.location.href = '/play.html'; // Or reload current if play is on same page
+             window.location.reload(); // Simple reload for demo
+        });
+
+        mainMenuBtn.addEventListener('click', () => {
+            console.log('返回主菜单按钮被点击');
+            // TODO: Navigate back to the Start Game screen
+            window.location.href = '/'; // Navigate to root/start screen
+        });
+
+    </script>
+</body>
+</html>

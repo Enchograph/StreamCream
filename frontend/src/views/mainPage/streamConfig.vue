@@ -1,8 +1,8 @@
 <template>
-    <h2>直播平台选择与推流码</h2>
-    <p>选择直播平台并输入推流码</p>
+    <h2>{{ $t('streamConfig.title') }}</h2>
+    <p>{{ $t('streamConfig.subtitle') }}</p>
     <div class="platform-select">
-        <el-select v-model="selectedPlatform" class="platform-selector" placeholder="选择直播平台">
+        <el-select v-model="selectedPlatform" class="platform-selector" :placeholder="$t('streamConfig.selectPlatform')">
             <el-option v-for="platform in platforms" :key="platform.value" :label="platform.label"
                 :value="platform.value">
                 <span class="platform-option">
@@ -13,23 +13,23 @@
         </el-select>
     </div>
     <div class="file-upload">
-        <label>推流地址:</label>
-        <input type="text" v-model="streamUrl" placeholder="输入推流地址">
+        <label>{{ $t('streamConfig.streamUrl') }}</label>
+        <input type="text" v-model="streamUrl" :placeholder="$t('streamConfig.streamUrlPlaceholder')">
     </div>
     <div class="file-upload">
-        <label>推流码:</label>
-        <input type="text" v-model="streamKey" placeholder="输入推流码">
+        <label>{{ $t('streamConfig.streamKey') }}</label>
+        <input type="text" v-model="streamKey" :placeholder="$t('streamConfig.streamKeyPlaceholder')">
     </div>
     <div class="button-row">
         <button class="btn test-connect-btn" @click="testStream">
-            <span class="btn-icon">🔗</span>测试连接
+            <span class="btn-icon">🔗</span>{{ $t('streamConfig.testConnection') }}
         </button>
         <button class="btn primary" @click="getStreamKey">
-            <span class="btn-icon">🔑</span>{{ platformToolNames[selectedPlatform] || '获取推流码工具' }}
+            <span class="btn-icon">🔑</span>{{ $t('streamConfig.platformTools')[selectedPlatform] || $t('streamConfig.getStreamKeyTool') }}
         </button>
     </div>
     <button class="btn danger" @click="stopLive" :disabled="!isLiveActive">
-        <span class="btn-icon">⏹️</span>停止直播
+        <span class="btn-icon">⏹️</span>{{ $t('streamConfig.stopLive') }}
     </button>
 </template>
 
@@ -153,7 +153,7 @@ function getStreamKey() {
     if (platformRoutes) {
         router.push(platformRoutes);
     } else {
-        console.log('未找到对应平台的路由');
+        console.log($t('streamConfig.errors.routeNotFound'));
     }
 }
 
@@ -165,7 +165,7 @@ async function testStream() {
     try {
         stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
     } catch (err) {
-        ElMessage.error('用户取消了采集或浏览器不支持: ' + err)
+        ElMessage.error($t('streamConfig.errors.userCancelled') + err)
         return;
     }
 
@@ -193,7 +193,7 @@ async function testStream() {
     };
 
     ws.onerror = (e) => {
-        ElMessage.error('WebSocket 连接失败: ' + e.message)
+        ElMessage.error($t('streamConfig.errors.websocketFailed') + e.message)
     };
 }
 

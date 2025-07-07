@@ -21,6 +21,10 @@ const vuetify = createVuetify({
     directives,
 })
 
+// 初始化 HTML lang 属性
+const savedLocale = localStorage.getItem('locale') || 'zh-CN'
+document.documentElement.lang = savedLocale === 'zh-CN' ? 'zh-CN' : 'en'
+
 const app = createApp(App)
 const pinia = createPinia()
 app.use(pinia)

@@ -25,33 +25,33 @@
         class="btn primary"
         style="margin-left: 10px;"
         @click="onSwitch"
-      >切换模型</button>
+      >{{ $t('modelSelector.switchModel') }}</button>
     </div>
 
     <!-- 参考音频选择同一行 -->
     <div class="model-dropdown" style="margin-bottom: 18px;">
-      <label style="margin-right: 10px; white-space: nowrap; font-weight: 500;">参考音频：</label>
+      <label style="margin-right: 10px; white-space: nowrap; font-weight: 500;">{{ $t('modelSelector.referenceAudio') }}：</label>
       <select v-model="selectedAudio" :disabled="audioLoading" class="model-select">
         <option v-for="audio in audioList" :key="audio.path" :value="audio.path">
-          {{ audio.file_name }}<span v-if="audio.is_current">（当前）</span>
+          {{ audio.file_name }}<span v-if="audio.is_current">{{ $t('modelSelector.currentAudio') }}</span>
         </option>
       </select>
       <button class="btn primary audio-switch-btn" style="margin-left: 10px;" @click="onSwitchAudio" :disabled="audioLoading || !selectedAudio">
-        切换参考音频
+        {{ $t('modelSelector.switchReferenceAudio') }}
       </button>
     </div>
 
     <!-- 模型状态显示 -->
     <div class="model-status">
-      <div>当前模型pair：<b>{{ modelStatus.current_model_pair || '无' }}</b></div>
-      <div>当前参考音频：<b>{{ modelStatus.current_ref_audio || '无' }}</b></div>
+      <div>{{ $t('modelSelector.currentModelPair') }}<b>{{ modelStatus.current_model_pair || $t('modelSelector.none') }}</b></div>
+      <div>{{ $t('modelSelector.currentRefAudio') }}<b>{{ modelStatus.current_ref_audio || $t('modelSelector.none') }}</b></div>
       <button class="btn primary" style="margin-top: 10px;" @click="generateSample" :disabled="sampleLoading">
-        生成示例语音
+        {{ $t('modelSelector.generateSampleVoice') }}
       </button>
       <div v-if="sampleUrl" style="margin-top: 10px;">
         <audio :src="sampleUrl" controls></audio>
       </div>
-      <div v-if="sampleLoading" style="color: #409eff; margin-top: 5px;">正在生成示例语音...</div>
+      <div v-if="sampleLoading" style="color: #409eff; margin-top: 5px;">{{ $t('modelSelector.generatingSample') }}</div>
       <div v-if="sampleError" style="color: red; margin-top: 5px;">{{ sampleError }}</div>
     </div>
   </div>
@@ -167,7 +167,7 @@ const generateSample = async () => {
     const blob = await res.blob();
     sampleUrl.value = URL.createObjectURL(blob);
   } catch (e) {
-    sampleError.value = '生成示例语音失败';
+    sampleError.value = $t('modelSelector.generateSampleFailed');
   }
   sampleLoading.value = false;
 };

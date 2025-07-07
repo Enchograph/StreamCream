@@ -4,9 +4,12 @@
             <div class="help-header">
                 <h1 class="help-title">
                     <span class="title-icon">📚</span>
-                    StreamCream 使用指南
+                    {{ $t('help.title') }}
                 </h1>
-                <p class="help-subtitle">AI直播助手的完整使用说明</p>
+                <p class="help-subtitle">{{ $t('help.subtitle') }}</p>
+                <div style="position: absolute; top: 20px; right: 20px;">
+                    <LanguageSwitcher />
+                </div>
             </div>
 
             <div class="help-content">
@@ -14,42 +17,42 @@
                 <section class="help-section">
                     <h2 class="section-title">
                         <span class="section-icon">🚀</span>
-                        快速开始
+                        {{ $t('help.quickStart') }}
                     </h2>
                     <div class="section-content">
                         <div class="step-card">
                             <div class="step-number">1</div>
                             <div class="step-content">
-                                <h3>登录系统</h3>
-                                <p>打开StreamCream平台首页，点击右上角"登录"按钮。输入账号和密码后点击"登录"进入系统。如果没有账号，请先点击"注册"，填写邮箱、密码等信息完成注册。</p>
+                                <h3>{{ $t('help.step1.title') }}</h3>
+                                <p>{{ $t('help.step1.content') }}</p>
                             </div>
                         </div>
                         <div class="step-card">
                             <div class="step-number">2</div>
                             <div class="step-content">
-                                <h3>配置设置</h3>
-                                <p>进入"设置"页面，在"AI设置"区域选择模型提供商（如OpenAI、Claude等），填写API密钥。在"直播设置"区域选择直播平台（如B站），填写推流地址和推流码，设置分辨率、帧率等参数。可根据需要自定义Banner颜色、开启调试模式等。</p>
+                                <h3>{{ $t('help.step2.title') }}</h3>
+                                <p>{{ $t('help.step2.content') }}</p>
                             </div>
                         </div>
                         <div class="step-card">
                             <div class="step-number">3</div>
                             <div class="step-content">
-                                <h3>声音库与Live2D模型选择</h3>
-                                <p>在主页面"声音库选择"区域，选择或上传GPT/SoVITS模型和参考音频。在"Live2D模型"区域，选择或上传虚拟形象模型，实时预览效果。</p>
+                                <h3>{{ $t('help.step3.title') }}</h3>
+                                <p>{{ $t('help.step3.content') }}</p>
                             </div>
                         </div>
                         <div class="step-card">
                             <div class="step-number">4</div>
                             <div class="step-content">
-                                <h3>AI讲稿生成与测试</h3>
-                                <p>在"AI讲稿生成"区域，输入讲稿主题，选择风格，点击"生成讲稿"。可在下方预览和测试AI生成的讲稿内容。</p>
+                                <h3>{{ $t('help.step4.title') }}</h3>
+                                <p>{{ $t('help.step4.content') }}</p>
                             </div>
                         </div>
                         <div class="step-card">
                             <div class="step-number">5</div>
                             <div class="step-content">
-                                <h3>开始直播</h3>
-                                <p>在主页面确认所有配置无误后，点击"开始直播"按钮。直播页面会显示Live2D形象、AI语音、讲稿管理等功能。可实时发送弹幕、与观众互动，随时停止直播。</p>
+                                <h3>{{ $t('help.step5.title') }}</h3>
+                                <p>{{ $t('help.step5.content') }}</p>
                             </div>
                         </div>
                     </div>
@@ -59,47 +62,47 @@
                 <section class="help-section">
                     <h2 class="section-title">
                         <span class="section-icon">🏠</span>
-                        主页面功能
+                        {{ $t('help.mainPageFeatures') }}
                     </h2>
                     <div class="section-content">
                         <div class="feature-grid">
                             <div class="feature-card">
                                 <div class="feature-icon">🎵</div>
-                                <h3>声音库选择</h3>
+                                <h3>{{ $t('help.voiceLibrary.title') }}</h3>
                                 <ul>
-                                    <li><strong>模型选择</strong>：从下拉菜单选择已训练好的GPT和SoVITS模型</li>
-                                    <li><strong>参考音频</strong>：选择参考音频文件，用于语音合成</li>
-                                    <li><strong>上传模型</strong>：支持上传自定义的.ckpt和.pth模型文件</li>
-                                    <li><strong>生成示例</strong>：点击"生成示例语音"测试当前模型效果</li>
+                                    <li><strong>{{ $t('help.voiceLibrary.modelSelection') }}</strong></li>
+                                    <li><strong>{{ $t('help.voiceLibrary.referenceAudio') }}</strong></li>
+                                    <li><strong>{{ $t('help.voiceLibrary.uploadModel') }}</strong></li>
+                                    <li><strong>{{ $t('help.voiceLibrary.generateExample') }}</strong></li>
                                 </ul>
                             </div>
                             <div class="feature-card">
                                 <div class="feature-icon">🎭</div>
-                                <h3>Live2D模型</h3>
+                                <h3>{{ $t('help.live2dModel.title') }}</h3>
                                 <ul>
-                                    <li><strong>模型选择</strong>：选择不同的Live2D虚拟形象</li>
-                                    <li><strong>自定义模型</strong>：上传.model3.json格式的Live2D模型</li>
-                                    <li><strong>实时预览</strong>：在右侧预览区域查看模型效果</li>
+                                    <li><strong>{{ $t('help.live2dModel.modelSelection') }}</strong></li>
+                                    <li><strong>{{ $t('help.live2dModel.customModel') }}</strong></li>
+                                    <li><strong>{{ $t('help.live2dModel.realTimePreview') }}</strong></li>
                                 </ul>
                             </div>
                             <div class="feature-card">
                                 <div class="feature-icon">📺</div>
-                                <h3>直播配置</h3>
+                                <h3>{{ $t('help.streamingConfig.title') }}</h3>
                                 <ul>
-                                    <li><strong>平台选择</strong>：选择直播平台（B站、抖音等）</li>
-                                    <li><strong>推流设置</strong>：配置推流地址和推流码</li>
-                                    <li><strong>分辨率设置</strong>：选择直播分辨率和帧率</li>
-                                    <li><strong>背景设置</strong>：选择或上传直播背景</li>
+                                    <li><strong>{{ $t('help.streamingConfig.platformSelection') }}</strong></li>
+                                    <li><strong>{{ $t('help.streamingConfig.streamSettings') }}</strong></li>
+                                    <li><strong>{{ $t('help.streamingConfig.resolutionSettings') }}</strong></li>
+                                    <li><strong>{{ $t('help.streamingConfig.backgroundSettings') }}</strong></li>
                                 </ul>
                             </div>
                             <div class="feature-card">
                                 <div class="feature-icon">🤖</div>
-                                <h3>AI讲稿生成</h3>
+                                <h3>{{ $t('help.aiScriptGeneration.title') }}</h3>
                                 <ul>
-                                    <li><strong>主题输入</strong>：输入讲稿主题</li>
-                                    <li><strong>风格选择</strong>：选择讲稿风格（轻松、专业、可爱等）</li>
-                                    <li><strong>生成讲稿</strong>：点击生成AI讲稿</li>
-                                    <li><strong>测试功能</strong>：测试生成的讲稿效果</li>
+                                    <li><strong>{{ $t('help.aiScriptGeneration.topicInput') }}</strong></li>
+                                    <li><strong>{{ $t('help.aiScriptGeneration.styleSelection') }}</strong></li>
+                                    <li><strong>{{ $t('help.aiScriptGeneration.generateScript') }}</strong></li>
+                                    <li><strong>{{ $t('help.aiScriptGeneration.testFunction') }}</strong></li>
                                 </ul>
                             </div>
                         </div>
@@ -110,16 +113,16 @@
                 <section class="help-section">
                     <h2 class="section-title">
                         <span class="section-icon">🔑</span>
-                        推流码获取页面
+                        {{ $t('help.streamKeyPage') }}
                     </h2>
                     <div class="section-content">
                         <div class="streaming-info">
-                            <h3>推流码获取流程</h3>
+                            <h3>{{ $t('help.streamKeyProcess.title') }}</h3>
                             <ul>
-                                <li><strong>账号设置</strong>：进入"账号设置"页面，完成Cookies导入或扫码登录。</li>
-                                <li><strong>自动获取</strong>：切换到"直播设置"页面，系统会自动获取并显示你的B站推流码和推流服务器地址。</li>
-                                <li><strong>安全提示</strong>：推流码仅用于本次直播，请勿泄露给他人。</li>
-                                <li><strong>故障排查</strong>：如推流码获取失败，请检查账号状态或重新登录。</li>
+                                <li><strong>{{ $t('help.streamKeyProcess.accountSetup') }}</strong></li>
+                                <li><strong>{{ $t('help.streamKeyProcess.autoGet') }}</strong></li>
+                                <li><strong>{{ $t('help.streamKeyProcess.securityTip') }}</strong></li>
+                                <li><strong>{{ $t('help.streamKeyProcess.troubleshooting') }}</strong></li>
                             </ul>
                         </div>
                     </div>
@@ -129,34 +132,34 @@
                 <section class="help-section">
                     <h2 class="section-title">
                         <span class="section-icon">⚙️</span>
-                        设置页面
+                        {{ $t('help.settingsPage') }}
                     </h2>
                     <div class="section-content">
                         <div class="settings-grid">
                             <div class="setting-card">
-                                <h3>调试设置</h3>
+                                <h3>{{ $t('help.debugSettings.title') }}</h3>
                                 <ul>
-                                    <li><strong>调试模式</strong>：开启/关闭调试模式</li>
-                                    <li><strong>重置设置</strong>：重置所有偏好设置</li>
-                                    <li><strong>Banner颜色</strong>：自定义顶部横幅颜色</li>
+                                    <li><strong>{{ $t('help.debugSettings.debugMode') }}</strong></li>
+                                    <li><strong>{{ $t('help.debugSettings.resetSettings') }}</strong></li>
+                                    <li><strong>{{ $t('help.debugSettings.bannerColor') }}</strong></li>
                                 </ul>
                             </div>
                             <div class="setting-card">
-                                <h3>AI设置</h3>
+                                <h3>{{ $t('help.aiSettings.title') }}</h3>
                                 <ul>
-                                    <li><strong>模型提供商</strong>：选择AI服务提供商（OpenAI、Claude等）</li>
-                                    <li><strong>API密钥</strong>：配置API访问密钥</li>
-                                    <li><strong>模型名称</strong>：选择具体的AI模型</li>
-                                    <li><strong>自定义端点</strong>：配置自定义API端点</li>
+                                    <li><strong>{{ $t('help.aiSettings.modelProvider') }}</strong></li>
+                                    <li><strong>{{ $t('help.aiSettings.apiKey') }}</strong></li>
+                                    <li><strong>{{ $t('help.aiSettings.modelName') }}</strong></li>
+                                    <li><strong>{{ $t('help.aiSettings.customEndpoint') }}</strong></li>
                                 </ul>
                             </div>
                             <div class="setting-card">
-                                <h3>直播设置</h3>
+                                <h3>{{ $t('help.liveSettings.title') }}</h3>
                                 <ul>
-                                    <li><strong>分辨率</strong>：设置直播分辨率（1920x1080等）</li>
-                                    <li><strong>帧率</strong>：设置直播帧率（30fps/60fps）</li>
-                                    <li><strong>背景</strong>：选择或上传直播背景</li>
-                                    <li><strong>推流信息</strong>：配置推流地址和推流码</li>
+                                    <li><strong>{{ $t('help.liveSettings.resolution') }}</strong></li>
+                                    <li><strong>{{ $t('help.liveSettings.fps') }}</strong></li>
+                                    <li><strong>{{ $t('help.liveSettings.background') }}</strong></li>
+                                    <li><strong>{{ $t('help.liveSettings.streamInfo') }}</strong></li>
                                 </ul>
                             </div>
                         </div>
@@ -167,17 +170,17 @@
                 <section class="help-section">
                     <h2 class="section-title">
                         <span class="section-icon">📹</span>
-                        直播页面
+                        {{ $t('help.streamingPage') }}
                     </h2>
                     <div class="section-content">
                         <div class="streaming-info">
-                            <h3>直播界面功能</h3>
+                            <h3>{{ $t('help.streamingFeatures.title') }}</h3>
                             <ul>
-                                <li><strong>Live2D显示</strong>：实时显示Live2D虚拟形象</li>
-                                <li><strong>语音合成</strong>：将文本转换为语音并同步嘴型</li>
-                                <li><strong>讲稿管理</strong>：管理和播放AI生成的讲稿</li>
-                                <li><strong>实时互动</strong>：支持实时语音输入和响应</li>
-                                <li><strong>推流控制</strong>：开始/停止直播推流</li>
+                                <li><strong>{{ $t('help.streamingFeatures.live2dDisplay') }}</strong></li>
+                                <li><strong>{{ $t('help.streamingFeatures.voiceSynthesis') }}</strong></li>
+                                <li><strong>{{ $t('help.streamingFeatures.scriptManagement') }}</strong></li>
+                                <li><strong>{{ $t('help.streamingFeatures.realTimeInteraction') }}</strong></li>
+                                <li><strong>{{ $t('help.streamingFeatures.streamControl') }}</strong></li>
                             </ul>
                         </div>
                     </div>
@@ -187,29 +190,29 @@
                 <section class="help-section">
                     <h2 class="section-title">
                         <span class="section-icon">❓</span>
-                        常见问题
+                        {{ $t('help.faq') }}
                     </h2>
                     <div class="section-content">
                         <div class="faq-list">
                             <div class="faq-item">
-                                <h3>Q: 如何上传自定义声音模型？</h3>
-                                <p>A: 在主页面"声音库选择"区域，点击"选择文件"按钮，选择.ckpt（GPT模型）或.pth（SoVITS模型）文件，然后点击"应用声音模型"。</p>
+                                <h3>{{ $t('help.faq1.question') }}</h3>
+                                <p>{{ $t('help.faq1.answer') }}</p>
                             </div>
                             <div class="faq-item">
-                                <h3>Q: 如何配置推流信息？</h3>
-                                <p>A: 在设置页面的"直播设置"区域，选择直播平台，然后输入推流地址和推流码。也可以点击"获取推流码"按钮获取。</p>
+                                <h3>{{ $t('help.faq2.question') }}</h3>
+                                <p>{{ $t('help.faq2.answer') }}</p>
                             </div>
                             <div class="faq-item">
-                                <h3>Q: 如何生成AI讲稿？</h3>
-                                <p>A: 在主页面"AI讲稿生成测试"区域，输入讲稿主题，选择风格，然后点击"生成讲稿"按钮。</p>
+                                <h3>{{ $t('help.faq3.question') }}</h3>
+                                <p>{{ $t('help.faq3.answer') }}</p>
                             </div>
                             <div class="faq-item">
-                                <h3>Q: 如何切换Live2D模型？</h3>
-                                <p>A: 在主页面"Live2D模型选择"区域，从下拉菜单选择不同的模型，或上传自定义的.model3.json文件。</p>
+                                <h3>{{ $t('help.faq4.question') }}</h3>
+                                <p>{{ $t('help.faq4.answer') }}</p>
                             </div>
                             <div class="faq-item">
-                                <h3>Q: 如何配置AI模型？</h3>
-                                <p>A: 在设置页面的"AI设置"区域，选择模型提供商，输入API密钥，选择具体的模型名称。</p>
+                                <h3>{{ $t('help.faq5.question') }}</h3>
+                                <p>{{ $t('help.faq5.answer') }}</p>
                             </div>
                         </div>
                     </div>
@@ -219,16 +222,16 @@
                 <section class="help-section">
                     <h2 class="section-title">
                         <span class="section-icon">🛠️</span>
-                        技术支持
+                        {{ $t('help.techSupport') }}
                     </h2>
                     <div class="section-content">
                         <div class="support-info">
-                            <p>如果您在使用过程中遇到问题，请：</p>
+                            <p>{{ $t('help.supportInfo.title') }}</p>
                             <ul>
-                                <li>检查网络连接是否正常</li>
-                                <li>确认API密钥配置是否正确</li>
-                                <li>查看浏览器控制台的错误信息</li>
-                                <li>重启相关后端服务</li>
+                                <li>{{ $t('help.supportInfo.checkNetwork') }}</li>
+                                <li>{{ $t('help.supportInfo.checkApiKey') }}</li>
+                                <li>{{ $t('help.supportInfo.checkConsole') }}</li>
+                                <li>{{ $t('help.supportInfo.restartServices') }}</li>
                             </ul>
                         </div>
                     </div>
@@ -238,7 +241,7 @@
             <div class="help-footer">
                 <button class="back-btn" @click="goBack">
                     <span class="btn-icon">←</span>
-                    返回
+                    {{ $t('help.back') }}
                 </button>
             </div>
         </div>
@@ -247,6 +250,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
 
 const router = useRouter()
 

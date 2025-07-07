@@ -1002,11 +1002,6 @@ input[type="file"]::file-selector-button {
     font-weight: 600;
     margin-right: 10px;
     transition: all 0.3s ease;
-    content: attr(data-button-text, "选择文件");
-}
-
-/* 英文环境下的文件选择按钮文本 */
-html[lang="en"] input[type="file"]::file-selector-button {
     content: "Choose File";
 }
 

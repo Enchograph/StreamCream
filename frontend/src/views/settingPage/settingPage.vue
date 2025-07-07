@@ -679,6 +679,7 @@ export default {
     font-weight: 700;
     position: relative;
     z-index: 1;
+    text-transform: none !important;
 }
 
 .title-content {
@@ -736,6 +737,7 @@ export default {
     font-size: 1.3rem;
     margin-bottom: 12px;
     font-weight: 600;
+    text-transform: none !important;
 }
 .section-bar-gradient {
     display: inline-flex;
@@ -758,6 +760,7 @@ export default {
     height: 48px;
     line-height: 1;
     letter-spacing: 2px;
+    text-transform: none !important;
 }
 .rounded-btn-glass:hover {
     background: linear-gradient(90deg, #7f7fd5 0%, #86a8e7 100%);
@@ -782,6 +785,28 @@ export default {
     margin-top: 32px;
     margin-bottom: 8px;
 }
+/* 覆盖Vuetify的默认大写样式 */
+.text-h5,
+.text-subtitle-1,
+.v-card-title {
+    text-transform: none !important;
+    font-variant: normal !important;
+}
+
+/* 确保所有按钮文本不会大写 */
+.v-btn {
+    text-transform: none !important;
+    font-variant: normal !important;
+}
+
+/* 确保所有输入框和选择框的文本不会大写 */
+.v-text-field,
+.v-select,
+.v-switch {
+    text-transform: none !important;
+    font-variant: normal !important;
+}
+
 @media (max-width: 700px) {
     .setting-card-glass {
         padding: 12px 2vw 12px 2vw;

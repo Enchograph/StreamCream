@@ -4,19 +4,19 @@
             <div class="logo-section" @click="goToHome">
                 <div class="logo-text">
                     <span class="logo-main">StreamCream</span>
-                    <span class="logo-subtitle">AI直播助手</span>
+                    <span class="logo-subtitle">{{ $t('topBanner.subtitle') }}</span>
                 </div>
             </div>
             
         <nav class="nav-links">
-                <a href="#" class="nav-link" @click.prevent="goToHelp" title="使用帮助">
-                    <span class="nav-text">帮助</span>
+                <a href="#" class="nav-link" @click.prevent="goToHelp" :title="$t('topBanner.help.tooltip')">
+                    <span class="nav-text">{{ $t('topBanner.help.text') }}</span>
                 </a>
-                <a href="#" class="nav-link" @click.prevent="goToSettings" title="系统设置">
-                    <span class="nav-text">设置</span>
+                <a href="#" class="nav-link" @click.prevent="goToSettings" :title="$t('topBanner.settings.tooltip')">
+                    <span class="nav-text">{{ $t('topBanner.settings.text') }}</span>
                 </a>
-                <button v-if="showLogout" class="logout-btn" @click="handleLogout" title="退出登录">
-                    <span class="btn-text">登出</span>
+                <button v-if="showLogout" class="logout-btn" @click="handleLogout" :title="$t('topBanner.logout.tooltip')">
+                    <span class="btn-text">{{ $t('topBanner.logout.text') }}</span>
                 </button>
         </nav>
         </div>
@@ -77,6 +77,9 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js'
 import { computed, ref, onMounted } from 'vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const router = useRouter()
 const auth = useAuthStore()
@@ -136,18 +139,18 @@ function goToSettings() {
 async function handleLogout() {
     try {
         await ElMessageBox.confirm(
-            '确定要登出吗？',
-            '提示',
+            t('topBanner.logout.confirmMessage'),
+            t('topBanner.logout.confirmTitle'),
             {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
+                confirmButtonText: t('topBanner.logout.confirmButton'),
+                cancelButtonText: t('topBanner.logout.cancelButton'),
                 type: 'warning',
                 center: true,
                 customClass: 'logout-messagebox'
             }
         )
         auth.logout()
-        ElMessage.success('已成功登出！')
+        ElMessage.success(t('topBanner.logout.successMessage'))
         router.push('/loginPage')
     } catch (e) {
         // 用户取消，无需处理

@@ -301,6 +301,28 @@ If you encounter unsolvable problems, please contact the development team or ref
     info: 'Info'
   },
 
+  // Top Banner
+  topBanner: {
+    subtitle: 'AI Live Streaming Assistant',
+    help: {
+      text: 'Help',
+      tooltip: 'Usage Help'
+    },
+    settings: {
+      text: 'Settings',
+      tooltip: 'System Settings'
+    },
+    logout: {
+      text: 'Logout',
+      tooltip: 'Exit Login',
+      confirmTitle: 'Notice',
+      confirmMessage: 'Are you sure you want to logout?',
+      confirmButton: 'Confirm',
+      cancelButton: 'Cancel',
+      successMessage: 'Successfully logged out!'
+    }
+  },
+
   // Copyright
   copyright: {
     text: '© 2025 Made by <a href="https://whucsgitlab.whu.edu.cn/2025se-deepsleep" target="_blank" rel="noopener" style="color: rgba(255,255,255,0.9); text-decoration: underline; transition: color 0.3s ease;">DeepSleep</a>. All rights reserved.'
@@ -991,21 +1013,7 @@ If you encounter unsolvable problems, please contact the development team or ref
     logsLoadFailed: 'Failed to load logs'
   },
 
-  // TopBanner component
-  topBanner: {
-    logoSubtitle: 'AI Live Streaming Assistant',
-    help: 'Help',
-    helpTitle: 'Usage Help',
-    settings: 'Settings',
-    settingsTitle: 'System Settings',
-    logout: 'Logout',
-    logoutTitle: 'Logout',
-    logoutConfirm: 'Are you sure you want to logout?',
-    logoutTitle: 'Prompt',
-    logoutConfirmText: 'Confirm',
-    logoutCancelText: 'Cancel',
-    logoutSuccess: 'Successfully logged out!'
-  },
+
 
   // Live2DViewer component
   live2dViewer: {

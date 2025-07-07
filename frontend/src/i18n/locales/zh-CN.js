@@ -301,6 +301,28 @@ export default {
     info: '信息'
   },
 
+  // 顶部横幅
+  topBanner: {
+    subtitle: 'AI直播助手',
+    help: {
+      text: '帮助',
+      tooltip: '使用帮助'
+    },
+    settings: {
+      text: '设置',
+      tooltip: '系统设置'
+    },
+    logout: {
+      text: '登出',
+      tooltip: '退出登录',
+      confirmTitle: '提示',
+      confirmMessage: '确定要登出吗？',
+      confirmButton: '确定',
+      cancelButton: '取消',
+      successMessage: '已成功登出！'
+    }
+  },
+
   // 版权信息
   copyright: {
     text: '© 2025 Made by <a href="https://whucsgitlab.whu.edu.cn/2025se-deepsleep" target="_blank" rel="noopener" style="color: rgba(255,255,255,0.9); text-decoration: underline; transition: color 0.3s ease;">DeepSleep</a>. All rights reserved.'
@@ -991,21 +1013,7 @@ export default {
     logsLoadFailed: '加载日志失败'
   },
 
-  // TopBanner 组件
-  topBanner: {
-    logoSubtitle: 'AI直播助手',
-    help: '帮助',
-    helpTitle: '使用帮助',
-    settings: '设置',
-    settingsTitle: '系统设置',
-    logout: '登出',
-    logoutTitle: '退出登录',
-    logoutConfirm: '确定要登出吗？',
-    logoutTitle: '提示',
-    logoutConfirmText: '确定',
-    logoutCancelText: '取消',
-    logoutSuccess: '已成功登出！'
-  },
+
 
   // Live2DViewer 组件
   live2dViewer: {

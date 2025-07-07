@@ -18,18 +18,8 @@ CORS(app, resources={
     }
 })
 
-
-
-
-
-
-
-
-
-
-
 # 配置
-STATIC_DIR =          os.path.join(os.path. dirname(os.path.abspath(__file__)), "static")
+STATIC_DIR =os.path.join(os.path. dirname(os.path.abspath(__file__)), "static")
 AUDIO_DIR = os.path.join(STATIC_DIR, "audio")
 os.makedirs(AUDIO_DIR, exist_ok=True)
 

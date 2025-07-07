@@ -398,9 +398,55 @@
         <!-- 新手引导遮罩 -->
         <div v-if="showTutorial" class="tutorial-overlay">
             <div class="tutorial-content">
-                <h3>{{ $t('douyin.tutorial.welcome') }}</h3>
-                <p>{{ $t('douyin.tutorial.description') }}</p>
-                <!-- 其他教程内容 -->
+                <div class="tutorial-step">
+                    <h3>{{ $t('douyin.tutorial.welcome') }}</h3>
+                    <p>{{ $t('douyin.tutorial.description') }}</p>
+                    
+                    <!-- 教程步骤内容 -->
+                    <div v-if="tutorialStep === 1" class="step-content">
+                        <p>欢迎使用抖音直播推流工具！让我来帮你快速上手。</p>
+                        <p>这个工具可以帮助你获取抖音直播的推流码，轻松开始直播。</p>
+                    </div>
+                    
+                    <div v-if="tutorialStep === 2" class="step-content">
+                        <p>首先，我们需要设置你的抖音账号信息。</p>
+                        <p>你可以选择自动扫码登录，或者手动输入账号信息。</p>
+                    </div>
+                    
+                    <div v-if="tutorialStep === 3" class="step-content">
+                        <p>接下来，配置直播设置。</p>
+                        <p>设置直播标题、选择分类，然后就可以开始直播了。</p>
+                    </div>
+                    
+                    <div v-if="tutorialStep === 4" class="step-content">
+                        <p>最后，获取推流信息。</p>
+                        <p>开始直播后，你就可以看到推流地址和推流密钥了。</p>
+                    </div>
+                    
+                    <!-- 教程按钮 -->
+                    <div class="tutorial-buttons">
+                        <button v-if="tutorialStep < 4" @click="nextTutorialStep" class="tutorial-btn next-btn">
+                            <span class="btn-icon">→</span>
+                            下一步
+                        </button>
+                        <button v-if="tutorialStep === 4" @click="finishTutorial" class="tutorial-btn finish-btn">
+                            <span class="btn-icon">✓</span>
+                            完成教程
+                        </button>
+                        <button v-if="tutorialStep < 4" @click="closeTutorial" class="tutorial-btn cancel-btn">
+                            <span class="btn-icon">✕</span>
+                            跳过教程
+                        </button>
+                    </div>
+                    
+                    <!-- 教程进度指示器 -->
+                    <div class="tutorial-progress">
+                        <div class="progress-dots">
+                            <span v-for="step in 4" :key="step" 
+                                  :class="['progress-dot', { active: step <= tutorialStep }]"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -2316,6 +2362,114 @@ onUnmounted(() => {
     font-size: 1rem;
 }
 
+/* 教程步骤内容 */
+.step-content {
+    margin: 20px 0;
+    text-align: left;
+}
+
+.step-content p {
+    margin-bottom: 15px;
+    color: #555;
+    line-height: 1.6;
+}
+
+/* 教程按钮 */
+.tutorial-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 30px 0 20px 0;
+    flex-wrap: wrap;
+}
+
+.tutorial-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.tutorial-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.next-btn {
+    background: linear-gradient(135deg, #fe2c55 0%, #ff6b9d 100%);
+    color: white;
+}
+
+.next-btn:hover {
+    background: linear-gradient(135deg, #e61e4d 0%, #f55a8a 100%);
+}
+
+.finish-btn {
+    background: linear-gradient(135deg, #00c851 0%, #00d976 100%);
+    color: white;
+}
+
+.finish-btn:hover {
+    background: linear-gradient(135deg, #00b347 0%, #00c766 100%);
+}
+
+.cancel-btn {
+    background: #f8f9fa;
+    color: #666;
+    border: 2px solid #e9ecef;
+}
+
+.cancel-btn:hover {
+    background: #e9ecef;
+    color: #333;
+}
+
+.btn-icon {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* 教程进度指示器 */
+.tutorial-progress {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.progress-dots {
+    display: flex;
+    gap: 8px;
+}
+
+.progress-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.progress-dot.active {
+    background: #fe2c55;
+    transform: scale(1.2);
+}
+
+.progress-text {
+    font-size: 12px;
+    color: #666;
+    font-weight: 500;
+}
+
 .tutorial-highlight {
     position: absolute;
     width: 200px;
@@ -2351,6 +2505,37 @@ onUnmounted(() => {
     100% { 
         box-shadow: 0 0 0 0 rgba(254, 44, 85, 0);
         transform: scale(1);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
     }
 }
 

@@ -1,6 +1,6 @@
 <template>
     <div class="column">
-        <h3><span>直播管理</span></h3>
+        <h3><span>{{ $t('streamingPage.liveManagement') }}</span></h3>
 
         <!-- <LivePreview :resolution="revolutionPreference" :show-title="false" /> -->
 
@@ -16,26 +16,26 @@
 
         <div class="status-section">
             <div class="status-info">
-                <p>现在正在讲解: <span class="highlight">{{ currentBlockTitle }}</span></p>
-                <p>下一步即将讲解: <span class="highlight">{{ nextBlockTitle }}</span></p>
+                <p>{{ $t('streamingPage.nowExplaining') }} <span class="highlight">{{ currentBlockTitle }}</span></p>
+                <p>{{ $t('streamingPage.nextToExplain') }} <span class="highlight">{{ nextBlockTitle }}</span></p>
             </div>
             <div class="broadcast-controls">
                 <button @click="skipToNextBlock" class="skip-to-next-chapter"
                     :disabled="!hasStartedBroadcasting || currentBlockIndex >= outlineBlocks.length - 1">
-                    跳到下一章节
+                    {{ $t('streamingPage.nextBlock') }}
                 </button>
                 <button @click="skipToNextSentence" class="skip-to-next-sentence"
                     :disabled="!hasStartedBroadcasting || currentContentIndex >= outlineBlocks[currentBlockIndex]?.content?.length - 1">
-                    跳到下一句
+                    {{ $t('streamingPage.nextSentence') }}
                 </button>
             </div>
             <div class="broadcast-controls">
                 <button @click="toggleBroadcast" :class="{ 'active': isBroadcasting }"
                     :disabled="outlineBlocks.length === 0">
-                    {{ isBroadcasting ? '暂停直播' : '开始直播' }}
+                    {{ isBroadcasting ? $t('streamingPage.pauseBroadcast') : $t('streamingPage.startBroadcast') }}
                 </button>
                 <button @click="endBroadcast" :disabled="!hasStartedBroadcasting" class="end-broadcast">
-                    结束直播
+                    {{ $t('streamingPage.endBroadcast') }}
                 </button>
             </div>
         </div>

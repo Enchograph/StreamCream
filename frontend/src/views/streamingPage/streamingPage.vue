@@ -35,13 +35,14 @@
                                         <span @click="editBlockTitle(index)"
                                             class="block-title">{{ element.title }}</span>
                                         <div class="block-actions">
-                                            <button @click="removeBlock(index)" class="remove-btn">×</button>
+                                            <button @click="removeBlock(index)" class="remove-btn">{{ $t('streamingPage.removeBlock') }}</button>
                                             <div class="drag-handle">
                                                 <svg viewBox="0 0 24 24" width="24" height="24">
                                                     <path
                                                         d="M8,4 L16,4 L16,6 L8,6 L8,4 Z M8,11 L16,11 L16,13 L8,13 L8,11 Z M8,18 L16,18 L16,20 L8,20 L8,18 Z"
                                                         fill="currentColor"></path>
                                                 </svg>
+                                                <span>{{ $t('streamingPage.dragHandle') }}</span>
                                             </div>
                                         </div>
                                     </div>

@@ -5,64 +5,64 @@
             <div class="page-header">
                 <h1 class="page-title">
                     <span class="title-icon"></span>
-                    GPT-SoVITS 训练工具
+                    {{ $t('trainPage.title') }}
                 </h1>
-                <p class="page-subtitle">专业的语音合成模型训练和管理平台</p>
+                <p class="page-subtitle">{{ $t('trainPage.subtitle') }}</p>
             </div>
 
             <!-- 顶部基础信息卡片 -->
             <div class="info-card">
                 <h2 class="card-title">
                     <span class="card-icon">⚙️</span>
-                    基础配置
+                    {{ $t('trainPage.baseConfig') }}
                 </h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="expName">实验/模型名</label>
-                        <input type="text" id="expName" v-model="expName" placeholder="请输入实验名称" class="glass-input" />
+                        <label for="expName">{{ $t('trainPage.expName') }}</label>
+                        <input type="text" id="expName" v-model="expName" :placeholder="$t('trainPage.expNamePlaceholder')" class="glass-input" />
                     </div>
                     <div class="form-group">
-                        <label for="gpuInfo">显卡信息</label>
-                        <input type="text" id="gpuInfo" v-model="gpuInfo" placeholder="0 CPU" class="glass-input" />
+                        <label for="gpuInfo">{{ $t('trainPage.gpuInfo') }}</label>
+                        <input type="text" id="gpuInfo" v-model="gpuInfo" :placeholder="$t('trainPage.gpuInfoPlaceholder')" class="glass-input" />
                     </div>
                     <div class="form-group">
-                        <label>版本选择</label>
+                        <label>{{ $t('trainPage.versionSelect') }}</label>
                         <div class="radio-group">
                             <label class="radio-item">
                                 <input type="radio" value="v1" v-model="version" />
-                                <span class="radio-text">v1</span>
+                                <span class="radio-text">{{ $t('trainPage.v1') }}</span>
                             </label>
                             <label class="radio-item">
                                 <input type="radio" value="v2" v-model="version" />
-                                <span class="radio-text">v2</span>
+                                <span class="radio-text">{{ $t('trainPage.v2') }}</span>
                             </label>
                         </div>
                     </div>
                     <div class="form-group path-row">
-                        <label for="sovitsGPath">预训练的SoVITS-G模型路径</label>
+                        <label for="sovitsGPath">{{ $t('trainPage.sovitsGPath') }}</label>
                         <div class="input-btn-group">
                             <input type="text" id="sovitsGPath" v-model="sovitsGPath"
                                 placeholder="GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/c2G2333k_mth" class="glass-input" />
                             <input ref="sovitsGPathFile" type="file" style="display:none" accept=".pth,.ckpt,.pt" @change="onFileChange($event, 'sovitsGPath')" />
-                            <button class="path-btn" @click="chooseFile('sovitsGPathFile')">路径填入</button>
+                            <button class="path-btn" @click="chooseFile('sovitsGPathFile')">{{ $t('trainPage.pathInputBtn') }}</button>
                         </div>
                     </div>
                     <div class="form-group path-row">
-                        <label for="sovitsDPath">预训练的SoVITS-D模型路径</label>
+                        <label for="sovitsDPath">{{ $t('trainPage.sovitsDPath') }}</label>
                         <div class="input-btn-group">
                             <input type="text" id="sovitsDPath" v-model="sovitsDPath"
                                 placeholder="GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/c2D2333k_mth" class="glass-input" />
                             <input ref="sovitsDPathFile" type="file" style="display:none" accept=".pth,.ckpt,.pt" @change="onFileChange($event, 'sovitsDPath')" />
-                            <button class="path-btn" @click="chooseFile('sovitsDPathFile')">路径填入</button>
+                            <button class="path-btn" @click="chooseFile('sovitsDPathFile')">{{ $t('trainPage.pathInputBtn') }}</button>
                         </div>
                     </div>
                     <div class="form-group path-row">
-                        <label for="gptPath">预训练的GPT模型路径</label>
+                        <label for="gptPath">{{ $t('trainPage.gptPath') }}</label>
                         <div class="input-btn-group">
                             <input type="text" id="gptPath" v-model="gptPath"
                                 placeholder="GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s1bert25hz-5kh-longer-epoch=12-" class="glass-input" />
                             <input ref="gptPathFile" type="file" style="display:none" accept=".pth,.ckpt,.pt" @change="onFileChange($event, 'gptPath')" />
-                            <button class="path-btn" @click="chooseFile('gptPathFile')">路径填入</button>
+                            <button class="path-btn" @click="chooseFile('gptPathFile')">{{ $t('trainPage.pathInputBtn') }}</button>
                         </div>
                     </div>
                 </div>
@@ -73,15 +73,15 @@
                 <div class="tabs">
                     <button class="tab-button" :class="{ active: activeTab === '1A' }" @click="activeTab = '1A'">
                         <span class="tab-icon">📊</span>
-                        1A-训练集格式化工具
+                        {{ $t('trainPage.tab1A') }}
                     </button>
                     <button class="tab-button" :class="{ active: activeTab === '1B' }" @click="activeTab = '1B'">
                         <span class="tab-icon">🎓</span>
-                        1B-微调训练
+                        {{ $t('trainPage.tab1B') }}
                     </button>
                     <button class="tab-button" :class="{ active: activeTab === '1C' }" @click="activeTab = '1C'">
                         <span class="tab-icon">🔮</span>
-                        1C-推理测试
+                        {{ $t('trainPage.tab1C') }}
                     </button>
                 </div>
             </div>

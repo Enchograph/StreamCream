@@ -1,6 +1,6 @@
 <template>
-  <div class="language-switcher" :class="{ 'fixed-position': fixedPosition }">
-    <button class="lang-btn" @click="toggleDropdown" :class="{ 'active': isOpen }">
+  <div class="language-switcher" :class="{ 'fixed-position': fixedPosition }" ref="switcherRef">
+    <button class="lang-btn" @click="toggleDropdown" :class="{ 'active': isOpen }" ref="btnRef">
       <span class="lang-code">{{ currentLangCode }}</span>
       <svg class="arrow" :class="{ 'rotated': isOpen }" viewBox="0 0 24 24" fill="none">
         <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -8,28 +8,37 @@
     </button>
     
     <transition name="fade">
-      <div v-if="isOpen" class="lang-menu">
-        <button 
-          class="lang-item" 
-          :class="{ 'selected': currentLocale === 'zh-CN' }"
-          @click="switchLanguage('zh-CN')"
-        >
-          <span class="item-text">中文</span>
-        </button>
-        <button 
-          class="lang-item" 
-          :class="{ 'selected': currentLocale === 'en-US' }"
-          @click="switchLanguage('en-US')"
-        >
-          <span class="item-text">English</span>
-        </button>
-      </div>
+      <teleport to="body" v-if="isOpen">
+        <div class="lang-menu" :style="menuStyle" ref="menuRef">
+          <button 
+            class="lang-item" 
+            :class="{ 'selected': currentLocale === 'zh-CN' }"
+            @click="switchLanguage('zh-CN')"
+          >
+            <span class="item-text">中文</span>
+          </button>
+          <button 
+            class="lang-item" 
+            :class="{ 'selected': currentLocale === 'en-US' }"
+            @click="switchLanguage('en-US')"
+          >
+            <span class="item-text">English</span>
+          </button>
+          <button 
+            class="lang-item" 
+            :class="{ 'selected': currentLocale === 'ja-JP' }"
+            @click="switchLanguage('ja-JP')"
+          >
+            <span class="item-text">日本語</span>
+          </button>
+        </div>
+      </teleport>
     </transition>
   </div>
 </template>
 
 <script setup>
-import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { computed, ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 // 定义 props
@@ -44,13 +53,38 @@ const { locale } = useI18n()
 
 const currentLocale = computed(() => locale.value)
 const isOpen = ref(false)
+const btnRef = ref(null)
+const menuRef = ref(null)
+const switcherRef = ref(null)
+const menuStyle = ref({})
 
 const currentLangCode = computed(() => {
-  return currentLocale.value === 'zh-CN' ? '中' : 'En'
+  if (currentLocale.value === 'zh-CN') return '中'
+  if (currentLocale.value === 'ja-JP') return '日'
+  return 'En'
 })
 
-const toggleDropdown = () => {
+const updateMenuPosition = () => {
+  if (!btnRef.value || !menuRef.value) return
+  const btnRect = btnRef.value.getBoundingClientRect()
+  const menu = menuRef.value
+  const menuWidth = btnRect.width
+  const left = btnRect.left + window.scrollX
+  const top = btnRect.bottom + window.scrollY + 2
+  menuStyle.value = {
+    position: 'absolute',
+    top: top + 'px',
+    left: left + 'px',
+    width: menuWidth + 'px',
+    minWidth: menuWidth + 'px',
+    zIndex: 999999
+  }
+}
+
+const toggleDropdown = async () => {
   isOpen.value = !isOpen.value
+  await nextTick()
+  if (isOpen.value) updateMenuPosition()
 }
 
 const switchLanguage = (lang) => {
@@ -59,7 +93,7 @@ const switchLanguage = (lang) => {
   
   // 更新 HTML 的 lang 属性
   if (typeof document !== 'undefined') {
-    document.documentElement.lang = lang === 'zh-CN' ? 'zh-CN' : 'en'
+    document.documentElement.lang = lang === 'zh-CN' ? 'zh-CN' : lang === 'ja-JP' ? 'ja-JP' : 'en'
   }
   
   isOpen.value = false
@@ -67,7 +101,8 @@ const switchLanguage = (lang) => {
 
 // 点击外部关闭下拉菜单
 const closeDropdown = (event) => {
-  if (!event.target.closest('.language-switcher')) {
+  if (!switcherRef.value) return
+  if (!switcherRef.value.contains(event.target) && (!menuRef.value || !menuRef.value.contains(event.target))) {
     isOpen.value = false
   }
 }
@@ -82,11 +117,15 @@ const handleKeydown = (event) => {
 onMounted(() => {
   document.addEventListener('click', closeDropdown)
   document.addEventListener('keydown', handleKeydown)
+  window.addEventListener('resize', updateMenuPosition)
+  window.addEventListener('scroll', updateMenuPosition, true)
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', closeDropdown)
   document.removeEventListener('keydown', handleKeydown)
+  window.removeEventListener('resize', updateMenuPosition)
+  window.removeEventListener('scroll', updateMenuPosition, true)
 })
 </script>
 
@@ -101,40 +140,36 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 6px 10px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 13px;
-  font-weight: 500;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1.5px solid #e3e8f7;
+  border-radius: 10px;
+  color: #4a5fa7;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-  backdrop-filter: blur(10px);
-  min-width: 50px;
+  transition: all 0.18s cubic-bezier(.4,0,.2,1);
+  backdrop-filter: blur(8px);
+  min-width: 56px;
   justify-content: center;
+  box-shadow: 0 2px 8px 0 rgba(102,126,234,0.04);
 }
 
-.lang-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
-}
-
-.lang-btn.active {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
+.lang-btn:hover, .lang-btn.active {
+  background: rgba(102, 126, 234, 0.10);
+  border-color: #b3c6f7;
+  color: #667eea;
 }
 
 .lang-code {
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.5px;
 }
 
 .arrow {
-  width: 12px;
-  height: 12px;
-  transition: transform 0.2s ease;
+  width: 13px;
+  height: 13px;
+  transition: transform 0.2s cubic-bezier(.4,0,.2,1);
   opacity: 0.8;
 }
 
@@ -144,43 +179,46 @@ onUnmounted(() => {
 
 .lang-menu {
   position: absolute;
-  top: calc(100% + 4px);
   left: 0;
-  right: 0;
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
+  top: 0;
+  background: rgba(255, 255, 255, 0.98);
+  border: 1.5px solid #e3e8f7;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px 0 rgba(102,126,234,0.10), 0 1.5px 6px 0 rgba(102,126,234,0.04);
   overflow: hidden;
   min-width: 80px;
+  padding: 0;
   z-index: 999999;
+  margin-top: 0;
+  font-size: 14px;
 }
 
 .lang-item {
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 8px 12px;
+  padding: 10px 0;
   border: none;
   background: transparent;
-  color: rgba(0, 0, 0, 0.8);
-  font-size: 13px;
+  color: #222;
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background 0.15s, color 0.15s;
   text-align: center;
   justify-content: center;
+  outline: none;
 }
 
 .lang-item:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: #f0f4ff;
+  color: #667eea;
 }
 
 .lang-item.selected {
-  background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
-  font-weight: 600;
+  background: #eef3ff;
+  color: #4a5fa7;
+  font-weight: 700;
 }
 
 .item-text {
@@ -190,17 +228,12 @@ onUnmounted(() => {
 /* 动画效果 */
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.2s ease;
+  transition: opacity 0.15s cubic-bezier(.4,0,.2,1);
 }
 
-.fade-enter-from {
-  opacity: 0;
-  transform: translateY(-4px);
-}
-
+.fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-  transform: translateY(-4px);
 }
 
 /* 固定定位样式 */
@@ -220,20 +253,14 @@ onUnmounted(() => {
 }
 
 /* 响应式设计 */
-@media (max-width: 768px) {
-  .lang-btn {
-    padding: 5px 8px;
-    font-size: 12px;
-    min-width: 45px;
+@media (max-width: 600px) {
+  .lang-btn, .lang-menu {
+    font-size: 13px;
+    min-width: 48px;
+    border-radius: 8px;
   }
-  
   .lang-menu {
-    min-width: 70px;
-  }
-  
-  .lang-item {
-    padding: 6px 10px;
-    font-size: 12px;
+    box-shadow: 0 4px 16px 0 rgba(102,126,234,0.10);
   }
 }
 </style> 

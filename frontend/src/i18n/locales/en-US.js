@@ -430,6 +430,7 @@ If you encounter unsolvable problems, please contact the development team or ref
 
   setting: {
     title: 'Settings',
+    languageTitle: 'Language Settings',
     debugTitle: 'Debug Settings',
     resetAll: 'Reset All Preferences',
     debugMode: 'Debug Mode',

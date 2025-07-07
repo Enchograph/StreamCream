@@ -1,6 +1,7 @@
 import { createI18n } from 'vue-i18n'
 import zhCN from './locales/zh-CN.js'
 import enUS from './locales/en-US.js'
+import jaJP from './locales/ja-JP.js'
 
 // 获取浏览器语言设置
 function getDefaultLocale() {
@@ -22,7 +23,8 @@ const i18n = createI18n({
   fallbackLocale: 'zh-CN',
   messages: {
     'zh-CN': zhCN,
-    'en-US': enUS
+    'en-US': enUS,
+    'ja-JP': jaJP
   }
 })
 

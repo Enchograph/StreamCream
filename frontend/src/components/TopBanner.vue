@@ -83,6 +83,7 @@ const { t } = useI18n()
 
 const router = useRouter()
 const auth = useAuthStore()
+const { t: $t } = useI18n()
 
 const showLogout = computed(() => {
   return auth.isLoggedIn && router.currentRoute.value.path !== '/loginPage'

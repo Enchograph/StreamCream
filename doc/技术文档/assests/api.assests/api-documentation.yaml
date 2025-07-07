@@ -1,0 +1,1754 @@
+openapi: 3.0.3
+info:
+  title: StreamCream Complete API Documentation
+  description: |
+    StreamCream 完整的API文档，包含所有后端服务的接口定义。
+    
+    ## 服务架构
+    - **Login Backend** (端口 9080): 用户认证、设置管理
+    - **Stream TTS Backend** (端口 5001): 语音合成服务
+    - **Streaming Backend** (端口 8888): WebSocket推流服务
+    - **GPT-SoVITS API** (端口 9880): AI语音模型服务
+    
+  version: 1.0.0
+  contact:
+    name: DeepSleep Team
+    url: https://whucsgitlab.whu.edu.cn/2025se-deepsleep
+
+servers:
+  - url: http://localhost:9080
+    description: Login Backend - 用户认证服务
+  - url: http://localhost:5001
+    description: Stream TTS Backend - 语音合成服务
+  - url: ws://localhost:8888
+    description: Streaming Backend - WebSocket推流服务
+  - url: http://localhost:9880
+    description: GPT-SoVITS API - AI语音模型服务
+
+tags:
+  - name: Authentication
+    description: 用户认证相关API
+  - name: User Management
+    description: 用户管理相关API
+  - name: Preferences
+    description: 用户偏好设置API
+  - name: TTS
+    description: 语音合成相关API
+  - name: GPT-SoVITS
+    description: GPT-SoVITS AI语音模型API
+  - name: Streaming
+    description: 推流服务相关API
+  - name: File Management
+    description: 文件管理相关API
+  - name: System Control
+    description: 系统控制相关API
+
+paths:
+  # ==================== Login Backend (端口 9080) ====================
+  
+  /:
+    get:
+      tags:
+        - Authentication
+      summary: 健康检查
+      description: 检查数据库连接状态
+      responses:
+        '200':
+          description: 数据库连接成功
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "数据库连接成功!"
+        '500':
+          description: 数据库连接失败
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "数据库连接失败: connection error"
+
+  /api/register:
+    post:
+      tags:
+        - Authentication
+      summary: 用户注册
+      description: 注册新用户账号，发送邮箱验证码
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - email
+                - password
+              properties:
+                username:
+                  type: string
+                  description: 用户名 (3-20个字符，只能包含字母、数字、下划线)
+                  example: "testuser"
+                email:
+                  type: string
+                  format: email
+                  description: 邮箱地址
+                  example: "test@example.com"
+                password:
+                  type: string
+                  minLength: 6
+                  description: 密码 (至少6个字符)
+                  example: "password123"
+      responses:
+        '200':
+          description: 注册成功，验证码已发送
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "注册成功，验证码已发送到邮箱"
+        '400':
+          description: 注册失败
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "用户名已被使用"
+
+  /api/verify-email:
+    post:
+      tags:
+        - Authentication
+      summary: 验证邮箱
+      description: 使用验证码验证邮箱地址
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - code
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: 邮箱地址
+                  example: "test@example.com"
+                code:
+                  type: string
+                  pattern: '^[0-9]{6}$'
+                  description: 6位数字验证码
+                  example: "123456"
+      responses:
+        '200':
+          description: 验证成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "邮箱验证成功"
+        '400':
+          description: 验证失败
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "验证码错误或已过期"
+
+  /api/resend-verification:
+    post:
+      tags:
+        - Authentication
+      summary: 重新发送验证码
+      description: 重新发送邮箱验证码
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: 邮箱地址
+                  example: "test@example.com"
+      responses:
+        '200':
+          description: 验证码重新发送成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "验证码已重新发送"
+
+  /api/login:
+    post:
+      tags:
+        - Authentication
+      summary: 用户登录
+      description: 用户登录并获取JWT令牌
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  description: 用户名或邮箱
+                  example: "testuser"
+                password:
+                  type: string
+                  description: 密码
+                  example: "password123"
+      responses:
+        '200':
+          description: 登录成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  token:
+                    type: string
+                    description: JWT访问令牌
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  message:
+                    type: string
+                    example: "登录成功"
+        '401':
+          description: 登录失败
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "用户名或密码错误"
+
+  /api/forgot-password:
+    post:
+      tags:
+        - Authentication
+      summary: 忘记密码
+      description: 发送密码重置验证码到邮箱
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: 邮箱地址
+                  example: "test@example.com"
+      responses:
+        '200':
+          description: 重置验证码已发送
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "密码重置验证码已发送到邮箱"
+
+  /api/verify-reset-code:
+    post:
+      tags:
+        - Authentication
+      summary: 验证重置密码验证码
+      description: 验证密码重置验证码
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - email
+                - code
+              properties:
+                username:
+                  type: string
+                  description: 用户名
+                  example: "testuser"
+                email:
+                  type: string
+                  format: email
+                  description: 邮箱地址
+                  example: "test@example.com"
+                code:
+                  type: string
+                  pattern: '^[0-9]{6}$'
+                  description: 6位数字验证码
+                  example: "123456"
+      responses:
+        '200':
+          description: 验证码验证成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "验证码验证成功"
+        '400':
+          description: 验证失败
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "验证码错误或已过期"
+
+  /api/reset-password:
+    post:
+      tags:
+        - Authentication
+      summary: 重置密码
+      description: 使用验证码重置密码
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - email
+                - code
+                - new_password
+              properties:
+                username:
+                  type: string
+                  description: 用户名
+                  example: "testuser"
+                email:
+                  type: string
+                  format: email
+                  description: 邮箱地址
+                  example: "test@example.com"
+                code:
+                  type: string
+                  pattern: '^[0-9]{6}$'
+                  description: 6位数字验证码
+                  example: "123456"
+                new_password:
+                  type: string
+                  minLength: 6
+                  description: 新密码
+                  example: "newpassword123"
+      responses:
+        '200':
+          description: 密码重置成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "密码重置成功"
+
+  /api/verify-token:
+    post:
+      tags:
+        - Authentication
+      summary: 验证JWT令牌
+      description: 验证JWT访问令牌的有效性
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+                  description: JWT访问令牌
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      responses:
+        '200':
+          description: 令牌有效
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      username:
+                        type: string
+                        example: "testuser"
+                      email:
+                        type: string
+                        example: "test@example.com"
+                  message:
+                    type: string
+                    example: "令牌有效"
+        '401':
+          description: 令牌无效
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "令牌无效"
+
+  /api/protected:
+    get:
+      tags:
+        - Authentication
+      summary: 受保护的资源
+      description: 需要JWT令牌才能访问的受保护资源
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: 访问成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      username:
+                        type: string
+                        example: "testuser"
+                      email:
+                        type: string
+                        example: "test@example.com"
+                  message:
+                    type: string
+                    example: "这是受保护的资源"
+        '401':
+          description: 未授权访问
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "缺少有效的访问令牌"
+
+  /api/preferences:
+    get:
+      tags:
+        - Preferences
+      summary: 获取用户偏好设置
+      description: 获取当前用户的偏好设置
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  debugMode:
+                    type: boolean
+                    example: false
+                  bannerColor:
+                    type: string
+                    example: "default"
+                  aiSettings:
+                    type: object
+                    properties:
+                      provider:
+                        type: string
+                        example: "https://api.openai.com/v1/chat/completions"
+                      apiKey:
+                        type: string
+                        example: "sk-..."
+                      modelName:
+                        type: string
+                        example: "gpt-4o"
+        '401':
+          description: 未授权访问
+
+    post:
+      tags:
+        - Preferences
+      summary: 保存用户偏好设置
+      description: 保存用户的偏好设置
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                debugMode:
+                  type: boolean
+                  description: 调试模式开关
+                  example: false
+                bannerColor:
+                  type: string
+                  enum: [default, red, blue, purple]
+                  description: 顶部横幅颜色
+                  example: "default"
+                aiSettings:
+                  type: object
+                  properties:
+                    provider:
+                      type: string
+                      description: AI模型提供商URL
+                      example: "https://api.openai.com/v1/chat/completions"
+                    apiKey:
+                      type: string
+                      description: API密钥
+                      example: "sk-..."
+                    modelName:
+                      type: string
+                      description: 模型名称
+                      example: "gpt-4o"
+      responses:
+        '200':
+          description: 保存成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+
+  /api/reset-preferences:
+    post:
+      tags:
+        - Preferences
+      summary: 重置用户偏好设置
+      description: 重置当前用户的所有偏好设置为默认值
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: 重置成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+
+  /api/upload-background:
+    post:
+      tags:
+        - File Management
+      summary: 上传背景图片
+      description: 上传直播背景图片
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: 背景图片文件 (支持 jpg, png, gif 格式)
+      responses:
+        '200':
+          description: 上传成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  filename:
+                    type: string
+                    description: 保存的文件名
+                    example: "background_1234567890.jpg"
+        '400':
+          description: 上传失败
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "没有文件上传"
+
+  /api/get-background:
+    get:
+      tags:
+        - File Management
+      summary: 获取背景图片
+      description: 获取最新上传的背景图片
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+
+  # ==================== Stream TTS Backend (端口 5001) ====================
+
+  /generate-speech:
+    post:
+      tags:
+        - TTS
+      summary: 生成演讲内容
+      description: 根据主题生成演讲内容
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - topic
+              properties:
+                topic:
+                  type: string
+                  description: 演讲主题
+                  example: "人工智能的未来发展"
+      responses:
+        '200':
+          description: 生成成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  speech_content:
+                    type: string
+                    description: 生成的演讲内容
+                    example: "大家好，今天我想和大家分享关于人工智能的未来发展..."
+                  sentences:
+                    type: array
+                    items:
+                      type: string
+                    description: 分割后的句子列表
+                    example: ["大家好，", "今天我想和大家分享关于人工智能的未来发展..."]
+        '400':
+          description: 生成失败
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "主题不能为空"
+
+  /synthesize-speech:
+    post:
+      tags:
+        - TTS
+      summary: 语音合成
+      description: 将文本转换为语音
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - text
+              properties:
+                text:
+                  type: string
+                  description: 要合成的文本内容
+                  example: "大家好，欢迎来到我的直播间"
+                voice:
+                  type: string
+                  description: 语音类型 (可选)
+                  example: "default"
+      responses:
+        '200':
+          description: 合成成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  audio_url:
+                    type: string
+                    description: 音频文件访问URL
+                    example: "/static/audio/speech_1234567890.wav"
+                  text:
+                    type: string
+                    description: 原始文本
+                    example: "大家好，欢迎来到我的直播间"
+                  duration:
+                    type: number
+                    description: 估算的音频时长(秒)
+                    example: 3.6
+        '400':
+          description: 合成失败
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "文本不能为空"
+
+  /text2mouth_timeline:
+    post:
+      tags:
+        - TTS
+      summary: 生成口型时间轴
+      description: 根据文本和时长生成口型动画时间轴
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - text
+              properties:
+                text:
+                  type: string
+                  description: 文本内容
+                  example: "大家好"
+                duration:
+                  type: number
+                  description: 音频时长(秒)
+                  example: 1.0
+      responses:
+        '200':
+          description: 生成成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timeline:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start:
+                          type: number
+                          description: 开始时间(秒)
+                          example: 0.0
+                        end:
+                          type: number
+                          description: 结束时间(秒)
+                          example: 0.3
+                        vowel:
+                          type: string
+                          description: 元音类型
+                          example: "a"
+                        char:
+                          type: string
+                          description: 对应字符
+                          example: "大"
+
+  /text2mouth_param:
+    post:
+      tags:
+        - TTS
+      summary: 生成口型参数
+      description: 根据文本生成口型动画参数
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - text
+              properties:
+                text:
+                  type: string
+                  description: 文本内容
+                  example: "大家好"
+                duration:
+                  type: number
+                  description: 音频时长(秒)
+                  example: 1.0
+                fps:
+                  type: integer
+                  description: 帧率
+                  example: 30
+      responses:
+        '200':
+          description: 生成成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mouth_param:
+                    type: array
+                    items:
+                      type: number
+                    description: 口型参数数组
+                    example: [0.8, 0.7, 0.6, 0.5, 0.4]
+
+  /static/audio/{filename}:
+    get:
+      tags:
+        - File Management
+      summary: 获取音频文件
+      description: 获取生成的音频文件
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 音频文件名
+          example: "speech_1234567890.wav"
+      responses:
+        '200':
+          description: 音频文件
+          content:
+            audio/wav:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: 文件不存在
+
+  /delete-audio/{filename}:
+    delete:
+      tags:
+        - File Management
+      summary: 删除音频文件
+      description: 删除指定的音频文件
+      parameters:
+        - name: filename
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 音频文件名
+          example: "speech_1234567890.wav"
+      responses:
+        '200':
+          description: 删除成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "文件删除成功"
+        '404':
+          description: 文件不存在
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "文件不存在"
+
+  /delete-all-audio:
+    delete:
+      tags:
+        - File Management
+      summary: 删除所有音频文件
+      description: 删除所有生成的音频文件
+      responses:
+        '200':
+          description: 删除成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "所有音频文件删除成功"
+
+  # ==================== GPT-SoVITS API (端口 9880) ====================
+
+  /tts:
+    get:
+      tags:
+        - GPT-SoVITS
+      summary: 语音合成 (GET)
+      description: 使用GPT-SoVITS模型进行语音合成
+      parameters:
+        - name: text
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 要合成的文本
+          example: "先帝创业未半而中道崩殂，今天下三分，益州疲弊，此诚危急存亡之秋也。"
+        - name: text_lang
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 文本语言
+          example: "zh"
+        - name: ref_audio_path
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 参考音频路径
+          example: "archive_jingyuan_1.wav"
+        - name: prompt_lang
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 提示文本语言
+          example: "zh"
+        - name: prompt_text
+          in: query
+          schema:
+            type: string
+          description: 提示文本
+          example: "我是「罗浮」云骑将军景元。不必拘谨，「将军」只是一时的身份，你称呼我景元便可"
+        - name: text_split_method
+          in: query
+          schema:
+            type: string
+            default: "cut5"
+          description: 文本分割方法
+          example: "cut5"
+        - name: batch_size
+          in: query
+          schema:
+            type: integer
+            default: 1
+          description: 批处理大小
+          example: 1
+        - name: media_type
+          in: query
+          schema:
+            type: string
+            default: "wav"
+          description: 媒体类型
+          example: "wav"
+        - name: streaming_mode
+          in: query
+          schema:
+            type: boolean
+            default: false
+          description: 流式模式
+          example: false
+      responses:
+        '200':
+          description: 合成成功，返回音频流
+          content:
+            audio/wav:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: 合成失败
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "语音合成失败"
+
+    post:
+      tags:
+        - GPT-SoVITS
+      summary: 语音合成 (POST)
+      description: 使用GPT-SoVITS模型进行语音合成
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - text
+                - text_lang
+                - ref_audio_path
+                - prompt_lang
+              properties:
+                text:
+                  type: string
+                  description: 要合成的文本
+                  example: "先帝创业未半而中道崩殂，今天下三分，益州疲弊，此诚危急存亡之秋也。"
+                text_lang:
+                  type: string
+                  description: 文本语言
+                  example: "zh"
+                ref_audio_path:
+                  type: string
+                  description: 参考音频路径
+                  example: "archive_jingyuan_1.wav"
+                aux_ref_audio_paths:
+                  type: array
+                  items:
+                    type: string
+                  description: 辅助参考音频路径列表
+                  example: []
+                prompt_lang:
+                  type: string
+                  description: 提示文本语言
+                  example: "zh"
+                prompt_text:
+                  type: string
+                  description: 提示文本
+                  example: "我是「罗浮」云骑将军景元。不必拘谨，「将军」只是一时的身份，你称呼我景元便可"
+                top_k:
+                  type: integer
+                  default: 5
+                  description: top k采样
+                  example: 5
+                top_p:
+                  type: number
+                  default: 1
+                  description: top p采样
+                  example: 1
+                temperature:
+                  type: number
+                  default: 1
+                  description: 采样温度
+                  example: 1
+                text_split_method:
+                  type: string
+                  default: "cut0"
+                  description: 文本分割方法
+                  example: "cut0"
+                batch_size:
+                  type: integer
+                  default: 1
+                  description: 批处理大小
+                  example: 1
+                batch_threshold:
+                  type: number
+                  default: 0.75
+                  description: 批处理阈值
+                  example: 0.75
+                split_bucket:
+                  type: boolean
+                  default: true
+                  description: 是否分割到多个桶
+                  example: true
+                speed_factor:
+                  type: number
+                  default: 1.0
+                  description: 速度因子
+                  example: 1.0
+                fragment_interval:
+                  type: number
+                  default: 0.3
+                  description: 片段间隔
+                  example: 0.3
+                seed:
+                  type: integer
+                  default: -1
+                  description: 随机种子
+                  example: -1
+                media_type:
+                  type: string
+                  default: "wav"
+                  description: 媒体类型
+                  example: "wav"
+                streaming_mode:
+                  type: boolean
+                  default: false
+                  description: 流式模式
+                  example: false
+                parallel_infer:
+                  type: boolean
+                  default: true
+                  description: 并行推理
+                  example: true
+                repetition_penalty:
+                  type: number
+                  default: 1.35
+                  description: 重复惩罚
+                  example: 1.35
+                sample_steps:
+                  type: integer
+                  default: 32
+                  description: 采样步数
+                  example: 32
+                super_sampling:
+                  type: boolean
+                  default: false
+                  description: 超采样
+                  example: false
+      responses:
+        '200':
+          description: 合成成功，返回音频流
+          content:
+            audio/wav:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: 合成失败
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "语音合成失败"
+
+  /control:
+    get:
+      tags:
+        - System Control
+      summary: 系统控制
+      description: 控制系统运行状态
+      parameters:
+        - name: command
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [restart, exit]
+          description: 控制命令
+          example: "restart"
+      responses:
+        '200':
+          description: 命令执行成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "命令执行成功"
+
+  /set_gpt_weights:
+    get:
+      tags:
+        - System Control
+      summary: 设置GPT模型权重
+      description: 切换GPT模型权重文件
+      parameters:
+        - name: weights_path
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 权重文件路径
+          example: "GPT_SoVITS/pretrained_models/s1bert25hz-2kh-longer-epoch=68e-step=50232.ckpt"
+      responses:
+        '200':
+          description: 设置成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "success"
+        '400':
+          description: 设置失败
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "权重文件不存在"
+
+  /set_sovits_weights:
+    get:
+      tags:
+        - System Control
+      summary: 设置SoVITS模型权重
+      description: 切换SoVITS模型权重文件
+      parameters:
+        - name: weights_path
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 权重文件路径
+          example: "GPT_SoVITS/pretrained_models/s2G488k.pth"
+      responses:
+        '200':
+          description: 设置成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "success"
+        '400':
+          description: 设置失败
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "权重文件不存在"
+
+  /set_refer_audio:
+    get:
+      tags:
+        - System Control
+      summary: 设置参考音频
+      description: 设置当前使用的参考音频
+      parameters:
+        - name: refer_audio_path
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 参考音频路径
+          example: "archive_jingyuan_1.wav"
+      responses:
+        '200':
+          description: 设置成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "参考音频设置成功"
+
+  /current_ref_audio:
+    get:
+      tags:
+        - System Control
+      summary: 获取当前参考音频
+      description: 获取当前使用的参考音频路径
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ref_audio_path:
+                    type: string
+                    description: 当前参考音频路径
+                    example: "archive_jingyuan_1.wav"
+
+  /list_model_groups:
+    get:
+      tags:
+        - System Control
+      summary: 列出模型组
+      description: 获取所有可用的模型组
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  model_groups:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: 模型组名称
+                          example: "jingyuan"
+                        gpt_weights:
+                          type: string
+                          description: GPT权重文件
+                          example: "s1bert25hz-2kh-longer-epoch=68e-step=50232.ckpt"
+                        sovits_weights:
+                          type: string
+                          description: SoVITS权重文件
+                          example: "s2G488k.pth"
+                        ref_audio:
+                          type: string
+                          description: 参考音频文件
+                          example: "archive_jingyuan_1.wav"
+
+  /set_model_pair:
+    get:
+      tags:
+        - System Control
+      summary: 设置模型对
+      description: 设置GPT和SoVITS模型对
+      parameters:
+        - name: pair_name
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 模型对名称
+          example: "jingyuan"
+      responses:
+        '200':
+          description: 设置成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "模型对设置成功"
+
+  /list_available_ref_audios:
+    get:
+      tags:
+        - System Control
+      summary: 列出可用参考音频
+      description: 获取所有可用的参考音频文件
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ref_audios:
+                    type: array
+                    items:
+                      type: string
+                    description: 参考音频文件列表
+                    example: ["archive_jingyuan_1.wav", "archive_jingyuan_2.wav"]
+
+  /get_current_status:
+    get:
+      tags:
+        - System Control
+      summary: 获取当前状态
+      description: 获取系统当前状态信息
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  gpt_weights:
+                    type: string
+                    description: 当前GPT权重文件
+                    example: "s1bert25hz-2kh-longer-epoch=68e-step=50232.ckpt"
+                  sovits_weights:
+                    type: string
+                    description: 当前SoVITS权重文件
+                    example: "s2G488k.pth"
+                  ref_audio:
+                    type: string
+                    description: 当前参考音频文件
+                    example: "archive_jingyuan_1.wav"
+                  model_pair:
+                    type: string
+                    description: 当前模型对名称
+                    example: "jingyuan"
+
+  # ==================== Streaming Backend (端口 8888) ====================
+  # WebSocket服务，使用WebSocket协议
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        使用JWT令牌进行身份验证。
+        
+        获取令牌：
+        1. 注册用户并验证邮箱
+        2. 使用用户名/密码登录
+        3. 在响应中获取token字段
+        
+        使用令牌：
+        在请求头中添加：`Authorization: Bearer <your_token>`
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 用户ID
+          example: 1
+        username:
+          type: string
+          description: 用户名
+          example: "testuser"
+        email:
+          type: string
+          format: email
+          description: 邮箱地址
+          example: "test@example.com"
+        email_verified:
+          type: boolean
+          description: 邮箱是否已验证
+          example: true
+        created_at:
+          type: string
+          format: date-time
+          description: 创建时间
+          example: "2024-01-01T00:00:00Z"
+
+    UserSetting:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 设置ID
+          example: 1
+        user_id:
+          type: integer
+          description: 用户ID
+          example: 1
+        preferences:
+          type: object
+          description: 用户偏好设置
+          example:
+            debugMode: false
+            bannerColor: "default"
+            aiSettings:
+              provider: "https://api.openai.com/v1/chat/completions"
+              apiKey: "sk-..."
+              modelName: "gpt-4o"
+        created_at:
+          type: string
+          format: date-time
+          description: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          description: 更新时间
+
+    Stream:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 推流ID
+          example: 1
+        user_id:
+          type: integer
+          description: 用户ID
+          example: 1
+        title:
+          type: string
+          description: 推流标题
+          example: "我的直播"
+        description:
+          type: string
+          description: 推流描述
+          example: "这是一个测试直播"
+        stream_key:
+          type: string
+          description: 推流密钥
+          example: "abc123def456"
+        is_live:
+          type: boolean
+          description: 是否正在直播
+          example: false
+        start_time:
+          type: string
+          format: date-time
+          description: 开始时间
+        end_time:
+          type: string
+          format: date-time
+          description: 结束时间
+        created_at:
+          type: string
+          format: date-time
+          description: 创建时间
+
+    TTSRequest:
+      type: object
+      required:
+        - text
+        - text_lang
+        - ref_audio_path
+        - prompt_lang
+      properties:
+        text:
+          type: string
+          description: 要合成的文本
+          example: "先帝创业未半而中道崩殂，今天下三分，益州疲弊，此诚危急存亡之秋也。"
+        text_lang:
+          type: string
+          description: 文本语言
+          example: "zh"
+        ref_audio_path:
+          type: string
+          description: 参考音频路径
+          example: "archive_jingyuan_1.wav"
+        aux_ref_audio_paths:
+          type: array
+          items:
+            type: string
+          description: 辅助参考音频路径列表
+          example: []
+        prompt_lang:
+          type: string
+          description: 提示文本语言
+          example: "zh"
+        prompt_text:
+          type: string
+          description: 提示文本
+          example: "我是「罗浮」云骑将军景元。不必拘谨，「将军」只是一时的身份，你称呼我景元便可"
+        top_k:
+          type: integer
+          default: 5
+          description: top k采样
+          example: 5
+        top_p:
+          type: number
+          default: 1
+          description: top p采样
+          example: 1
+        temperature:
+          type: number
+          default: 1
+          description: 采样温度
+          example: 1
+        text_split_method:
+          type: string
+          default: "cut0"
+          description: 文本分割方法
+          example: "cut0"
+        batch_size:
+          type: integer
+          default: 1
+          description: 批处理大小
+          example: 1
+        batch_threshold:
+          type: number
+          default: 0.75
+          description: 批处理阈值
+          example: 0.75
+        split_bucket:
+          type: boolean
+          default: true
+          description: 是否分割到多个桶
+          example: true
+        speed_factor:
+          type: number
+          default: 1.0
+          description: 速度因子
+          example: 1.0
+        fragment_interval:
+          type: number
+          default: 0.3
+          description: 片段间隔
+          example: 0.3
+        seed:
+          type: integer
+          default: -1
+          description: 随机种子
+          example: -1
+        media_type:
+          type: string
+          default: "wav"
+          description: 媒体类型
+          example: "wav"
+        streaming_mode:
+          type: boolean
+          default: false
+          description: 流式模式
+          example: false
+        parallel_infer:
+          type: boolean
+          default: true
+          description: 并行推理
+          example: true
+        repetition_penalty:
+          type: number
+          default: 1.35
+          description: 重复惩罚
+          example: 1.35
+        sample_steps:
+          type: integer
+          default: 32
+          description: 采样步数
+          example: 32
+        super_sampling:
+          type: boolean
+          default: false
+          description: 超采样
+          example: false
+
+  responses:
+    UnauthorizedError:
+      description: 访问令牌缺失或无效
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: "缺少有效的访问令牌"
+
+    ValidationError:
+      description: 请求参数验证失败
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: "请求参数验证失败"
+              errors:
+                type: object
+                description: 具体错误信息
+
+    ServerError:
+      description: 服务器内部错误
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: "服务器内部错误"
+
+# WebSocket连接说明
+# Streaming Backend (端口 8888) 使用WebSocket协议
+# 连接流程：
+# 1. 建立WebSocket连接到 ws://localhost:8888
+# 2. 发送第一条消息（JSON格式）：
+#    {
+#      "rtmp_url": "rtmp://live-push.bilivideo.com/live-bvc",
+#      "stream_key": "your_stream_key"
+#    }
+# 3. 开始发送二进制音视频数据
+# 4. 服务端会自动将数据转发到指定的RTMP服务器 

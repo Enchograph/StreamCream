@@ -847,4 +847,125 @@ export default {
     generateSampleFailed: 'サンプル音声の生成に失敗しました',
     sampleText: 'こんにちは、これはサンプル音声です。おはようございます、こんにちは、こんばんは。'
   },
+  help: {
+    title: 'StreamCreamご利用ガイド',
+    subtitle: 'AI配信アシスタントの完全な使い方',
+    quickStart: 'クイックスタート',
+    mainPageFeatures: 'メインページの機能',
+    streamKeyPage: '配信キー取得ページ',
+    settingsPage: '設定ページ',
+    streamingPage: '配信ページ',
+    faq: 'よくある質問',
+    techSupport: '技術サポート',
+    back: '戻る',
+    step1: {
+      title: 'システムにログイン',
+      content: 'StreamCreamのホームページを開き、右上の「ログイン」ボタンをクリックします。アカウントとパスワードを入力して「ログイン」をクリックしてシステムに入ります。アカウントがない場合は「登録」をクリックし、メールアドレスやパスワードなどを入力して登録を完了してください。'
+    },
+    step2: {
+      title: '設定を構成',
+      content: '「設定」ページに入り、「AI設定」エリアでモデルプロバイダー（OpenAI、Claudeなど）を選択し、APIキーを入力します。「配信設定」エリアで配信プラットフォーム（例：ビリビリ）を選択し、配信アドレスや配信キー、解像度やFPSなどを設定します。必要に応じてバナー色やデバッグモードもカスタマイズできます。'
+    },
+    step3: {
+      title: '音声ライブラリとLive2Dモデルの選択',
+      content: 'メインページの「音声ライブラリ選択」エリアで、トレーニング済みのGPT/SoVITSモデルや参考音声を選択またはアップロードします。「Live2Dモデル」エリアで、バーチャルキャラクターモデルを選択またはアップロードし、リアルタイムでプレビューできます。'
+    },
+    step4: {
+      title: 'AI原稿生成とテスト',
+      content: '「AI原稿生成」エリアで原稿テーマを入力し、スタイルを選択して「原稿生成」をクリックします。下部でAIが生成した原稿内容をプレビュー・テストできます。'
+    },
+    step5: {
+      title: '配信を開始',
+      content: 'メインページですべての設定を確認したら、「配信開始」ボタンをクリックします。配信ページではLive2Dキャラクター、AI音声、原稿管理などの機能が表示されます。リアルタイムでコメントを送信したり、視聴者と交流したり、いつでも配信を停止できます。'
+    },
+    voiceLibrary: {
+      title: '音声ライブラリ選択',
+      modelSelection: 'モデル選択：ドロップダウンからトレーニング済みのGPT・SoVITSモデルを選択',
+      referenceAudio: '参考音声：音声合成用の参考音声ファイルを選択',
+      uploadModel: 'モデルアップロード：.ckpt（GPT）や.pth（SoVITS）ファイルのアップロードに対応',
+      generateExample: 'サンプル生成：「サンプル音声生成」をクリックして現在のモデル効果をテスト'
+    },
+    live2dModel: {
+      title: 'Live2Dモデル',
+      modelSelection: 'モデル選択：さまざまなLive2Dバーチャルキャラクターを選択',
+      customModel: 'カスタムモデル：.model3.json形式のLive2Dモデルをアップロード',
+      realTimePreview: 'リアルタイムプレビュー：右側のプレビューエリアでモデル効果を確認'
+    },
+    streamingConfig: {
+      title: '配信設定',
+      platformSelection: 'プラットフォーム選択：配信プラットフォーム（ビリビリ、抖音など）を選択',
+      streamSettings: '配信設定：配信アドレスや配信キーを設定',
+      resolutionSettings: '解像度設定：配信解像度やFPSを選択',
+      backgroundSettings: '背景設定：配信背景を選択またはアップロード'
+    },
+    aiScriptGeneration: {
+      title: 'AI原稿生成',
+      topicInput: 'テーマ入力：原稿テーマを入力',
+      styleSelection: 'スタイル選択：原稿スタイル（カジュアル、プロフェッショナル、可愛いなど）を選択',
+      generateScript: '原稿生成：AI原稿を生成',
+      testFunction: 'テスト機能：生成した原稿の効果をテスト'
+    },
+    streamKeyProcess: {
+      title: '配信キー取得フロー',
+      accountSetup: 'アカウント設定：「アカウント設定」ページでCookiesインポートやQRコードログインを完了してください。',
+      autoGet: '自動取得：「配信設定」ページに切り替えると、システムが自動的にビリビリの配信キーと配信サーバーアドレスを取得・表示します。',
+      securityTip: 'セキュリティヒント：配信キーは今回の配信のみ有効です。他人に漏らさないでください。',
+      troubleshooting: 'トラブルシューティング：配信キー取得に失敗した場合は、アカウント状態を確認するか再度ログインしてください。'
+    },
+    debugSettings: {
+      title: 'デバッグ設定',
+      debugMode: 'デバッグモード：オン/オフ切り替え',
+      resetSettings: '設定リセット：すべての設定をリセット',
+      bannerColor: 'バナー色：トップバナーの色をカスタマイズ'
+    },
+    aiSettings: {
+      title: 'AI設定',
+      modelProvider: 'モデルプロバイダー：AIサービスプロバイダー（OpenAI、Claudeなど）を選択',
+      apiKey: 'APIキー：APIアクセスキーを設定',
+      modelName: 'モデル名：具体的なAIモデルを選択',
+      customEndpoint: 'カスタムエンドポイント：カスタムAPIエンドポイントを設定'
+    },
+    liveSettings: {
+      title: '配信設定',
+      resolution: '解像度：配信解像度（1920x1080など）を設定',
+      fps: 'FPS：配信フレームレートを設定（30fps/60fps）',
+      background: '背景：配信背景を選択またはアップロード',
+      streamInfo: '配信情報：配信アドレスや配信キーを設定'
+    },
+    streamingFeatures: {
+      title: '配信画面の機能',
+      live2dDisplay: 'Live2D表示：Live2Dバーチャルキャラクターをリアルタイムで表示',
+      voiceSynthesis: '音声合成：テキストを音声に変換し、口パクと同期',
+      scriptManagement: '原稿管理：AI生成原稿の管理と再生',
+      realTimeInteraction: 'リアルタイム交流：リアルタイム音声入力と応答に対応',
+      streamControl: '配信コントロール：配信の開始/停止を管理'
+    },
+    faq1: {
+      question: 'Q: カスタム音声モデルをアップロードするには？',
+      answer: 'A: メインページの「音声ライブラリ選択」エリアで「ファイル選択」ボタンをクリックし、.ckpt（GPTモデル）または.pth（SoVITSモデル）ファイルを選択し、「音声モデルを適用」をクリックしてください。'
+    },
+    faq2: {
+      question: 'Q: 配信情報を設定するには？',
+      answer: 'A: 設定ページの「配信設定」エリアで配信プラットフォームを選択し、配信アドレスや配信キーを入力してください。「配信キー取得」ボタンで自動取得も可能です。'
+    },
+    faq3: {
+      question: 'Q: AI原稿を生成するには？',
+      answer: 'A: メインページの「AI原稿生成テスト」エリアで原稿テーマを入力し、スタイルを選択して「原稿生成」ボタンをクリックしてください。'
+    },
+    faq4: {
+      question: 'Q: Live2Dモデルを切り替えるには？',
+      answer: 'A: メインページの「Live2Dモデル選択」エリアでドロップダウンからモデルを選択するか、カスタムの.model3.jsonファイルをアップロードしてください。'
+    },
+    faq5: {
+      question: 'Q: AIモデルを設定するには？',
+      answer: 'A: 設定ページの「AI設定」エリアでモデルプロバイダーを選択し、APIキーを入力し、具体的なモデル名を選択してください。'
+    },
+    supportInfo: {
+      title: 'ご利用中に問題が発生した場合は、以下をご確認ください：',
+      checkNetwork: 'ネットワーク接続が正常か確認',
+      checkApiKey: 'APIキーの設定が正しいか確認',
+      checkConsole: 'ブラウザのコンソールエラーを確認',
+      restartServices: '関連バックエンドサービスを再起動'
+    }
+  },
 }

@@ -287,7 +287,17 @@ If you encounter unsolvable problems, please contact the development team or ref
     // Tutorial
     tutorial: {
       welcome: 'Welcome to Douyin Live Streaming Tool!',
-      description: 'Let me help you get started quickly with this tool'
+      description: 'Let me help you get started quickly with this tool',
+      detail: 'This tool helps you obtain Douyin live stream keys and start streaming easily. You can import account info, set up your live, and get stream URLs in just a few steps.',
+      step1_1: 'First, we need to set up your Douyin account information.',
+      step1_2: 'You can choose QR code login or manually enter your account info.',
+      step2_1: 'Next, configure your live settings.',
+      step2_2: 'Set your live title, select a category, and you are ready to go live.',
+      step3_1: 'Finally, get your stream information.',
+      step3_2: 'After starting the live, you will see the stream URL and stream key.',
+      next: 'Next',
+      finish: 'Finish Tutorial',
+      skip: 'Skip Tutorial'
     }
   },
 

@@ -27,19 +27,19 @@
                 </div>
                 <div class="nav-actions">
                     <button class="nav-btn" @click="showHelp">
-                        <span class="nav-btn-icon">📖</span>
+                        <i class="fas fa-question-circle nav-btn-icon"></i>
                         {{ $t('douyin.actions.help') }}
                     </button>
                     <button class="nav-btn" @click="showQuickActions = !showQuickActions">
-                        <span class="nav-btn-icon">⚡</span>
+                        <i class="fas fa-bolt nav-btn-icon"></i>
                         {{ $t('douyin.actions.quickActions') }}
                     </button>
                     <button class="nav-btn" @click="startTutorial">
-                        <span class="nav-btn-icon">🎓</span>
+                        <i class="fas fa-graduation-cap nav-btn-icon"></i>
                         {{ $t('douyin.actions.tutorial') }}
                     </button>
                     <button class="nav-btn" @click="resetTutorial" :title="$t('douyin.actions.resetTutorial')">
-                        <span class="nav-btn-icon">🔄</span>
+                        <i class="fas fa-redo nav-btn-icon"></i>
                         {{ $t('douyin.actions.resetTutorial') }}
                     </button>
                 </div>
@@ -55,14 +55,14 @@
                         }]"
                         @click="handleTabClick(tab.id)">
                         <div class="tab-content">
-                            <span class="tab-icon">{{ tab.icon }}</span>
-                            <div class="tab-info">
-                                <span class="tab-name">{{ tab.name }}</span>
-                                <span class="tab-desc">{{ tab.description }}</span>
-                            </div>
+                            <i v-if="tab.id === 'account'" class="fas fa-user-cog tab-icon"></i>
+                            <i v-else-if="tab.id === 'live'" class="fas fa-video tab-icon"></i>
+                            <i v-else-if="tab.id === 'stream'" class="fas fa-stream tab-icon"></i>
+                            <span class="tab-name">{{ tab.name }}</span>
+                            <span class="tab-desc">{{ tab.description }}</span>
                         </div>
                         <div v-if="tab.id === 'stream' && !isLiveActive" class="tab-lock">
-                            <span class="lock-icon">🔒</span>
+                            <i class="fas fa-lock lock-icon"></i>
                         </div>
                     </button>
                 </div>
@@ -74,7 +74,7 @@
                 <div v-if="currentTab === 'account'" class="content-panel">
                     <div class="panel-header">
                         <h2 class="panel-title">
-                            <span class="title-icon">🔐</span>
+                            <i class="fas fa-user-shield title-icon"></i>
                             {{ $t('douyin.account.title') }}
                         </h2>
                         <p class="panel-subtitle">{{ $t('douyin.account.subtitle') }}</p>
@@ -84,12 +84,12 @@
                         <!-- Cookies文件导入 -->
                         <div class="feature-card">
                             <div class="card-header">
-                                <div class="card-icon">📂</div>
+                                <i class="fas fa-folder-open card-icon"></i>
                                 <h3>{{ $t('douyin.account.cookiesImport.title') }}</h3>
                             </div>
                             <p class="card-desc">{{ $t('douyin.account.cookiesImport.description') }}</p>
                             <button class="card-btn primary" @click="loadCookiesFile">
-                                <span class="btn-icon">📂</span>
+                                <i class="fas fa-folder-open btn-icon"></i>
                                 {{ $t('douyin.account.cookiesImport.selectFile') }}
                             </button>
                         </div>
@@ -97,12 +97,13 @@
                         <!-- 自动获取 -->
                         <div class="feature-card">
                             <div class="card-header">
-                                <div class="card-icon">🔍</div>
+                                <i class="fas fa-search card-icon"></i>
                                 <h3>{{ $t('douyin.account.autoGet.title') }}</h3>
                             </div>
                             <p class="card-desc">{{ $t('douyin.account.autoGet.description') }}</p>
                             <button class="card-btn success" @click="autoGetAccount" :disabled="autoGetLoading">
-                                <span class="btn-icon">{{ autoGetLoading ? '⏳' : '🔍' }}</span>
+                                <i v-if="autoGetLoading" class="fas fa-spinner fa-spin btn-icon"></i>
+                                <i v-else class="fas fa-search btn-icon"></i>
                                 {{ autoGetLoading ? $t('douyin.account.autoGet.getting') : $t('douyin.account.autoGet.startGet') }}
                             </button>
                             <div v-if="autoGetLoading" class="loading-indicator">
@@ -141,7 +142,7 @@
 
                         <div class="form-actions">
                             <button class="action-btn primary" @click="saveAccountSettings">
-                                <span class="btn-icon">💾</span>
+                                <i class="fas fa-save btn-icon"></i>
                                 {{ $t('douyin.account.manualInput.saveSettings') }}
                             </button>
                         </div>
@@ -152,7 +153,7 @@
                 <div v-if="currentTab === 'live'" class="content-panel">
                     <div class="panel-header">
                         <h2 class="panel-title">
-                            <span class="title-icon">📡</span>
+                            <i class="fas fa-broadcast-tower title-icon"></i>
                             {{ $t('douyin.live.title') }}
                         </h2>
                         <p class="panel-subtitle">{{ $t('douyin.live.subtitle') }}</p>
@@ -168,7 +169,7 @@
                             <input type="text" v-model="liveSettings.live_title" 
                                 class="modern-input" :placeholder="$t('douyin.live.titleSetting.placeholder')" />
                             <button class="action-btn primary" @click="updateTitle">
-                                <span class="btn-icon">🔄</span>
+                                <i class="fas fa-redo btn-icon"></i>
                                 {{ $t('douyin.live.titleSetting.updateTitle') }}
                             </button>
                         </div>
@@ -198,11 +199,11 @@
                         </div>
                         <div class="action-group">
                             <button class="action-btn primary" @click="updateCategory">
-                                <span class="btn-icon">✅</span>
+                                <i class="fas fa-check btn-icon"></i>
                                 {{ $t('douyin.live.category.updateCategory') }}
                             </button>
                             <button class="action-btn secondary" @click="refreshCategories">
-                                <span class="btn-icon">🔄</span>
+                                <i class="fas fa-redo btn-icon"></i>
                                 {{ $t('douyin.live.category.refreshCategories') }}
                             </button>
                         </div>
@@ -218,7 +219,7 @@
                             <input type="text" v-model="commentMessage" 
                                 class="modern-input" :placeholder="$t('douyin.live.comment.placeholder')" />
                             <button class="action-btn success" @click="sendComment">
-                                <span class="btn-icon">📤</span>
+                                <i class="fas fa-paper-plane btn-icon"></i>
                                 {{ $t('douyin.live.comment.sendComment') }}
                             </button>
                         </div>
@@ -227,7 +228,7 @@
                     <!-- 开始直播按钮 -->
                     <div class="live-action">
                         <button class="live-btn" @click="startLiveAndRedirect">
-                            <span class="live-icon">🎬</span>
+                            <i class="fas fa-video live-icon"></i>
                             <span class="live-text">{{ $t('douyin.live.startLive.text') }}</span>
                         </button>
                     </div>
@@ -238,11 +239,11 @@
                             <h3>{{ $t('douyin.logs.title') }}</h3>
                             <div class="log-actions">
                                 <button class="action-btn small secondary" @click="clearLogs">
-                                    <span class="btn-icon">🗑️</span>
+                                    <i class="fas fa-trash btn-icon"></i>
                                     {{ $t('douyin.logs.clear') }}
                                 </button>
                                 <button class="action-btn small secondary" @click="exportLogs">
-                                    <span class="btn-icon">📄</span>
+                                    <i class="fas fa-file-alt btn-icon"></i>
                                     {{ $t('douyin.logs.export') }}
                                 </button>
                             </div>
@@ -250,11 +251,16 @@
                         <div class="log-container">
                             <div v-for="(log, index) in logs" :key="index" :class="['log-item', `log-${log.type}`]">
                                 <span class="log-time">{{ log.timeString }}</span>
-                                <span class="log-icon">{{ getLogIcon(log.type) }}</span>
+                                <span class="log-icon">
+                                    <i v-if="log.type === 'info'" class="fas fa-info-circle"></i>
+                                    <i v-else-if="log.type === 'success'" class="fas fa-check-circle"></i>
+                                    <i v-else-if="log.type === 'warning'" class="fas fa-exclamation-triangle"></i>
+                                    <i v-else-if="log.type === 'error'" class="fas fa-times-circle"></i>
+                                </span>
                                 <span class="log-message">{{ log.message }}</span>
                             </div>
                             <div v-if="logs.length === 0" class="empty-log">
-                                <span class="empty-icon">📝</span>
+                                <span class="empty-icon"><i class="fas fa-sticky-note"></i></span>
                                 <span>{{ $t('douyin.logs.empty') }}</span>
                             </div>
                         </div>
@@ -265,7 +271,7 @@
                 <div v-if="currentTab === 'stream'" class="content-panel">
                     <div class="panel-header">
                         <h2 class="panel-title">
-                            <span class="title-icon">📊</span>
+                            <i class="fas fa-chart-bar title-icon"></i>
                             {{ $t('douyin.stream.title') }}
                         </h2>
                         <p class="panel-subtitle">{{ $t('douyin.stream.subtitle') }}</p>
@@ -277,7 +283,7 @@
                             <div class="card-header">
                                 <h3>{{ $t('douyin.stream.server.title') }}</h3>
                                 <button class="copy-btn" @click="copyServer">
-                                    <span class="btn-icon">📋</span>
+                                    <i class="fas fa-copy btn-icon"></i>
                                     {{ $t('douyin.stream.server.copy') }}
                                 </button>
                             </div>
@@ -288,7 +294,7 @@
                             <div class="card-header">
                                 <h3>{{ $t('douyin.stream.code.title') }}</h3>
                                 <button class="copy-btn" @click="copyCode">
-                                    <span class="btn-icon">📋</span>
+                                    <i class="fas fa-copy btn-icon"></i>
                                     {{ $t('douyin.stream.code.copy') }}
                                 </button>
                             </div>
@@ -304,11 +310,11 @@
                         </div>
                         <div class="export-actions">
                             <button class="action-btn primary" @click="exportToDesktop">
-                                <span class="btn-icon">🖥️</span>
+                                <i class="fas fa-desktop btn-icon"></i>
                                 {{ $t('douyin.stream.export.exportToDesktop') }}
                             </button>
                             <button class="action-btn secondary" @click="exportToFile">
-                                <span class="btn-icon">📁</span>
+                                <i class="fas fa-folder btn-icon"></i>
                                 {{ $t('douyin.stream.export.exportToFile') }}
                             </button>
                         </div>
@@ -322,11 +328,11 @@
                         </div>
                         <div class="control-actions">
                             <button class="action-btn warning" @click="stopLive">
-                                <span class="btn-icon">⏹️</span>
+                                <i class="fas fa-stop btn-icon"></i>
                                 {{ $t('douyin.stream.control.stopLive') }}
                             </button>
                             <button class="action-btn primary" @click="refreshStreamInfo">
-                                <span class="btn-icon">🔄</span>
+                                <i class="fas fa-redo btn-icon"></i>
                                 {{ $t('douyin.stream.control.refreshStream') }}
                             </button>
                         </div>
@@ -342,11 +348,11 @@
                 <div class="status-right">
                     <div class="status-actions">
                         <button class="nav-btn small" @click="startTutorial">
-                            <span class="nav-btn-icon">🎓</span>
+                            <i class="fas fa-graduation-cap nav-btn-icon"></i>
                             {{ $t('douyin.status.tutorial') }}
                         </button>
                         <button class="nav-btn small" @click="resetTutorial" :title="$t('douyin.actions.resetTutorial')">
-                            <span class="nav-btn-icon">🔄</span>
+                            <i class="fas fa-redo nav-btn-icon"></i>
                             {{ $t('douyin.status.reset') }}
                         </button>
                     </div>
@@ -356,7 +362,7 @@
             <!-- 智能提示 -->
             <div v-if="showSmartTip" class="smart-tip">
                 <div class="tip-content">
-                    <span class="tip-icon">💡</span>
+                    <span class="tip-icon"><i class="fas fa-lightbulb"></i></span>
                     <span class="tip-text">{{ currentTip }}</span>
                 </div>
             </div>
@@ -401,48 +407,47 @@
                 <div class="tutorial-step">
                     <h3>{{ $t('douyin.tutorial.welcome') }}</h3>
                     <p>{{ $t('douyin.tutorial.description') }}</p>
+                    <p v-if="$t('douyin.tutorial.detail')">{{ $t('douyin.tutorial.detail') }}</p>
                     
                     <!-- 教程步骤内容 -->
                     <div v-if="tutorialStep === 1" class="step-content">
-                        <p>欢迎使用抖音直播推流工具！让我来帮你快速上手。</p>
-                        <p>这个工具可以帮助你获取抖音直播的推流码，轻松开始直播。</p>
+                        <p>{{ $t('douyin.tutorial.step1_1') }}</p>
+                        <p>{{ $t('douyin.tutorial.step1_2') }}</p>
                     </div>
-                    
                     <div v-if="tutorialStep === 2" class="step-content">
-                        <p>首先，我们需要设置你的抖音账号信息。</p>
-                        <p>你可以选择自动扫码登录，或者手动输入账号信息。</p>
+                        <p>{{ $t('douyin.tutorial.step2_1') }}</p>
+                        <p>{{ $t('douyin.tutorial.step2_2') }}</p>
                     </div>
-                    
                     <div v-if="tutorialStep === 3" class="step-content">
-                        <p>接下来，配置直播设置。</p>
-                        <p>设置直播标题、选择分类，然后就可以开始直播了。</p>
+                        <p>{{ $t('douyin.tutorial.step3_1') }}</p>
+                        <p>{{ $t('douyin.tutorial.step3_2') }}</p>
                     </div>
                     
                     <div v-if="tutorialStep === 4" class="step-content">
-                        <p>最后，获取推流信息。</p>
-                        <p>开始直播后，你就可以看到推流地址和推流密钥了。</p>
+                        <p>{{ $t('douyin.tutorial.step4_1') }}</p>
+                        <p>{{ $t('douyin.tutorial.step4_2') }}</p>
                     </div>
                     
                     <!-- 教程按钮 -->
                     <div class="tutorial-buttons">
-                        <button v-if="tutorialStep < 4" @click="nextTutorialStep" class="tutorial-btn next-btn">
+                        <button v-if="tutorialStep < 3" @click="nextTutorialStep" class="tutorial-btn next-btn">
                             <span class="btn-icon">→</span>
-                            下一步
+                            {{ $t('douyin.tutorial.next') }}
                         </button>
-                        <button v-if="tutorialStep === 4" @click="finishTutorial" class="tutorial-btn finish-btn">
+                        <button v-if="tutorialStep === 3" @click="finishTutorial" class="tutorial-btn finish-btn">
                             <span class="btn-icon">✓</span>
-                            完成教程
+                            {{ $t('douyin.tutorial.finish') }}
                         </button>
-                        <button v-if="tutorialStep < 4" @click="closeTutorial" class="tutorial-btn cancel-btn">
+                        <button v-if="tutorialStep < 3" @click="closeTutorial" class="tutorial-btn cancel-btn">
                             <span class="btn-icon">✕</span>
-                            跳过教程
+                            {{ $t('douyin.tutorial.skip') }}
                         </button>
                     </div>
                     
                     <!-- 教程进度指示器 -->
                     <div class="tutorial-progress">
                         <div class="progress-dots">
-                            <span v-for="step in 4" :key="step" 
+                            <span v-for="step in 3" :key="step" 
                                   :class="['progress-dot', { active: step <= tutorialStep }]"></span>
                         </div>
                     </div>
@@ -529,7 +534,7 @@ const helpContent = `
 
 // 新手引导相关
 const showTutorial = ref(false);
-const tutorialStep = ref(1);
+const tutorialStep = ref(1); // 初始值设为1，从新步骤1开始
 const hasShownTutorial = ref(localStorage.getItem('douyin_tutorial_shown') === 'true');
 
 // 调试教程状态
@@ -939,7 +944,7 @@ function nextTutorialStep() {
         currentTab.value = 'stream';
     }
     
-    if (tutorialStep.value > 4) {
+    if (tutorialStep.value > 3) {
         finishTutorial();
     }
 }

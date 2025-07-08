@@ -889,7 +889,7 @@ If you encounter unsolvable problems, please contact the development team or ref
         },
         faq8: {
             question: 'Q: How to contact customer service or feedback?',
-            answer: 'A: You can find technical support contact information at the bottom of the help page, or join the official feedback group.'
+            answer: 'A: You can find technical support contact information at the bottom of the help page, or join the official feedback group (QQ: 825999096).'
         },
         faq10: {
             question: 'Q: Which live streaming platforms are supported?',

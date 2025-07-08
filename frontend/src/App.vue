@@ -15,10 +15,10 @@ import { useAuthStore } from './stores/auth'
 const authStore = useAuthStore()
 
 onMounted(async () => {
-  // 初始化时验证token
-  if (authStore.token) {
-    await authStore.verifyToken()
-  }
+    // 初始化时验证token
+    if (authStore.token) {
+        await authStore.verifyToken()
+    }
 })
 </script>
 

@@ -33,6 +33,15 @@
                                         outlined dense class="rounded-input-glass"
                                         @change="handleBannerLayoutChange"></v-select>
                                 </v-col>
+                                <v-col cols="12">
+                                    <v-select v-model="locale" :items="[
+                                        { text: '中文', value: 'zh-CN' },
+                                        { text: 'English', value: 'en-US' },
+                                        { text: '日本語', value: 'ja-JP' }
+                                    ]" item-title="text" item-value="value" :label="$t('setting.languageTitle')"
+                                        outlined dense class="rounded-input-glass" @update:model-value="switchLanguage">
+                                    </v-select>
+                                </v-col>
                             </v-row>
                         </v-col>
                     </v-card>
@@ -171,7 +180,7 @@
                     </v-btn> -->
                 </v-col>
             </v-row>
-            <v-row>
+            <!-- <v-row>
                 <v-col cols="12">
                     <v-card flat class="mb-6 section-card-glass">
                         <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">
@@ -179,20 +188,10 @@
                                     size="20">mdi-translate</v-icon></span>{{ $t('setting.languageTitle') }}
                         </v-card-title>
                         <v-card-text>
-                            <v-row>
-                                <v-col cols="12">
-                                    <v-select v-model="locale" :items="[
-                                        { text: '中文', value: 'zh-CN' },
-                                        { text: 'English', value: 'en' },
-                                        { text: '日本語', value: 'ja-JP' }
-                                    ]" item-title="text" item-value="value" :label="$t('setting.languageTitle')"
-                                        outlined dense class="rounded-input-glass" @change="switchLanguage"></v-select>
-                                </v-col>
-                            </v-row>
                         </v-card-text>
                     </v-card>
                 </v-col>
-            </v-row>
+            </v-row> -->
             <v-row>
                 <v-col cols="12">
                     <v-card flat class="mb-6 section-card-glass">
@@ -310,6 +309,8 @@ import { useLive2DStore } from '../../stores/live2d';
 import { ElMessage } from 'element-plus';
 import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
 import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 
 export default {
     name: 'settingPage',
@@ -483,6 +484,7 @@ export default {
         if (localStorage.getItem('bannerColor') !== null) {
             this.bannerColor = localStorage.getItem('bannerColor')
         }
+
     },
     methods: {
         handleResolutionChange(newResolution) {
@@ -681,12 +683,12 @@ export default {
             localStorage.setItem('topBannerDispersed', this.isBannerDispersed)
             window.dispatchEvent(new Event('topBannerLayoutChange'))
         },
-        switchLanguage(lang) {
-            this.locale = lang;
-            localStorage.setItem('locale', lang);
-            this.$i18n.locale = lang;
+        switchLanguage(newLocale) {
+            localStorage.setItem('locale', this.locale);
+            this.$i18n.locale = this.locale;
             window.dispatchEvent(new Event('languageChange'));
         }
+
     },
     computed: {
         finishBtnColor() {

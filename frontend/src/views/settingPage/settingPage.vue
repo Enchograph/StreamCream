@@ -1,7 +1,7 @@
 <template>
     <v-container class="pa-4 setting-bg-glass">
         <v-card flat class="mx-auto setting-card-glass" max-width="1000">
-            <v-card-title class="text-h5 font-weight-medium setting-title-glass">
+            <v-card-title class="text-h5 font-weight-medium setting-title-glass text-left">
                 <span class="title-bar-gradient"><v-icon color="#fff"
                         size="28">mdi-cog</v-icon></span>{{ $t('setting.title') }}
             </v-card-title>
@@ -168,6 +168,16 @@
                                         :placeholder="$t('setting.customModelNamePlaceholder')" outlined dense
                                         class="rounded-input-glass"></v-text-field>
                                 </v-col>
+                                <v-col cols="12" class="text-center">
+                                    <v-btn color="primary" class="mr-4" @click="testLLMConnection">
+                                        {{ $t('setting.testConnection') }}
+                                    </v-btn>
+                                    <v-btn color="success" @click="saveAISettings"
+                                        @update:model-value="handleResolutionChange">
+                                        {{ $t('setting.saveSettings') }}
+                                    </v-btn>
+                                </v-col>
+
                             </v-row>
                         </v-card-text>
                     </v-card>
@@ -658,7 +668,7 @@ export default {
                     body: JSON.stringify({
                         model: modelName,
                         messages: [
-                            { role: 'user', content: '你好，请简单回复"测试成功"四个字。' }
+                            { role: 'user', content: '你好，请不多不少地只回复"测试成功"四个字。' }
                         ],
                         temperature: temperature || 0.7,
                         max_tokens: 16
@@ -666,7 +676,8 @@ export default {
                 });
                 const data = await res.json();
                 if (res.ok && data.choices && data.choices.length > 0) {
-                    if (showAlert) alert('LLM服务连接成功！返回内容：' + (data.choices[0].message?.content || '无'));
+                    // if (showAlert) alert('LLM服务连接成功！返回内容：' + (data.choices[0].message?.content || '无'));
+                    if (showAlert) alert('LLM服务连接成功！');
                     return true;
                 } else {
                     if (showAlert) alert('LLM服务连接失败！' + (data.error?.message || JSON.stringify(data)));
@@ -741,7 +752,6 @@ export default {
 .setting-title-glass {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     font-size: 2.4rem;
     margin-bottom: 28px;
     letter-spacing: 2px;

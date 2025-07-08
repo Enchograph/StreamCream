@@ -252,15 +252,15 @@
                                         { text: $t('setting.platformBilibili'), value: 'bilibili' },
                                         { text: '抖音', value: 'douyin' },
                                         { text: '快手', value: 'kuaishou' },
-                                        { text: '虎牙', value: 'huya' },
-                                        { text: '斗鱼', value: 'douyu' },
-                                        { text: 'YY直播', value: 'yy' }
+                                        { text: '小红书', value: 'xiaohongshu' },
+                                        { text: 'YouTube', value: 'youtube' },
+                                        { text: 'Twitch', value: 'twitch' }
                                     ]" item-title="text" item-value="value" :label="$t('setting.platform')" outlined
                                         dense class="rounded-input-glass"></v-select>
                                 </v-col>
                                 <v-col cols="12" md="6">
                                     <v-btn color="secondary" variant="elevated" block height="44"
-                                        class="mb-4 rounded-btn-glass">
+                                        class="mb-4 rounded-btn-glass" @click="showStreamKeyTip">
                                         {{ $t('setting.getStreamKey') }}
                                     </v-btn>
                                 </v-col>
@@ -312,6 +312,7 @@
                 </v-btn>
             </div>
         </v-card>
+        <div class="setting-copyright" v-html="$t('copyright.text')"></div>
     </v-container>
 </template>
 
@@ -660,7 +661,7 @@ export default {
             // 构造测试请求参数
             const { provider, apiKey, modelName, temperature } = this.aiSettings;
             if (!provider || !apiKey || !modelName) {
-                if (showAlert) alert('请填写完整的API地址、API密钥和模型名称！');
+                if (showAlert) ElMessage.error('请填写完整的API地址、API密钥和模型名称！');
                 return false;
             }
             try {
@@ -682,15 +683,14 @@ export default {
                 });
                 const data = await res.json();
                 if (res.ok && data.choices && data.choices.length > 0) {
-                    // if (showAlert) alert('LLM服务连接成功！返回内容：' + (data.choices[0].message?.content || '无'));
-                    if (showAlert) alert('LLM服务连接成功！');
+                    if (showAlert) ElMessage.success('LLM服务连接成功！');
                     return true;
                 } else {
-                    if (showAlert) alert('LLM服务连接失败！' + (data.error?.message || JSON.stringify(data)));
+                    if (showAlert) ElMessage.error('LLM服务连接失败！' + (data.error?.message || JSON.stringify(data)));
                     return false;
                 }
             } catch (e) {
-                if (showAlert) alert('LLM服务连接异常：' + e);
+                if (showAlert) ElMessage.error('LLM服务连接异常：' + e);
                 return false;
             }
         },
@@ -711,6 +711,9 @@ export default {
             } catch (e) {
                 this.customBackgrounds = [];
             }
+        },
+        showStreamKeyTip() {
+            ElMessage.error(this.$t('setting.getStreamKeyTip'));
         }
     },
     computed: {
@@ -922,5 +925,16 @@ export default {
         font-size: 15px;
         transform: translateX(-50%);
     }
+}
+
+.setting-copyright {
+  width: 100%;
+  text-align: center;
+  color: rgba(60,60,60,0.55);
+  font-size: 15px;
+  margin-top: 48px;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+  user-select: none;
 }
 </style>

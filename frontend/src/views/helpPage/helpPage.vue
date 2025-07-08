@@ -211,6 +211,22 @@
                                 <h3>{{ $t('help.faq5.question') }}</h3>
                                 <p>{{ $t('help.faq5.answer') }}</p>
                             </div>
+                            <div class="faq-item">
+                                <h3>{{ $t('help.faq6.question') }}</h3>
+                                <p>{{ $t('help.faq6.answer') }}</p>
+                            </div>
+                            <div class="faq-item">
+                                <h3>{{ $t('help.faq7.question') }}</h3>
+                                <p>{{ $t('help.faq7.answer') }}</p>
+                            </div>
+                            <div class="faq-item">
+                                <h3>{{ $t('help.faq8.question') }}</h3>
+                                <p>{{ $t('help.faq8.answer') }}</p>
+                            </div>
+                            <div class="faq-item">
+                                <h3>{{ $t('help.faq10.question') }}</h3>
+                                <p>{{ $t('help.faq10.answer') }}</p>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -242,6 +258,7 @@
                 </button>
             </div>
         </div>
+        <div class="help-copyright" v-html="$t('copyright.text')"></div>
     </div>
 </template>
 
@@ -675,5 +692,16 @@ const goBack = () => {
         margin-right: 0;
         margin-bottom: 15px;
     }
+}
+
+.help-copyright {
+  width: 100%;
+  text-align: center;
+  color: rgba(60,60,60,0.55);
+  font-size: 15px;
+  margin-top: 48px;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+  user-select: none;
 }
 </style> 

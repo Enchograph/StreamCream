@@ -698,6 +698,7 @@ If you encounter unsolvable problems, please contact the development team or ref
     },
 
     setting: {
+        getStreamKeyTip: 'Please go to the "Live Platform Selection and Stream Key" section on the main page to get the stream key',
         title: 'Settings',
         languageTitle: 'Language Settings',
         themeTitle: 'System Preferences',
@@ -878,7 +879,22 @@ If you encounter unsolvable problems, please contact the development team or ref
             question: 'Q: How to configure AI model?',
             answer: 'A: In the "AI Settings" area of the settings page, select model provider, enter API key, select specific model name.'
         },
-
+        faq6: {         
+            question: 'Q: How to switch interface language?',
+            answer: 'A: In the "Language Settings" area of the settings page, select the required language.'
+        },
+        faq7: {
+            question: 'Q: Why is the stream failed?',
+            answer: 'A: Please check if the stream key and stream address are correct, whether the network is smooth, or try to restart the stream software.'
+        },
+        faq8: {
+            question: 'Q: How to contact customer service or feedback?',
+            answer: 'A: You can find technical support contact information at the bottom of the help page, or join the official feedback group.'
+        },
+        faq10: {
+            question: 'Q: Which live streaming platforms are supported?',
+            answer: 'A: Currently supported platforms include Bilibili, Douyin, Kuaishou, Xiaohongshu, YouTube, and Twitch.'
+        },  
         // Technical support
         supportInfo: {
             title: 'If you encounter problems during use, please:',
@@ -1456,37 +1472,37 @@ If you encounter unsolvable problems, please contact the development team or ref
     },
 
     xiaohongshu: {
-        title: "Xiaohongshu Live",
-        subtitle: "All-in-one Xiaohongshu Live Streaming Management",
-        tabs: {
-            account: { name: "Account Settings", description: "Account Login & Authentication" },
-            live: { name: "Live Settings", description: "Live Configuration & Management" }
+        title: 'Xiaohongshu Live Stream Key Guide',
+        section1: {
+            title: '1. Preparation',
+            step0: {
+                title: 'Account Requirements',
+                desc: 'To obtain a Xiaohongshu live stream key, you must meet the following conditions:',
+                items: [
+                    'Completed Xiaohongshu real-name authentication',
+                    'At least 1000 followers or received an official live invitation',
+                    'No account violations'
+                ]
+            },
+            warning: '⚠️ Important: The Xiaohongshu stream key is for one-time use. You need to get a new one for each live session.'
         },
-        account: {
-            manualInput: "Manual Account Input",
-            userId: "User ID",
-            userIdPlaceholder: "Enter Xiaohongshu User ID",
-            token: "Token",
-            tokenPlaceholder: "Enter Token",
-            saveSettings: "Save Settings",
-            viewHelp: "View Help"
-        },
-        live: {
-            title: "Live Settings",
-            titleInput: "Live Title",
-            titlePlaceholder: "Enter live title",
-            updateTitle: "Update Title",
-            streamKey: "Stream Key",
-            getStreamKey: "Get Stream Key",
-            sendBullet: "Send Bullet Message",
-            bulletInput: "Bullet Message",
-            bulletPlaceholder: "Enter bullet message",
-            startLive: "Start Live",
-            operationLog: "Operation Log",
-            noLogs: "No logs yet"
-        },
-        help: {
-            title: "Help Documentation"
+        section2: {
+            title: '2. Steps to Get the Stream Key',
+            steps: [
+                {
+                    title: 'Step 1: Enable Live Streaming',
+                    desc: 'Open Xiaohongshu app → Tap "Me" → Go to "Creator Center" → Select "More Services" → Tap "Live" → Complete the permission application'
+                },
+                {
+                    title: 'Step 2: Download Live Assistant',
+                    desc: 'Visit the official Xiaohongshu website to download the "Xiaohongshu Live Assistant" PC software, install and log in to your account.'
+                },
+                {
+                    title: 'Step 3: Get the Stream Key',
+                    desc: '1. Open Xiaohongshu Live Assistant\n2. Click "Create Live" → Select "Professional Live"\n3. Find the "Third-party Streaming" option\n4. The system will generate the RTMP address and stream key',
+                    code: 'RTMP address: rtmp://push.xiaohongshu.com/live/<br>Sample stream key: xhs_1234567890abcdef<br>Full stream URL: rtmp://push.xiaohongshu.com/live/xhs_1234567890abcdef'
+                }
+            ]
         }
     }
 }

@@ -737,6 +737,7 @@ export default {
         platform: '直播平台',
         platformBilibili: '哔哩哔哩',
         getStreamKey: '获取推流码',
+        getStreamKeyTip: '请到主页面"直播平台选择与推流码"部分获取推流码',
         streamDomain: '推流地址',
         inputStreamDomain: '请输入推流地址',
         streamKey: '推流码',
@@ -876,6 +877,22 @@ export default {
         faq5: {
             question: 'Q: 如何配置AI模型？',
             answer: 'A: 在设置页面的"AI设置"区域，选择模型提供商，输入API密钥，选择具体的模型名称。'
+        },
+        faq6: {
+            question: 'Q: 如何切换界面语言？',
+            answer: 'A: 在设置页面的"语言设置"区域选择所需语言即可。'
+        },
+        faq7: {
+            question: 'Q: 为什么推流失败？',
+            answer: 'A: 请检查推流码、推流地址是否正确，网络是否畅通，或尝试重启推流软件。'
+        },
+        faq8: {
+            question: 'Q: 如何联系客服或反馈问题？',
+            answer: 'A: 可在帮助页底部找到技术支持联系方式，或加入官方交流群反馈。'
+        },
+        faq10: {
+            question: 'Q: 支持哪些直播平台？',
+            answer: 'A: 目前支持B站、抖音、快手、小红书、YouTube、Twitch等主流平台。'
         },
 
         // 技术支持
@@ -1498,37 +1515,37 @@ export default {
     },
 
     xiaohongshu: {
-        title: "小红书直播",
-        subtitle: "一站式小红书直播推流管理",
-        tabs: {
-            account: { name: "账号设置", description: "账号登录与认证" },
-            live: { name: "直播设置", description: "直播配置与管理" }
+        title: '小红书直播推流码获取教程',
+        section1: {
+            title: '一、准备工作',
+            step0: {
+                title: '账号要求',
+                desc: '获取小红书直播推流码需要满足以下条件：',
+                items: [
+                    '已完成小红书实名认证',
+                    '粉丝数≥1000或获得官方直播邀请',
+                    '账号无违规记录'
+                ]
+            },
+            warning: '⚠️ 重要提示：小红书推流码为一次性使用，每次直播需要重新获取。'
         },
-        account: {
-            manualInput: "手动输入账号信息",
-            userId: "用户ID",
-            userIdPlaceholder: "请输入小红书用户ID",
-            token: "Token",
-            tokenPlaceholder: "请输入Token",
-            saveSettings: "保存设置",
-            viewHelp: "查看帮助"
-        },
-        live: {
-            title: "直播设置",
-            titleInput: "直播标题",
-            titlePlaceholder: "请输入直播标题",
-            updateTitle: "更新标题",
-            streamKey: "推流码",
-            getStreamKey: "获取推流码",
-            sendBullet: "发送弹幕",
-            bulletInput: "弹幕内容",
-            bulletPlaceholder: "请输入弹幕内容",
-            startLive: "开始直播",
-            operationLog: "操作日志",
-            noLogs: "暂无日志"
-        },
-        help: {
-            title: "帮助文档"
+        section2: {
+            title: '二、获取推流码详细步骤',
+            steps: [
+                {
+                    title: '步骤1：开通直播权限',
+                    desc: '打开小红书APP → 点击"我" → 进入"创作者中心" → 选择"更多服务" → 点击"直播" → 完成权限申请'
+                },
+                {
+                    title: '步骤2：下载直播助手',
+                    desc: '访问小红书官网下载"小红书直播助手"PC端软件，安装并登录你的小红书账号。'
+                },
+                {
+                    title: '步骤3：获取推流码',
+                    desc: '1. 打开小红书直播助手\n2. 点击"创建直播" → 选择"专业开播"\n3. 找到"第三方推流"选项\n4. 系统将生成RTMP地址和流密钥',
+                    code: 'RTMP地址: rtmp://push.xiaohongshu.com/live/<br>示例流密钥: xhs_1234567890abcdef<br>完整推流地址: rtmp://push.xiaohongshu.com/live/xhs_1234567890abcdef'
+                }
+            ]
         }
     }
 }

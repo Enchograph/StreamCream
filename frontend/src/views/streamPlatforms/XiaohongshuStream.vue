@@ -26,41 +26,38 @@
                             </defs>
                         </svg>
                     </span>
-                    <h1>小红书直播推流码获取教程</h1>
+                    <h1>{{ $t('xiaohongshu.title') }}</h1>
                 </div>
             </div>
 
             <div class="container">
-                <h2>一、准备工作</h2>
+                <h2>{{ $t('xiaohongshu.section1.title') }}</h2>
                 <div class="step-card">
                     <div class="step-index">0</div>
                     <div class="step-content">
-                        <h3>账号要求</h3>
-                        <p>获取小红书直播推流码需要满足以下条件：</p>
+                        <h3>{{ $t('xiaohongshu.section1.step0.title') }}</h3>
+                        <p>{{ $t('xiaohongshu.section1.step0.desc') }}</p>
                         <ul>
-                            <li>已完成小红书实名认证</li>
-                            <li>粉丝数≥1000或获得官方直播邀请</li>
-                            <li>账号无违规记录</li>
+                            <li v-for="item in items" :key="item">{{ item }}</li>
                         </ul>
                     </div>
                 </div>
                 <div class="warning">
-                    <strong>⚠️ 重要提示：</strong> 小红书推流码为一次性使用，每次直播需要重新获取。
+                    <strong>{{ $t('xiaohongshu.section1.warning') }}</strong>
                 </div>
             </div>
 
             <div class="container">
-                <h2>二、获取推流码详细步骤</h2>
+                <h2>{{ $t('xiaohongshu.section2.title') }}</h2>
                 <div class="step-card" v-for="(step, index) in steps" :key="index">
                     <div class="step-index">{{ index + 1 }}</div>
                     <div class="step-content">
                         <h3>{{ step.title }}</h3>
-                        <p v-html="step.description"></p>
+                        <p v-html="step.desc"></p>
                         <div v-if="step.image" class="screenshot-wrap">
                             <img :src="step.image" :alt="step.title" class="screenshot" />
                         </div>
                         <div v-if="step.code" class="code-block">
-                            <!-- <span class="code-icon">💻</span> -->
                             <span v-html="step.code"></span>
                         </div>
                     </div>
@@ -70,40 +67,11 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: 'XiaohongshuStreamGuide',
-    data() {
-        return {
-            steps: [
-                {
-                    title: '步骤1：开通直播权限',
-                    description: '打开小红书APP → 点击"我" → 进入"创作者中心" → 选择"更多服务" → 点击"直播" → 完成权限申请'
-                },
-                {
-                    title: '步骤2：下载直播助手',
-                    description: '访问小红书官网下载"小红书直播助手"PC端软件，安装并登录你的小红书账号。'
-                },
-                {
-                    title: '步骤3：获取推流码',
-                    description: `
-            <ol>
-              <li>打开小红书直播助手</li>
-              <li>点击"创建直播" → 选择"专业开播"</li>
-              <li>找到"第三方推流"选项</li>
-              <li>系统将生成RTMP地址和流密钥</li>
-            </ol>
-          `,
-                    code: `
-            RTMP地址: rtmp://push.xiaohongshu.com/live/<br>
-            示例流密钥: xhs_1234567890abcdef<br>
-            完整推流地址: rtmp://push.xiaohongshu.com/live/xhs_1234567890abcdef
-          `
-                }
-            ]
-        }
-    }
-}
+<script setup>
+import { useI18n } from 'vue-i18n'
+const { t, tm } = useI18n()
+const steps = tm('xiaohongshu.section2.steps')
+const items = tm('xiaohongshu.section1.step0.items')
 </script>
 
 <style scoped>

@@ -18,7 +18,7 @@
                 <div class="tabs">
                     <button v-for="tab in tabs" :key="tab.id" :class="['tab-button', { active: currentTab === tab.id }]"
                         @click="currentTab = tab.id">
-                        <span class="tab-icon">{{ tab.icon }}</span>
+                        <span class="tab-icon"><i :class="tab.icon"></i></span>
                         <span class="tab-text">{{ $t(`bilibili.tabs.${tab.id}.name`) }}</span>
                         <span class="tab-desc">{{ $t(`bilibili.tabs.${tab.id}.description`) }}</span>
                     </button>
@@ -32,7 +32,7 @@
                         <div class="cookie-block">
                             <h2>{{ $t('bilibili.account.cookiesFile') }}</h2>
                             <button class="btn primary" @click="loadCookiesFile">
-                                <span class="btn-icon">📂</span>
+                                <span class="btn-icon"><i class="fas fa-folder-open"></i></span>
                                 {{ $t('bilibili.account.useCookiesFile') }}
                             </button>
                         </div>
@@ -40,7 +40,7 @@
                         <div class="auto-block">
                             <h2>{{ $t('bilibili.account.autoGet') }}</h2>
                             <button class="btn success" @click="autoGetAccount" :disabled="autoGetLoading">
-                                <span class="btn-icon">{{ autoGetLoading ? '⏳' : '🔍' }}</span>
+                                <span class="btn-icon"><i v-if="autoGetLoading" class="fas fa-hourglass-half"></i><i v-else class="fas fa-search"></i></span>
                                 {{ autoGetLoading ? $t('bilibili.account.getting') : $t('bilibili.account.autoGetAccount') }}
                             </button>
                             <p v-if="autoGetLoading" class="loading-text">{{ $t('bilibili.account.gettingText') }}</p>
@@ -71,14 +71,14 @@
                     </div>
 
                     <button class="btn primary" @click="saveAccountSettings">
-                        <span class="btn-icon">💾</span>
+                        <span class="btn-icon"><i class="fas fa-save"></i></span>
                         {{ $t('bilibili.account.saveSettings') }}
                     </button>
                 </div>
 
                 <div class="help-section">
                     <button class="btn secondary" @click="showHelp">
-                        <span class="btn-icon">📖</span>
+                        <span class="btn-icon"><i class="fas fa-book"></i></span>
                         {{ $t('bilibili.account.viewHelp') }}
                     </button>
                 </div>
@@ -93,7 +93,7 @@
                         <input id="live-title" type="text" v-model="liveSettings.live_title" class="title-input"
                             :placeholder="$t('bilibili.live.titlePlaceholder')" />
                         <button class="btn primary" @click="updateTitle">
-                            <span class="btn-icon">🔄</span>
+                            <span class="btn-icon"><i class="fas fa-sync-alt"></i></span>
                             {{ $t('bilibili.live.updateTitle') }}
                         </button>
                     </div>
@@ -114,11 +114,11 @@
                             <option v-for="subArea in subAreas" :key="subArea" :value="subArea">{{ subArea }}</option>
                         </select>
                         <button class="btn primary" @click="updatePartition">
-                            <span class="btn-icon">✅</span>
+                            <span class="btn-icon"><i class="fas fa-check"></i></span>
                             {{ $t('bilibili.live.updateArea') }}
                         </button>
                         <button class="btn secondary" @click="refreshPartitions">
-                            <span class="btn-icon">🔄</span>
+                            <span class="btn-icon"><i class="fas fa-sync-alt"></i></span>
                             {{ $t('bilibili.live.refreshArea') }}
                         </button>
                     </div>
@@ -131,14 +131,14 @@
                         <input id="bullet-input" type="text" v-model="bulletMessage" class="bullet-input"
                             :placeholder="$t('bilibili.live.bulletPlaceholder')" />
                         <button class="btn success" @click="sendBullet">
-                            <span class="btn-icon">📤</span>
+                            <span class="btn-icon"><i class="fas fa-paper-plane"></i></span>
                             {{ $t('bilibili.live.sendBullet') }}
                         </button>
                     </div>
                 </div>
 
                 <button class="btn success pulse" @click="startLiveAndRedirect">
-                    <span class="btn-icon">🎬</span>
+                    <span class="btn-icon"><i class="fas fa-video"></i></span>
                     {{ $t('bilibili.live.startLive') }}
                 </button>
 
@@ -159,7 +159,7 @@
             <!-- 状态栏 -->
             <div class="status-bar">
                 <div class="status-content">
-                    <span class="status-icon">📊</span>
+                    <span class="status-icon"><i class="fas fa-chart-bar"></i></span>
                     <span class="status-text">{{ statusMessage }}</span>
                 </div>
             </div>
@@ -197,13 +197,13 @@ const tabs = [
     {
         id: 'account',
         name: '账号设置',
-        icon: '🔐',
+        icon: 'fas fa-lock',
         description: '账号登录与认证'
     },
     {
         id: 'live',
         name: '直播设置',
-        icon: '📡',
+        icon: 'fas fa-satellite-dish',
         description: '直播配置与管理'
     }
 ];

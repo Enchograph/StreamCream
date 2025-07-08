@@ -13,7 +13,22 @@
 
                     <div class="file-upload">
                         <label>{{ $t('mainPage.uploadVoiceModel') }}</label>
-                        <input type="file" id="voice-model-file" accept=".ckpt, .pth" multiple @change="handleVoiceModelUpload">
+                        <div class="custom-file-upload">
+                            <button type="button" class="btn primary" @click="triggerVoiceModelFileInput">
+                                {{ $t('fileOperations.chooseFile') }}
+                            </button>
+                            <span style="margin-left: 12px;">
+                                {{ voiceModelFileName || $t('fileOperations.noFileSelected') }}
+                            </span>
+                            <input
+                                ref="voiceModelFileInput"
+                                type="file"
+                                style="display: none"
+                                accept=".ckpt,.pth"
+                                multiple
+                                @change="onVoiceModelFileChange"
+                            />
+                        </div>
                         <small style="color: #666; display: block; margin-top: 5px;">
                             {{ $t('mainPage.supportedFormat') }}
                         </small>
@@ -38,7 +53,22 @@
 
                     <div class="file-upload">
                         <label>{{ $t('mainPage.uploadVoiceSample') }}</label>
-                        <input type="file" id="voice-sample-file" accept=".mp3, .wav" multiple>
+                        <div class="custom-file-upload">
+                            <button type="button" class="btn primary" @click="triggerVoiceSampleFileInput">
+                                {{ $t('fileOperations.chooseFile') }}
+                            </button>
+                            <span style="margin-left: 12px;">
+                                {{ voiceSampleFileName || $t('fileOperations.noFileSelected') }}
+                            </span>
+                            <input
+                                ref="voiceSampleFileInput"
+                                type="file"
+                                style="display: none"
+                                accept=".mp3,.wav"
+                                multiple
+                                @change="onVoiceSampleFileChange"
+                            />
+                        </div>
                     </div>
 
                     <p>{{ $t('mainPage.trainTip') }}</p>
@@ -79,7 +109,21 @@
 
                     <div class="file-upload">
                         <label>{{ $t('mainPage.uploadLive2dModel') }}</label>
-                        <input type="file" id="live2d-model-file" accept=".model3.json" @change="handleModelUpload">
+                        <div class="custom-file-upload">
+                            <button type="button" class="btn primary" @click="triggerLive2dFileInput">
+                                {{ $t('fileOperations.chooseFile') }}
+                            </button>
+                            <span style="margin-left: 12px;">
+                                {{ live2dFileName || $t('fileOperations.noFileSelected') }}
+                            </span>
+                            <input
+                                ref="live2dFileInput"
+                                type="file"
+                                style="display: none"
+                                accept=".model3.json"
+                                @change="onLive2dFileChange"
+                            />
+                        </div>
                     </div>
 
                     <button class="btn primary" @click="applyCustomModel" :disabled="!customModelPath">
@@ -176,7 +220,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { createApp } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -199,7 +243,7 @@ export default {
         const router = useRouter();
 
         // 获取i18n实例
-        const { t } = useI18n();
+        const { t, locale } = useI18n();
 
         // 获取Live2D状态管理
         const live2DStore = useLive2DStore();
@@ -243,18 +287,35 @@ export default {
             if (savedResolution) {
                 revolutionPreference.value = savedResolution;
             }
+            
+            // 动态设置文件选择按钮的文本
+            updateFileSelectorButtons();
+        });
+
+        // 动态更新文件选择按钮文本
+        const updateFileSelectorButtons = () => {
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+            fileInputs.forEach(input => {
+                // 使用CSS自定义属性来设置按钮文本
+                input.style.setProperty('--file-selector-text', `"${t('fileOperations.chooseFile')}"`);
+            });
+        };
+
+        // 监听语言变化，更新文件选择按钮文本
+        watch(locale, () => {
+            updateFileSelectorButtons();
         });
 
         // 处理模型变化
         const handleModelChange = (modelId) => {
             selectedModel.value = modelId;
-            console.log('选中的模型已更改为:', modelId);
+            console.log(t('mainPage.modelChanged'), modelId);
         };
 
         // Live2D模型选择相关方法
         const selectLive2DModel = (modelId) => {
             live2DStore.setCurrentModel(modelId);
-            console.log('Live2D模型已切换为:', modelId);
+            console.log(t('mainPage.live2dModelSwitched'), modelId);
         };
 
         const handleModelUpload = (event) => {
@@ -269,14 +330,37 @@ export default {
         }
 
         // 声音模型上传处理
-        const handleVoiceModelUpload = (event) => {
-            const files = Array.from(event.target.files);
-            uploadedVoiceModels.value = files.map(file => ({
-                name: file.name,
-                type: file.name.endsWith('.ckpt') ? t('mainPage.gptModel') : t('mainPage.sovitsModel'),
-                file: file
-            }));
-            console.log(t('mainPage.uploadedVoiceModels'), uploadedVoiceModels.value);
+        const voiceModelFileInput = ref(null);
+        const voiceModelFileName = ref('');
+        const triggerVoiceModelFileInput = () => {
+            if (voiceModelFileInput.value) {
+                voiceModelFileInput.value.value = '';
+                voiceModelFileInput.value.click();
+            }
+        };
+        const onVoiceModelFileChange = (e) => {
+            const files = Array.from(e.target.files);
+            voiceModelFileName.value = files.length
+                ? files.map(f => f.name).join(', ')
+                : '';
+            // 这里可以继续处理文件上传逻辑
+        };
+
+        // 声音样本上传处理
+        const voiceSampleFileInput = ref(null);
+        const voiceSampleFileName = ref('');
+        const triggerVoiceSampleFileInput = () => {
+            if (voiceSampleFileInput.value) {
+                voiceSampleFileInput.value.value = '';
+                voiceSampleFileInput.value.click();
+            }
+        };
+        const onVoiceSampleFileChange = (e) => {
+            const files = Array.from(e.target.files);
+            voiceSampleFileName.value = files.length
+                ? files.map(f => f.name).join(', ')
+                : '';
+            // 这里可以继续处理文件上传逻辑
         };
 
         const applyVoiceModel = async () => {
@@ -307,7 +391,7 @@ export default {
         const refreshPreview = () => {
             // 防止重复点击
             if (isRefreshing.value) {
-                console.log('刷新操作正在进行中，请稍候...');
+                console.log(t('mainPage.refreshInProgress'));
                 return;
             }
             
@@ -330,7 +414,7 @@ export default {
                     
                     refreshTimeout = setTimeout(() => {
                         iframe.src = currentSrc;
-                        console.log('Live2D预览已刷新');
+                        console.log(t('mainPage.live2dPreviewRefreshed'));
                         
                         // 延迟重置状态，给用户更多时间看到加载过程
                         setTimeout(() => {
@@ -338,14 +422,14 @@ export default {
                         }, 800);
                     }, 100);
                 } catch (error) {
-                    console.error('刷新预览失败:', error);
+                    console.error(t('mainPage.refreshPreviewFailed'), error);
             
                     setTimeout(() => {
                         isRefreshing.value = false;
                     }, 500);
                 }
             } else {
-                console.warn('未找到Live2D预览iframe');
+                console.warn(t('mainPage.live2dIframeNotFound'));
                 // 未找到iframe时也延迟重置状态
                 setTimeout(() => {
                     isRefreshing.value = false;
@@ -392,7 +476,7 @@ export default {
                 const data = await response.json();
                 return data.choices[0].message.content;
             } catch (error) {
-                console.error('调用OpenAI API出错:', error);
+                console.error(t('mainPage.openaiApiError'), error);
                 throw error;
             }
         };
@@ -410,7 +494,7 @@ export default {
 
                 generatedSpeech.value = await callOpenAI(prompt);
             } catch (error) {
-                console.error('生成讲稿出错:', error);
+                console.error(t('mainPage.generateSpeechError'), error);
                 ElMessage.error(t('mainPage.generateSpeechFailed'))
             } finally {
                 isGenerating.value = false;
@@ -427,7 +511,20 @@ export default {
             ElMessage.info(t('mainPage.speechTestFeatureDev'))
         };
 
-        // 移除动态挂载，改为直接在模板中使用组件
+        // Live2D模型上传自定义按钮
+        const live2dFileInput = ref(null);
+        const live2dFileName = ref('');
+        const triggerLive2dFileInput = () => {
+            if (live2dFileInput.value) {
+                live2dFileInput.value.value = '';
+                live2dFileInput.value.click();
+            }
+        };
+        const onLive2dFileChange = (e) => {
+            const file = e.target.files[0];
+            live2dFileName.value = file ? file.name : '';
+            // 这里可以继续处理文件上传逻辑
+        };
 
         // 返回需要在模板中使用的变量和方法
         return {
@@ -448,7 +545,14 @@ export default {
 
             // 声音模型上传相关
             uploadedVoiceModels,
-            handleVoiceModelUpload,
+            voiceModelFileInput,
+            voiceModelFileName,
+            triggerVoiceModelFileInput,
+            onVoiceModelFileChange,
+            voiceSampleFileInput,
+            voiceSampleFileName,
+            triggerVoiceSampleFileInput,
+            onVoiceSampleFileChange,
             applyVoiceModel,
 
             // AI讲稿生成相关
@@ -461,7 +565,11 @@ export default {
             testSpeech,
             
             // 刷新预览相关
-            isRefreshing
+            isRefreshing,
+            live2dFileInput,
+            live2dFileName,
+            triggerLive2dFileInput,
+            onLive2dFileChange
         };
     }
 }
@@ -1002,12 +1110,7 @@ input[type="file"]::file-selector-button {
     font-weight: 600;
     margin-right: 10px;
     transition: all 0.3s ease;
-    content: "Choose File";
-}
-
-/* 中文环境下的文件选择按钮文本 */
-html[lang="zh-CN"] input[type="file"]::file-selector-button {
-    content: "选择文件";
+    content: var(--file-selector-text, "Choose File");
 }
 
 input[type="file"]::file-selector-button:hover {
@@ -1139,5 +1242,21 @@ input[type="file"]::file-selector-button:hover {
     50% {
         opacity: 0.7;
     }
+}
+
+.custom-file-upload {
+    display: flex;
+    align-items: center;
+    border: 2px solid #e1e8ed;
+    border-radius: 10px;
+    background: #f8f9fa;
+    padding: 12px 16px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+.custom-file-upload:hover {
+    border-color: #667eea;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 </style>

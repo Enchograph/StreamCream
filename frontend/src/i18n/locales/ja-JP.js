@@ -536,6 +536,14 @@ export default {
     generateSpeechFailed: '原稿生成に失敗しました。再試行してください',
     generateSpeechFirstWarning: 'まず原稿を生成してください',
     speechTestFeatureDev: '原稿テスト機能は今後実装予定',
+    modelChanged: '選択されたモデルが変更されました:',
+    live2dModelSwitched: 'Live2Dモデルが切り替えられました:',
+    refreshInProgress: '更新操作が進行中です。しばらくお待ちください...',
+    live2dPreviewRefreshed: 'Live2Dプレビューが更新されました',
+    refreshPreviewFailed: 'プレビューの更新に失敗しました:',
+    openaiApiError: 'OpenAI API呼び出しエラー:',
+    generateSpeechError: '原稿生成エラー:',
+    live2dIframeNotFound: 'Live2Dプレビューiframeが見つかりません',
   },
   streamingPage: {
     // 講稿/アウトライン/AI解説関連
@@ -850,6 +858,22 @@ export default {
     switchModelSuccess: 'モデルの切り替えに成功しました！',
     generateSampleFailed: 'サンプル音声の生成に失敗しました',
     sampleText: 'こんにちは、これはサンプル音声です。おはようございます、こんにちは、こんばんは。'
+  },
+
+  // 共通ファイル操作
+  fileOperations: {
+    chooseFile: 'ファイル選択',
+    noFileSelected: 'ファイルが選択されていません',
+    selectFiles: 'ファイル選択',
+    dragAndDrop: 'ファイルをここにドラッグ＆ドロップするか、クリックして選択',
+    fileSelected: 'ファイルが選択されました',
+    filesSelected: 'ファイルが選択されました'
+  },
+
+  // 共通入力プレースホルダー
+  inputPlaceholders: {
+    keywords: 'キーワードを入力してください、例：サイバーパンク2077、パッチ、アップデート',
+    keywordsSeparator: 'カンマで区切ってください'
   },
 
   // streamConfig component

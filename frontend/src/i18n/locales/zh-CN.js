@@ -686,6 +686,14 @@ export default {
     generateSpeechFailed: '生成讲稿失败，请重试',
     generateSpeechFirstWarning: '请先生成讲稿',
     speechTestFeatureDev: '讲稿测试功能将在后续实现',
+    modelChanged: '选中的模型已更改为:',
+    live2dModelSwitched: 'Live2D模型已切换为:',
+    refreshInProgress: '刷新操作正在进行中，请稍候...',
+    live2dPreviewRefreshed: 'Live2D预览已刷新',
+    refreshPreviewFailed: '刷新预览失败:',
+    openaiApiError: '调用OpenAI API出错:',
+    generateSpeechError: '生成讲稿出错:',
+    live2dIframeNotFound: '未找到Live2D预览iframe',
   },
 
   setting: {
@@ -1381,6 +1389,22 @@ export default {
     currentLang: '中',
     currentLangEn: 'En',
     selectLanguage: '选择语言'
+  },
+
+  // 通用文件操作
+  fileOperations: {
+    chooseFile: '选择文件',
+    noFileSelected: '未选择文件',
+    selectFiles: '选择文件',
+    dragAndDrop: '拖拽文件到此处或点击选择',
+    fileSelected: '已选择文件',
+    filesSelected: '已选择文件'
+  },
+
+  // 通用输入提示
+  inputPlaceholders: {
+    keywords: '输入关键词，如：赛博朋克2077,补丁,更新',
+    keywordsSeparator: '用逗号分隔'
   },
 
   trainPage: {

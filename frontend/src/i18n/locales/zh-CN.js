@@ -336,6 +336,7 @@ export default {
   // 直播页面
   streamingPage: {
       // 讲稿/大纲/AI解说相关
+      liveEnded: '暂无直播',
       topicAndOutline: '主题设置与提纲生成',
       inputLiveTopic: '请输入直播主题',
       generating: '生成中...',

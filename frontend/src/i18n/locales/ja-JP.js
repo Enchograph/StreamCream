@@ -549,6 +549,7 @@ export default {
   },
   streamingPage: {
       // 講稿/アウトライン/AI解説関連
+      liveEnded: '配信終了',
       topicAndOutline: 'テーマ設定とアウトライン生成',
       inputLiveTopic: '配信テーマを入力してください',
       generating: '生成中...',

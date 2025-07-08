@@ -336,6 +336,7 @@ If you encounter unsolvable problems, please contact the development team or ref
   // Streaming Page
   streamingPage: {
       // Script/Outline/AI explanation related
+      liveEnded: 'No Live',
       topicAndOutline: 'Topic Setting and Outline Generation',
       inputLiveTopic: 'Please enter live streaming topic',
       generating: 'Generating...',

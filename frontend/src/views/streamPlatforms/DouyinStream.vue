@@ -1221,10 +1221,26 @@ input:focus, select:focus, .modern-input:focus, .modern-select:focus, .field-inp
 /* 页面容器 */
 .page-container {
     min-height: 100vh;
-    background: #fafdff;
+    background: linear-gradient(270deg, #e0e7ff, #86a8e7, #91eac9, #f5f7fa, #e0e7ff);
+    background-size: 200% 200%;
+    animation: gradientFlow 8s ease-in-out infinite;
     font-family: 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     position: relative;
     overflow-x: hidden;
+}
+
+@keyframes gradientFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 /* 背景装饰 */

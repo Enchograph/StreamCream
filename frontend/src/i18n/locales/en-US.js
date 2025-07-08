@@ -1043,14 +1043,55 @@ If you encounter unsolvable problems, please contact the development team or ref
     title: 'Twitch Live Streaming Platform',
     subtitle: 'Professional Twitch live streaming key acquisition and management tool',
     comingSoon: 'Coming Soon',
-    description: 'Twitch live streaming platform features are under development, stay tuned'
+    description: 'Twitch live streaming platform features are under development, stay tuned',
+    streamKeyGuide: {
+      title: 'How to Get Your Twitch Stream Key',
+      description: 'Follow these steps to get your Twitch stream key (Stream Key):',
+      steps: {
+        step1: 'Log in to {twitch} and access your account.',
+        step2: 'Click your avatar in the top right and select <strong>"Creator Dashboard"</strong>.',
+        step3: 'In the left menu, click <strong>"Settings"</strong> &gt; <strong>"Stream"</strong>.',
+        step4: 'Under "Stream Key & Preferences", find <strong>"Primary Stream Key"</strong> and click "Show" to view your stream key.',
+        step5: 'Click "Copy" and paste the stream key into your streaming software to start streaming.'
+      },
+      warning: {
+        title: 'Warning',
+        content: 'Do not share your stream key. Others may use your account to stream! If leaked, you can reset it on the page.'
+      },
+      tip: 'After getting your stream key and stream URL, select "Twitch" as your platform and paste them in.'
+    }
   },
 
   youtube: {
     title: 'YouTube Live Streaming Platform',
     subtitle: 'Professional YouTube live streaming key acquisition and management tool',
     comingSoon: 'Coming Soon',
-    description: 'YouTube live streaming platform features are under development, stay tuned'
+    description: 'YouTube live streaming platform features are under development, stay tuned',
+    // YouTube Stream Key Guide
+    streamKeyGuide: {
+      title: 'How to Get YouTube Live Stream Key',
+      description: 'Here are the steps to get your YouTube stream key (Stream Key):',
+      steps: {
+        step1: 'Log in to {youtube}, click the camera icon in the top right corner, and select "Go live".',
+        step2: 'If this is your first time, you may need to verify your account (e.g., bind a phone number) and wait 24 hours for live streaming to be activated.',
+        step3: 'In the live control panel, click "Stream" in the left menu.',
+        step4: 'Under "Encoder settings", you can see the following two items:',
+        step5: 'Click "Show" to view the complete stream key and copy it. You can paste it in designed spot for live streaming.'
+      },
+      streamInfo: {
+        streamUrl: 'Stream URL',
+        streamUrlExamplePrefix: 'e.g.',
+        streamKey: 'Stream Key',
+        streamKeyExamplePrefix: 'a randomly generated string, e.g.',
+        streamUrlExample: 'rtmp://a.rtmp.youtube.com/live2',
+        streamKeyExample: 'abcd-efgh-ijkl-mnop'
+      },
+      warning: {
+        title: 'Warning',
+        content: 'Do not share your stream key publicly, as others may use your account for live streaming!'
+      },
+      tip: 'After getting the stream key and stream address, select "YouTube" as the live streaming platform, then paste the stream key and stream address.'
+    }
   },
 
   kuaishou: {

@@ -34,7 +34,7 @@
                     :disabled="outlineBlocks.length === 0">
                     {{ isBroadcasting ? $t('streamingPage.pauseBroadcast') : $t('streamingPage.startBroadcast') }}
                 </button>
-                <button @click="endBroadcast" :disabled="!hasStartedBroadcasting" class="end-broadcast">
+                <button @click="stopLive" :disabled="!hasStartedBroadcasting" class="end-broadcast">
                     {{ $t('streamingPage.endBroadcast') }}
                 </button>
             </div>

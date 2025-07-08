@@ -1032,6 +1032,37 @@ export default {
       restartServices: '関連バックエンドサービスを再起動'
     }
   },
+  youtube: {
+    title: 'YouTubeライブ配信プラットフォーム',
+    subtitle: 'プロフェッショナルなYouTubeライブ配信キー取得・管理ツール',
+    comingSoon: '近日公開',
+    description: 'YouTubeライブ配信プラットフォーム機能は開発中です。お楽しみに',
+    // YouTube配信キー取得ガイド
+    streamKeyGuide: {
+      title: 'YouTubeライブ配信キーの取得方法',
+      description: '以下はYouTube配信キー（Stream Key）を取得する手順です：',
+      steps: {
+        step1: '{youtube}にログインし、右上のカメラアイコンをクリックして「ライブ配信を開始」を選択します。',
+        step2: '初回使用の場合、アカウント認証（電話番号の連携など）が必要で、ライブ配信機能の有効化まで24時間待つ必要があります。',
+        step3: 'ライブコントロールパネルで、左側メニューの「配信」をクリックします。',
+        step4: '「エンコーダー設定」の下に、以下の2つの項目が表示されます：',
+        step5: '「表示」ボタンをクリックして完全な配信キーを表示し、コピーします。配信ソフトウェアに貼り付けてライブ配信できます。'
+      },
+      streamInfo: {
+        streamUrl: '配信URL（Stream URL）',
+        streamUrlExamplePrefix: '例：',
+        streamKey: '配信キー（Stream Key）',
+        streamKeyExamplePrefix: 'ランダム生成された文字列、例：',
+        streamUrlExample: 'rtmp://a.rtmp.youtube.com/live2',
+        streamKeyExample: 'abcd-efgh-ijkl-mnop'
+      },
+      warning: {
+        title: '注意',
+        content: '配信キーを公開しないでください。他の人があなたのアカウントでライブ配信する可能性があります！'
+      },
+      tip: '配信キーと配信アドレスを取得した後、ライブ配信プラットフォームとして「YouTube」を選択し、配信キーと配信アドレスを貼り付けてください。'
+    }
+  },
   xiaohongshu: {
     title: "小紅書ライブ",
     subtitle: "ワンストップ小紅書ライブ配信管理",
@@ -1064,6 +1095,24 @@ export default {
     },
     help: {
       title: "ヘルプドキュメント"
+    }
+  },
+  twitch: {
+    streamKeyGuide: {
+      title: 'Twitch配信キーの取得方法',
+      description: '以下の手順でTwitch配信キー（Stream Key）を取得できます：',
+      steps: {
+        step1: '{twitch}にログインし、アカウントにアクセスします。',
+        step2: '右上のアイコンをクリックし、<strong>「クリエイターダッシュボード」</strong>を選択します。',
+        step3: '左側メニューで<strong>「設定」</strong> &gt; <strong>「配信」</strong>をクリックします。',
+        step4: '「配信キーと設定」セクションで、<strong>「プライマリ配信キー」</strong>を見つけ、「表示」をクリックして配信キーを確認します。',
+        step5: '「コピー」をクリックし、配信ソフトに貼り付けて配信を開始します。'
+      },
+      warning: {
+        title: '注意',
+        content: '配信キーを他人に教えないでください。他人があなたのアカウントで配信する恐れがあります。漏洩した場合はページでリセットできます。'
+      },
+      tip: '配信キーと配信URLを取得したら、配信プラットフォームで「Twitch」を選択し、貼り付けてください。'
     }
   }
 }

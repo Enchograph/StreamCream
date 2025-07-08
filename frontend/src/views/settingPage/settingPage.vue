@@ -2,14 +2,16 @@
     <v-container class="pa-4 setting-bg-glass">
         <v-card flat class="mx-auto setting-card-glass" max-width="1000">
             <v-card-title class="text-h5 font-weight-medium setting-title-glass">
-                <span class="title-bar-gradient"><v-icon color="#fff" size="28">mdi-cog</v-icon></span>{{ $t('setting.title') }}
+                <span class="title-bar-gradient"><v-icon color="#fff"
+                        size="28">mdi-cog</v-icon></span>{{ $t('setting.title') }}
             </v-card-title>
-            
+
             <v-row>
                 <v-col cols="12">
                     <v-card flat class="mb-6 section-card-glass">
                         <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">
-                            <span class="section-bar-gradient"><v-icon color="#fff" size="20">mdi-translate</v-icon></span>{{ $t('setting.languageTitle') }}
+                            <span class="section-bar-gradient"><v-icon color="#fff"
+                                    size="20">mdi-translate</v-icon></span>{{ $t('setting.languageTitle') }}
                         </v-card-title>
                         <v-card-text>
                             <v-row align="center" justify="space-between">
@@ -25,18 +27,21 @@
                 <v-col cols="12">
                     <v-card flat class="mb-6 section-card-glass">
                         <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">
-                            <span class="section-bar-gradient"><v-icon color="#fff" size="20">mdi-tools</v-icon></span>{{ $t('setting.debugTitle') }}
+                            <span class="section-bar-gradient"><v-icon color="#fff"
+                                    size="20">mdi-tools</v-icon></span>{{ $t('setting.debugTitle') }}
                         </v-card-title>
                         <v-card-text>
                             <v-row>
                                 <v-col cols="12">
-                                    <v-btn color="primary" variant="elevated" @click="resetPreferences" class="rounded-btn-glass">
+                                    <v-btn color="primary" variant="elevated" @click="resetPreferences"
+                                        class="rounded-btn-glass">
                                         {{ $t('setting.resetAll') }}
                                     </v-btn>
                                 </v-col>
                                 <v-col cols="12">
                                     <v-switch v-model="debugMode" :label="$t('setting.debugMode')" color="primary"
-                                        :messages="debugMode ? $t('setting.enabled') : $t('setting.disabled')" class="rounded-switch-glass"></v-switch>
+                                        :messages="debugMode ? $t('setting.enabled') : $t('setting.disabled')"
+                                        class="rounded-switch-glass"></v-switch>
                                 </v-col>
                                 <v-col cols="12">
                                     <v-row align="center" justify="space-between">
@@ -46,24 +51,17 @@
                                                 { text: $t('setting.bannerRed'), value: 'red' },
                                                 { text: $t('setting.bannerBlue'), value: 'blue' },
                                                 { text: $t('setting.bannerPurple'), value: 'purple' }
-                                            ]" item-title="text" item-value="value" :label="$t('setting.bannerColor')" outlined
-                                                dense class="rounded-input-glass"></v-select>
+                                            ]" item-title="text" item-value="value" :label="$t('setting.bannerColor')"
+                                                outlined dense class="rounded-input-glass"></v-select>
                                         </v-col>
                                         <v-col cols="6" class="d-flex justify-end align-center">
-                                            <v-select
-                                                v-model="isBannerDispersed"
-                                                :items="[
-                                                    { text: $t('setting.bannerDisperse'), value: false },
-                                                    { text: $t('setting.bannerGather'), value: true }
-                                                ]"
-                                                item-title="text"
-                                                item-value="value"
-                                                :label="$t('setting.bannerLayout')"
-                                                outlined
-                                                dense
+                                            <v-select v-model="isBannerDispersed" :items="[
+                                                { text: $t('setting.bannerDisperse'), value: true },
+                                                { text: $t('setting.bannerGather'), value: false }
+                                            ]" item-title="text" item-value="value"
+                                                :label="$t('setting.bannerLayout')" outlined dense
                                                 class="rounded-input-glass"
-                                                @change="handleBannerLayoutChange"
-                                            ></v-select>
+                                                @change="handleBannerLayoutChange"></v-select>
                                         </v-col>
                                     </v-row>
                                 </v-col>
@@ -74,7 +72,8 @@
                 <v-col cols="12">
                     <v-card flat class="mb-6 section-card-glass">
                         <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">
-                            <span class="section-bar-gradient"><v-icon color="#fff" size="20">mdi-robot</v-icon></span>{{ $t('setting.aiTitle') }}
+                            <span class="section-bar-gradient"><v-icon color="#fff"
+                                    size="20">mdi-robot</v-icon></span>{{ $t('setting.aiTitle') }}
                         </v-card-title>
                         <v-card-text>
                             <v-row>
@@ -89,15 +88,17 @@
                                         { text: '腾讯云', value: 'https://hunyuan.cloud.tencent.com/hyllm/v1/chat/completions' },
                                         { text: 'SORUX', value: 'https://api.soruxgpt.com/v1/chat/completions' },
                                         { text: $t('setting.providerCustom'), value: 'custom' }
-                                    ]" item-title="text" item-value="value" :label="$t('setting.provider')" outlined dense class="rounded-input-glass" @change="handleProviderChange"></v-select>
+                                    ]" item-title="text" item-value="value" :label="$t('setting.provider')" outlined
+                                        dense class="rounded-input-glass" @change="handleProviderChange"></v-select>
                                     <v-text-field v-if="aiSettings.provider === 'custom'"
                                         v-model="aiSettings.customProvider" :label="$t('setting.apiEndpoint')"
                                         :placeholder="$t('setting.apiEndpointPlaceholder')" outlined dense
                                         class="mt-2 rounded-input-glass"></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field v-model="aiSettings.apiKey" :label="$t('setting.apiKey')" :placeholder="$t('setting.apiKeyPlaceholder')"
-                                        type="password" outlined dense class="rounded-input-glass"></v-text-field>
+                                    <v-text-field v-model="aiSettings.apiKey" :label="$t('setting.apiKey')"
+                                        :placeholder="$t('setting.apiKeyPlaceholder')" type="password" outlined dense
+                                        class="rounded-input-glass"></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
                                     <v-select v-model="aiSettings.modelName" :items="[
@@ -149,9 +150,10 @@
                                         { text: 'O3', value: 'o3', group: '其他' },
                                         { text: 'O3 All', value: 'o3-all', group: '其他' },
                                         { text: 'Text Embedding Ada 002', value: 'text-embedding-ada-002', group: '其他' }
-                                    ]" :label="$t('setting.modelName')" outlined dense item-title="text" item-value="value"
-                                        :filter="modelFilter" :search-input.sync="modelSearch" clearable
-                                        :no-data-text="$t('setting.noModelFound')" class="rounded-input-glass">
+                                    ]" :label="$t('setting.modelName')" outlined dense item-title="text"
+                                        item-value="value" :filter="modelFilter" :search-input.sync="modelSearch"
+                                        clearable :no-data-text="$t('setting.noModelFound')"
+                                        class="rounded-input-glass">
                                         <template v-slot:prepend-item>
                                             <v-text-field v-model="modelSearch" :label="$t('setting.searchModel')"
                                                 prepend-inner-icon="mdi-magnify" clearable hide-details
@@ -160,8 +162,10 @@
                                     </v-select>
                                 </v-col>
                                 <v-col cols="12" v-if="aiSettings.modelName === 'custom'">
-                                    <v-text-field v-model="aiSettings.customModelName" :label="$t('setting.customModelName')"
-                                        :placeholder="$t('setting.customModelNamePlaceholder')" outlined dense class="rounded-input-glass"></v-text-field>
+                                    <v-text-field v-model="aiSettings.customModelName"
+                                        :label="$t('setting.customModelName')"
+                                        :placeholder="$t('setting.customModelNamePlaceholder')" outlined dense
+                                        class="rounded-input-glass"></v-text-field>
                                 </v-col>
                             </v-row>
                         </v-card-text>
@@ -179,7 +183,8 @@
                 <v-col cols="12">
                     <v-card flat class="mb-6 section-card-glass">
                         <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">
-                            <span class="section-bar-gradient"><v-icon color="#fff" size="20">mdi-video-wireless</v-icon></span>{{ $t('setting.liveTitle') }}
+                            <span class="section-bar-gradient"><v-icon color="#fff"
+                                    size="20">mdi-video-wireless</v-icon></span>{{ $t('setting.liveTitle') }}
                         </v-card-title>
                         <v-card-text>
                             <v-row>
@@ -189,19 +194,22 @@
                                         { text: '1280×720 (16:9)', value: '1280x720' },
                                         { text: '2048×1080 (≈17:9)', value: '2048x1080' },
                                         { text: '1080×1920 (=9:16)', value: '1080x1920' }
-                                    ]" item-title="text" item-value="value" :label="$t('setting.resolution')" outlined dense class="rounded-input-glass"></v-select>
+                                    ]" item-title="text" item-value="value" :label="$t('setting.resolution')" outlined
+                                        dense class="rounded-input-glass"></v-select>
                                 </v-col>
                                 <v-col cols="12" md="6">
                                     <v-select v-model="fpsPreference" :items="[
                                         { text: '30fps', value: '30' },
                                         { text: '60fps', value: '60' }
-                                    ]" item-title="text" item-value="value" :label="$t('setting.fps')" outlined dense class="rounded-input-glass"></v-select>
+                                    ]" item-title="text" item-value="value" :label="$t('setting.fps')" outlined dense
+                                        class="rounded-input-glass"></v-select>
                                 </v-col>
                                 <v-col cols="12" md="6">
                                     <v-select v-model="bgPreference" :items="[
                                         { text: $t('setting.bgDefault'), value: 'default' },
                                         ...customBackgrounds.map(bg => ({ text: bg, value: bg }))
-                                    ]" item-title="text" item-value="value" :label="$t('setting.bg')" outlined dense class="rounded-input-glass"></v-select>
+                                    ]" item-title="text" item-value="value" :label="$t('setting.bg')" outlined dense
+                                        class="rounded-input-glass"></v-select>
                                 </v-col>
                                 <v-col cols="12" md="6">
                                     <v-btn color="primary" variant="elevated" block height="44"
@@ -219,20 +227,24 @@
                                         { text: '虎牙', value: 'huya' },
                                         { text: '斗鱼', value: 'douyu' },
                                         { text: 'YY直播', value: 'yy' }
-                                    ]" item-title="text" item-value="value" :label="$t('setting.platform')" outlined dense class="rounded-input-glass"></v-select>
+                                    ]" item-title="text" item-value="value" :label="$t('setting.platform')" outlined
+                                        dense class="rounded-input-glass"></v-select>
                                 </v-col>
                                 <v-col cols="12" md="6">
-                                    <v-btn color="secondary" variant="elevated" block height="44" class="mb-4 rounded-btn-glass">
+                                    <v-btn color="secondary" variant="elevated" block height="44"
+                                        class="mb-4 rounded-btn-glass">
                                         {{ $t('setting.getStreamKey') }}
                                     </v-btn>
                                 </v-col>
                                 <v-col cols="12" md="6">
-                                    <v-text-field v-model="streamDomain" :label="$t('setting.streamDomain')" :placeholder="$t('setting.inputStreamDomain')" outlined
-                                        dense class="rounded-input-glass"></v-text-field>
+                                    <v-text-field v-model="streamDomain" :label="$t('setting.streamDomain')"
+                                        :placeholder="$t('setting.inputStreamDomain')" outlined dense
+                                        class="rounded-input-glass"></v-text-field>
                                 </v-col>
                                 <v-col cols="12" md="6">
-                                    <v-text-field v-model="streamKey" :label="$t('setting.streamKey')" :placeholder="$t('setting.inputStreamKey')" outlined
-                                        dense class="rounded-input-glass"></v-text-field>
+                                    <v-text-field v-model="streamKey" :label="$t('setting.streamKey')"
+                                        :placeholder="$t('setting.inputStreamKey')" outlined dense
+                                        class="rounded-input-glass"></v-text-field>
                                 </v-col>
                                 <v-col cols="12" class="text-center">
                                     <v-btn color="primary" class="mr-4" @click="testStreamConnection">
@@ -427,7 +439,7 @@ export default {
         // 优先从后端获取
         try {
             const prefs = await api.getPreferences();
-            
+
             // 只有当后端有aiSettings且本地没有保存过设置时，才使用后端的设置
             if (prefs && prefs.aiSettings && !localStorage.getItem('aiProvider')) {
                 this.aiSettings = prefs.aiSettings;
@@ -676,29 +688,35 @@ export default {
     background-size: 200% 200%;
     animation: gradientFlow 8s ease-in-out infinite;
 }
+
 @keyframes gradientFlow {
     0% {
         background-position: 0% 50%;
     }
+
     50% {
         background-position: 100% 50%;
     }
+
     100% {
         background-position: 0% 50%;
     }
 }
+
 .setting-content {
     position: relative;
     z-index: 1;
 }
+
 .setting-card-glass {
     border-radius: 32px;
     padding: 40px 32px 32px 32px;
-    background: rgba(255,255,255,0.55);
+    background: rgba(255, 255, 255, 0.55);
     border: 1.5px solid #e3e8f7;
     position: relative;
     z-index: 1;
 }
+
 .setting-title-glass {
     display: flex;
     align-items: center;
@@ -754,6 +772,7 @@ export default {
     border-radius: 16px;
     margin-right: 18px;
 }
+
 .section-card-glass {
     background: rgba(245, 247, 250, 0.45);
     border-radius: 24px;
@@ -761,6 +780,7 @@ export default {
     padding-bottom: 12px;
     border: 1px solid #e3e8f7;
 }
+
 .section-title-glass {
     display: flex;
     align-items: center;
@@ -769,6 +789,7 @@ export default {
     font-weight: 600;
     text-transform: none !important;
 }
+
 .section-bar-gradient {
     display: inline-flex;
     align-items: center;
@@ -779,6 +800,7 @@ export default {
     border-radius: 10px;
     margin-right: 12px;
 }
+
 .rounded-btn-glass {
     border-radius: 28px !important;
     font-size: 1.08rem;
@@ -792,21 +814,25 @@ export default {
     letter-spacing: 2px;
     text-transform: none !important;
 }
+
 .rounded-btn-glass:hover {
     background: linear-gradient(90deg, #7f7fd5 0%, #86a8e7 100%);
     color: #fff;
 }
+
 .rounded-input-glass .v-input__control,
 .rounded-input-glass .v-field {
     border-radius: 22px !important;
-    background: rgba(255,255,255,0.7) !important;
+    background: rgba(255, 255, 255, 0.7) !important;
     border: 1px solid #e3e8f7;
 }
+
 .rounded-switch-glass .v-input__control {
     border-radius: 22px !important;
-    background: rgba(255,255,255,0.7) !important;
+    background: rgba(255, 255, 255, 0.7) !important;
     border: 1px solid #e3e8f7;
 }
+
 .finish-btn-wrapper {
     width: 100%;
     display: flex;
@@ -815,6 +841,7 @@ export default {
     margin-top: 32px;
     margin-bottom: 8px;
 }
+
 /* 覆盖Vuetify的默认大写样式 */
 .text-h5,
 .text-subtitle-1,
@@ -842,6 +869,7 @@ export default {
         padding: 12px 2vw 12px 2vw;
         max-width: 100vw;
     }
+
     .floating-finish-btn-glass {
         left: 50%;
         bottom: 10px;

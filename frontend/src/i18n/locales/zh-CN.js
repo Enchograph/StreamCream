@@ -1042,14 +1042,55 @@ export default {
     title: 'Twitch直播平台页面',
     subtitle: '专业的Twitch直播推流码获取和管理工具',
     comingSoon: '即将推出',
-    description: 'Twitch直播平台功能正在开发中，敬请期待'
+    description: 'Twitch直播平台功能正在开发中，敬请期待',
+    streamKeyGuide: {
+      title: '如何获取 Twitch 直播推流码',
+      description: '按照以下步骤获取你的 Twitch 推流码（Stream Key）：',
+      steps: {
+        step1: '登录 {twitch}，进入你的账号。',
+        step2: '点击右上角头像，选择<strong>"创作者控制台"</strong>（Creator Dashboard）。',
+        step3: '在左侧菜单依次点击 <strong>"设置"</strong> &gt; <strong>"流"</strong>（Settings &gt; Stream）。',
+        step4: '在"流密钥和首选项"部分，找到<strong>"主流密钥"</strong>（Primary Stream Key），点击"显示"按钮查看完整推流码。',
+        step5: '点击"复制"按钮，将推流码粘贴到相应位置即可开始直播。'
+      },
+      warning: {
+        title: '注意',
+        content: '不要泄露你的推流码，否则他人可能会用你的账号直播！如有泄露可在页面重置推流码。'
+      },
+      tip: '获取推流码和推流地址后，选择直播平台为 "Twitch"，然后粘贴推流码和推流地址即可。'
+    }
   },
 
   youtube: {
     title: 'YouTube直播平台页面',
     subtitle: '专业的YouTube直播推流码获取和管理工具',
     comingSoon: '即将推出',
-    description: 'YouTube直播平台功能正在开发中，敬请期待'
+    description: 'YouTube直播平台功能正在开发中，敬请期待',
+    // YouTube推流码获取指南
+    streamKeyGuide: {
+      title: '如何获取 YouTube 直播推流码',
+      description: '以下是获取 YouTube 推流码（Stream Key）的步骤：',
+      steps: {
+        step1: '登录 {youtube}，点击右上角的摄像机图标，选择 "开始直播"。',
+        step2: '如果是首次使用，可能需要验证账号（例如绑定手机号），并等待 24 小时激活直播功能。',
+        step3: '在直播控制面板中，点击左侧菜单的"直播编码器"（或英文界面为 "Stream"）。',
+        step4: '在"编码设置"下方，你可以看到以下两项：',
+        step5: '点击"显示"按钮查看完整推流码，并复制它。你可以将它粘贴到推流软件（如 OBS）中进行直播。'
+      },
+      streamInfo: {
+        streamUrl: '推流网址（Stream URL）',
+        streamUrlExamplePrefix: '例如',
+        streamKey: '推流码（Stream Key）',
+        streamKeyExamplePrefix: '是一串随机生成的字符串，如',
+        streamUrlExample: 'rtmp://a.rtmp.youtube.com/live2',
+        streamKeyExample: 'abcd-efgh-ijkl-mnop'
+      },
+      warning: {
+        title: '注意',
+        content: '不要公开你的推流码，否则他人可能会用你的账号直播！'
+      },
+      tip: '获取推流码和推流地址后，选择直播平台为 "YouTube"，然后粘贴推流码和推流地址即可。'
+    }
   },
 
   kuaishou: {

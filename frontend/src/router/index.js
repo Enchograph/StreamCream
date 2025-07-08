@@ -101,6 +101,14 @@ router.beforeEach((to, from, next) => {
         isLoggedIn: authStore.isLoggedIn
     })
 
+    // 如果用户已登录且试图访问登录页面，重定向到主页面
+    if (to.path === '/loginPage' && authStore.isAuthenticated) {
+        console.log('用户已登录，重定向到主页面')
+        next('/mainPage')
+        return
+    }
+
+    // 如果需要认证但用户未登录，重定向到登录页面
     if (requiresAuth && !authStore.isAuthenticated) {
         ElMessage.warning('请先登录!!!')
         next('/loginPage')

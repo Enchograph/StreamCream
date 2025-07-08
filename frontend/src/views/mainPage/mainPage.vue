@@ -33,8 +33,10 @@
                             {{ $t('mainPage.supportedFormat') }}
                         </small>
                         <div v-if="uploadedVoiceModels.length > 0" style="margin-top: 10px;">
-                            <small style="color: #409eff; font-weight: bold;">{{ $t('mainPage.selectedFiles') }}:</small>
-                            <div v-for="(model, index) in uploadedVoiceModels" :key="index" style="margin: 5px 0; padding: 5px; background: #f5f7fa; border-radius: 4px; font-size: 12px;">
+                            <small
+                                style="color: #409eff; font-weight: bold;">{{ $t('mainPage.selectedFiles') }}:</small>
+                            <div v-for="(model, index) in uploadedVoiceModels" :key="index"
+                                style="margin: 5px 0; padding: 5px; background: #f5f7fa; border-radius: 4px; font-size: 12px;">
                                 📁 {{ model.name }} ({{ model.type }})
                             </div>
                         </div>
@@ -85,7 +87,8 @@
                     <router-link to="/trainPage" class="link">{{ $t('mainPage.advancedTrain') }}</router-link>
 
                     <div id="training-status" style="margin-top: 15px;">
-                        {{ $t('mainPage.trainStatus') }} <span class="status-badge not-ready">{{ $t('mainPage.notStarted') }}</span>
+                        {{ $t('mainPage.trainStatus') }} <span
+                            class="status-badge not-ready">{{ $t('mainPage.notStarted') }}</span>
                     </div>
                 </div>
             </div>
@@ -130,10 +133,11 @@
                         <span class="btn-icon">🎭</span>
                         {{ $t('mainPage.applyCustomModel') }}
                     </button>
-                    <a href="#" class="link">{{ $t('mainPage.advancedLive2dTrain') }}</a>
+                    <!-- <a href="#" class="link">{{ $t('mainPage.advancedLive2dTrain') }}</a> -->
 
                     <div id="model-status" style="margin-top: 15px;">
-                        {{ $t('mainPage.currentModel') }} <span class="status-badge ready">{{ getCurrentModelName() }}</span>
+                        {{ $t('mainPage.currentModel') }} <span
+                            class="status-badge ready">{{ getCurrentModelName() }}</span>
                     </div>
                 </div>
 
@@ -154,7 +158,8 @@
 
                     <div style="display: flex; justify-content: space-between;">
                         <div>
-                            {{ $t('mainPage.status') }} <span class="status-badge" :class="isRefreshing ? 'loading' : 'ready'">
+                            {{ $t('mainPage.status') }} <span class="status-badge"
+                                :class="isRefreshing ? 'loading' : 'ready'">
                                 {{ isRefreshing ? $t('mainPage.refreshing') : $t('mainPage.previewReady') }}
                             </span>
                         </div>
@@ -211,7 +216,8 @@
 
                     <div class="file-upload" style="margin-top: 15px;">
                         <label>{{ $t('mainPage.generatedScript') }}</label>
-                        <textarea v-model="generatedSpeech" :placeholder="$t('mainPage.generatedScriptPlaceholder')" readonly></textarea>
+                        <textarea v-model="generatedSpeech" :placeholder="$t('mainPage.generatedScriptPlaceholder')"
+                            readonly></textarea>
                     </div>
                 </div>
             </div>
@@ -265,7 +271,7 @@ export default {
         const speechStyle = ref('casual');
         const generatedSpeech = ref('');
         const isGenerating = ref(false);
-        
+
         // 刷新预览状态
         const isRefreshing = ref(false);
 
@@ -387,31 +393,31 @@ export default {
 
         // 刷新预览功能 - 添加防抖机制
         let refreshTimeout = null;
-        
+
         const refreshPreview = () => {
             // 防止重复点击
             if (isRefreshing.value) {
                 console.log(t('mainPage.refreshInProgress'));
                 return;
             }
-            
+
             // 清除之前的定时器
             if (refreshTimeout) {
                 clearTimeout(refreshTimeout);
             }
-            
+
             isRefreshing.value = true;
-            
+
             // 使用更简单的方式刷新iframe - 通过重新加载src
             const iframe = document.querySelector('.iframe-container iframe');
             if (iframe) {
                 try {
                     // 保存当前src
                     const currentSrc = iframe.src;
-                    
+
                     // 清空src并立即重新设置，强制重新加载
                     iframe.src = '';
-                    
+
                     refreshTimeout = setTimeout(() => {
                         iframe.src = currentSrc;
                         console.log(t('mainPage.live2dPreviewRefreshed'));
@@ -563,7 +569,7 @@ export default {
             isGenerating,
             generateSpeech,
             testSpeech,
-            
+
             // 刷新预览相关
             isRefreshing,
             live2dFileInput,
@@ -1236,9 +1242,12 @@ input[type="file"]::file-selector-button:hover {
 }
 
 @keyframes loadingPulse {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.7;
     }

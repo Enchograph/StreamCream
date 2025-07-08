@@ -567,8 +567,13 @@ from flask import send_from_directory
 
 @app.route('/api/get-background')
 def get_background():
-    # 获取最新上传的背景图片
+    name = request.args.get('name')
     backgrounds = os.listdir('backgrounds')
+    if name:
+        # 安全校验，防止路径穿越
+        if name not in backgrounds:
+            return send_from_directory('backgrounds', 'default.jpg')
+        return send_from_directory('backgrounds', name)
     if not backgrounds:
         return send_from_directory('backgrounds', 'default.jpg')
     latest_bg = max(backgrounds, key=lambda f: os.path.getmtime(os.path.join('backgrounds', f)))
@@ -605,6 +610,12 @@ def reset_preferences():
         setting.preferences = {}
         db.session.commit()
     return jsonify({'success': True})
+
+@app.route('/api/list-backgrounds')
+def list_backgrounds():
+    files = os.listdir('backgrounds')
+    files = [f for f in files if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp', '.bmp'))]
+    return jsonify({'backgrounds': files})
 
 if __name__ == '__main__':
     # 确保背景图片目录存在

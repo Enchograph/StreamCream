@@ -337,6 +337,19 @@ const calculateMouthForm = (vowel, confidence) => {
     return vowelShapes[vowel] || 0;
 };
 
+// 添加背景图片
+let bgDiv;
+function setBgByPreference() {
+    const bg = localStorage.getItem('bgPreference') || 'default';
+    if (bgDiv) {
+        if (bg === 'default') {
+            bgDiv.style.backgroundImage = 'url(/api/get-background)';
+        } else {
+            bgDiv.style.backgroundImage = `url(/api/get-background?name=${encodeURIComponent(bg)})`;
+        }
+    }
+}
+
 // 初始化函数，创建 PIXI 应用并加载 Live2D 模型
 const init = async () => {
     const [width, height] = effectiveResolution.value.split('x').map(Number);
@@ -361,9 +374,9 @@ const init = async () => {
     });
 
     // 添加背景图片
-    const bgDiv = document.createElement('div');
+    bgDiv = document.createElement('div');
     bgDiv.className = 'background-image';
-    bgDiv.style.backgroundImage = 'url(/api/get-background)';
+    setBgByPreference();
     bgDiv.style.backgroundSize = 'cover';
     bgDiv.style.backgroundPosition = 'center';
     bgDiv.style.position = 'absolute';
@@ -466,6 +479,13 @@ const init = async () => {
     // 将模型添加到舞台
     app.stage.addChild(model);
 };
+
+// 监听storage事件，实时切换背景
+window.addEventListener('storage', (e) => {
+    if (e.key === 'bgPreference') {
+        setBgByPreference();
+    }
+});
 
 // 加载音频文件
 const loadAudioFile = async (event) => {
@@ -1090,15 +1110,6 @@ const resetModel = () => {
     live2DStore.saveState();
 };
 
-// 嘴型变换函数，随机设置嘴巴张开程度
-// const mouthFn = () => {
-//     if (!model) return;
-//     let n = Math.random(); // 生成 0~1 的随机数
-//     console.log("随机数0~1控制嘴巴Y轴高度-->", n);
-//     // 设置嘴巴张开参数
-//     model.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", n);
-// };
-
 // 随机动作函数，触发模型的 TapBody 动作
 const randomMotionFn = () => {
     if (!model) return;
@@ -1192,10 +1203,6 @@ const analyzeAudio = () => {
     animationId = requestAnimationFrame(analyzeAudio);
 };
 
-
-
-
-
 const setupSubtitleListener = () => {
     console.log('设置字幕监听器...');
     
@@ -1235,8 +1242,6 @@ const setupSubtitleListener = () => {
         }
     }, 100);
 };
-
-
 
 // 防重复处理机制
 let lastProcessedSubtitle = null;

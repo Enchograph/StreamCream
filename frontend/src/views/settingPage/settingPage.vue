@@ -466,6 +466,7 @@ export default {
         }
     },
     async mounted() {
+        this.fetchCustomBackgrounds();
         // 优先从后端获取
         try {
             const prefs = await api.getPreferences();
@@ -702,10 +703,18 @@ export default {
             this.$i18n.locale = this.locale;
             window.dispatchEvent(new Event('languageChange'));
         },
+        async fetchCustomBackgrounds() {
+            try {
+                const res = await fetch('http://localhost:9080/api/list-backgrounds');
+                const data = await res.json();
+                this.customBackgrounds = data.backgrounds || [];
+            } catch (e) {
+                this.customBackgrounds = [];
+            }
+        },
         showStreamKeyTip() {
             ElMessage.error(this.$t('setting.getStreamKeyTip'));
         }
-
     },
     computed: {
         // finishBtnColor() {

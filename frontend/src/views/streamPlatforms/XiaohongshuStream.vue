@@ -38,7 +38,7 @@
                         <h3>{{ $t('xiaohongshu.section1.step0.title') }}</h3>
                         <p>{{ $t('xiaohongshu.section1.step0.desc') }}</p>
                         <ul>
-                            <li v-for="item in $t('xiaohongshu.section1.step0.items')" :key="item">{{ item }}</li>
+                            <li v-for="item in items" :key="item">{{ item }}</li>
                         </ul>
                     </div>
                 </div>
@@ -67,17 +67,11 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { useI18n } from 'vue-i18n'
-export default {
-    name: 'XiaohongshuStreamGuide',
-    setup() {
-        const { t } = useI18n()
-        // 动态生成 steps
-        const steps = t('xiaohongshu.section2.steps')
-        return { t, steps }
-    },
-}
+const { t, tm } = useI18n()
+const steps = tm('xiaohongshu.section2.steps')
+const items = tm('xiaohongshu.section1.step0.items')
 </script>
 
 <style scoped>

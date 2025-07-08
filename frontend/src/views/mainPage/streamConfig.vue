@@ -479,4 +479,17 @@ input[type="text"] {
     background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
     box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
 }
+
+h2 {
+    color: #222;
+    font-weight: bold;
+    font-size: 1.6em;
+    margin-bottom: 8px;
+}
+
+p {
+    color: #555;
+    font-size: 1em;
+    margin-bottom: 16px;
+}
 </style>

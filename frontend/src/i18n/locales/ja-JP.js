@@ -138,6 +138,7 @@ export default {
         apiKey: 'APIキー',
         apiKeyPlaceholder: 'APIキーを入力',
         modelName: 'モデル名',
+        getStreamKeyTip: '配信キーを取得するには、主ページの"配信プラットフォーム選択と推流コード"部分に移動してください',
         noModelFound: '該当するモデルが見つかりません',
         searchModel: 'モデル検索',
         customModelName: 'カスタムモデル名',
@@ -485,6 +486,7 @@ export default {
             description: 'このツールの使い方を素早くご案内します'
         }
     },
+    
     mainPage: {
         voiceLibTitle: '音声ライブラリ選択',
         voiceLibDesc: 'トレーニング済み音声モデルを選択または音声モデルファイルをアップロード',
@@ -950,6 +952,7 @@ export default {
             title: '配信を開始',
             content: 'メインページですべての設定を確認したら、「配信開始」ボタンをクリックします。配信ページではLive2Dキャラクター、AI音声、原稿管理などの機能が表示されます。リアルタイムでコメントを送信したり、視聴者と交流したり、いつでも配信を停止できます。'
         },
+        
         voiceLibrary: {
             title: '音声ライブラリ選択',
             modelSelection: 'モデル選択：ドロップダウンからトレーニング済みのGPT・SoVITSモデルを選択',
@@ -1032,6 +1035,22 @@ export default {
             question: 'Q: AIモデルを設定するには？',
             answer: 'A: 設定ページの「AI設定」エリアでモデルプロバイダーを選択し、APIキーを入力し、具体的なモデル名を選択してください。'
         },
+        faq6: {
+            question: 'Q: 界面言語を切り替える方法は？',
+            answer: 'A: 設定ページの"言語設定"エリアで必要な言語を選択してください。'
+        },
+        faq7: {
+            question: 'Q: 配信が失敗する理由は？',
+            answer: 'A: 推流キーと推流アドレスが正しいか、ネットワークが正常か、または推流ソフトウェアを再起動してください。'
+        },
+        faq8: {
+            question: 'Q: 顧客サービスまたはフィードバックについてどう連絡すればよいですか？',
+            answer: 'A: ヘルプページの下部に技術サポート連絡先があります。または公式のフィードバックグループ（QQ：825999096）に参加してください。'
+        },
+        faq10: {
+            question: 'Q: どのライブストリーミングプラットフォームがサポートされていますか？',
+            answer: 'A: 現在サポートされているプラットフォームには、Bilibili、Douyin、Kuaishou、Xiaohongshu、YouTube、Twitchが含まれます。'
+        },
         supportInfo: {
             title: 'ご利用中に問題が発生した場合は、以下をご確認ください：',
             checkNetwork: 'ネットワーク接続が正常か確認',
@@ -1072,37 +1091,37 @@ export default {
         }
     },
     xiaohongshu: {
-        title: "小紅書ライブ",
-        subtitle: "ワンストップ小紅書ライブ配信管理",
-        tabs: {
-            account: { name: "アカウント設定", description: "アカウントログインと認証" },
-            live: { name: "ライブ設定", description: "ライブ構成と管理" }
+        title: '小紅書ライブ配信ストリームキー取得ガイド',
+        section1: {
+            title: '1. 準備作業',
+            step0: {
+                title: 'アカウント要件',
+                desc: '小紅書ライブ配信ストリームキーを取得するには、以下の条件を満たす必要があります：',
+                items: [
+                    '小紅書の実名認証を完了している',
+                    'フォロワー数が1000人以上、または公式ライブ配信招待を受けている',
+                    'アカウントに違反記録がない'
+                ]
+            },
+            warning: '⚠️ 重要：小紅書のストリームキーは使い捨てです。配信ごとに新しいキーを取得してください。'
         },
-        account: {
-            manualInput: "アカウント情報の手動入力",
-            userId: "ユーザーID",
-            userIdPlaceholder: "小紅書ユーザーIDを入力してください",
-            token: "トークン",
-            tokenPlaceholder: "トークンを入力してください",
-            saveSettings: "設定を保存",
-            viewHelp: "ヘルプを見る"
-        },
-        live: {
-            title: "ライブ設定",
-            titleInput: "ライブタイトル",
-            titlePlaceholder: "ライブタイトルを入力してください",
-            updateTitle: "タイトルを更新",
-            streamKey: "配信キー",
-            getStreamKey: "配信キーを取得",
-            sendBullet: "弾幕を送信",
-            bulletInput: "弾幕内容",
-            bulletPlaceholder: "弾幕内容を入力してください",
-            startLive: "ライブ開始",
-            operationLog: "操作ログ",
-            noLogs: "ログはありません"
-        },
-        help: {
-            title: "ヘルプドキュメント"
+        section2: {
+            title: '2. ストリームキー取得手順',
+            steps: [
+                {
+                    title: 'ステップ1：ライブ配信権限を有効化',
+                    desc: '小紅書アプリを開く → 「マイページ」をタップ → 「クリエイターセンター」へ → 「その他サービス」→「ライブ配信」→ 権限申請を完了'
+                },
+                {
+                    title: 'ステップ2：ライブアシスタントをダウンロード',
+                    desc: '小紅書公式サイトから「小紅書ライブアシスタント」PC版をダウンロードし、インストール後にアカウントでログイン'
+                },
+                {
+                    title: 'ステップ3：ストリームキーを取得',
+                    desc: '1. 小紅書ライブアシスタントを開く\n2. 「ライブ作成」→「プロフェッショナル配信」を選択\n3. 「サードパーティ配信」オプションを探す\n4. システムがRTMPアドレスとストリームキーを生成',
+                    code: 'RTMPアドレス: rtmp://push.xiaohongshu.com/live/<br>サンプルストリームキー: xhs_1234567890abcdef<br>完全なストリームURL: rtmp://push.xiaohongshu.com/live/xhs_1234567890abcdef'
+                }
+            ]
         }
     },
     twitch: {
@@ -1122,5 +1141,88 @@ export default {
             },
             tip: '配信キーと配信URLを取得したら、配信プラットフォームで「Twitch」を選択し、貼り付けてください。'
         }
+    },
+    trainPage: {
+        title: '音声モデル学習の高度な設定',
+        subtitle: '実験パラメータをカスタマイズし、柔軟に学習プロセスを構成',
+        baseConfig: '基本設定情報',
+        expName: '実験名',
+        expNamePlaceholder: '実験名を入力してください',
+        gpuInfo: 'GPU情報',
+        gpuInfoPlaceholder: '例: 0 または 0,1',
+        versionSelect: 'モデルバージョン',
+        v1: 'V1 クラシック',
+        v2: 'V2 強化版',
+        sovitsGPath: 'SoVITS Gモデルパス',
+        sovitsDPath: 'SoVITS Dモデルパス',
+        gptPath: 'GPTモデルパス',
+        pathInputBtn: 'パスを選択',
+        tab1A: 'データセット整形',
+        tab1B: '学習とモニター',
+        tab1C: '推論とテスト',
+        // 1A
+        textLabelFile: 'テキストラベルファイル',
+        audioDir: '音声ディレクトリ',
+        textContent: 'テキスト内容処理',
+        textGpuIds: 'GPU番号（カンマ区切り、各番号ごとに1プロセス）',
+        bertPath: '事前学習済み中国語BERTモデルパス',
+        startTextExtract: 'テキスト抽出開始',
+        textProcessInfo: 'テキストプロセス出力',
+        sslFeature: 'SSL自己教師あり特徴抽出',
+        sslGpuIds: 'GPU番号（カンマ区切り、各番号ごとに1プロセス）',
+        sslModelPath: '事前学習済みSSLモデルパス',
+        startSSLExtract: '特徴抽出開始',
+        sslProcessInfo: 'SSLプロセス出力',
+        // 1B、1Cなどは必要に応じて追加
+        tipLog: 'ログを実験ディレクトリに出力し、23456で始まるファイルやフォルダが含まれている必要があります',
+        textLabelFile: 'テキストラベルファイル',
+        textLabelFilePlaceholder: 'テキストラベルファイルのパスを入力してください',
+        audioDir: '音声ディレクトリ',
+        audioDirPlaceholder: '音声ディレクトリを入力してください',
+        pathInputBtn: 'パスを選択',
+        textContent: 'テキスト内容処理',
+        textGpuIds: 'GPU番号（カンマ区切り、各番号ごとに1プロセス）',
+        bertPath: '事前学習済み中国語BERTモデルパス',
+        startTextExtract: 'テキスト抽出開始',
+        textProcessInfo: 'テキストプロセス出力',
+        sslFeature: 'SSL自己教師あり特徴抽出',
+        sslGpuIds: 'GPU番号（カンマ区切り、各番号ごとに1プロセス）',
+        sslModelPath: '事前学習済みSSLモデルパス',
+        startSSLExtract: '特徴抽出開始',
+        sslProcessInfo: 'SSLプロセス出力',
+        tokenExtract: 'セマンティックトークン抽出',
+        tokenGpuIds: 'GPU番号（カンマ区切り、各番号ごとに1プロセス）',
+        tokenModelPath: '事前学習済みSoVITS-Gモデルパス',
+        startTokenExtract: 'セマンティックトークン抽出開始',
+        tokenProcessInfo: 'セマンティックトークン抽出プロセス出力',
+        oneClick: 'ワンクリック三連処理',
+        startOneClick: 'ワンクリック三連開始',
+        oneClickInfo: 'ワンクリック三連プロセス出力',
+        soVITSTrain: 'SoVITS学習',
+        soVITSBatch: '各GPUのバッチサイズ',
+        soVITSTotalEpoch: '総学習エポック数（高すぎないことを推奨）',
+        soVITSWeight: 'テキストモジュール学習率重み',
+        soVITSSaveFreq: '保存頻度（save_every_epoch）',
+        soVITSOnlyLatest: '最新のckptファイルのみ保存し、ディスク容量を節約',
+        soVITSFinalToWeights: '各保存時点で最終小モデルをweightsフォルダに保存',
+        soVITSGpuIds: 'GPU番号（カンマ区切り、各番号ごとに1プロセス）',
+        startSoVITSTrain: 'SoVITS学習開始',
+        soVITSProcessInfo: 'SoVITS学習プロセス出力',
+        gptTrain: 'GPT学習',
+        gptBatch: '各GPUのバッチサイズ',
+        gptTotalEpoch: '総学習エポック数',
+        gptSaveFreq: '保存頻度（save_every_epoch）',
+        gptDDP: 'ddp学習オプションを有効化（実験的）',
+        gptOnlyLatest: '最新のckptファイルのみ保存し、ディスク容量を節約',
+        gptFinalToWeights: '各保存時点で最終小モデルをweightsフォルダに保存',
+        gptGpuIds: 'GPU番号（カンマ区切り、各番号ごとに1プロセス）',
+        startGPTTrain: 'GPT学習開始',
+        gptProcessInfo: 'GPT学習プロセス出力',
+        inferTip: '学習後、SoVITS_weightsとGPT_weightsに保存されたモデルを選択します。デフォルトはベースモデルで、5秒のZero Shot TTSデモ用です。',
+        gptModelList: 'GPTモデルリスト',
+        soVITSModelList: 'SoVITSモデルリスト',
+        inferGpuId: 'GPU番号（整数1つのみ）',
+        refreshModelPath: 'モデルパスを更新',
+        enableParallelInfer: '並列推論バージョンを有効化（より高速）',
     }
 }

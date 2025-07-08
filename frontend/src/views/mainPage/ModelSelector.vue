@@ -36,6 +36,7 @@
       <select v-model="selectedAudio" :disabled="audioLoading" class="model-select">
         <option v-if="audioLoading" value="" disabled>加载中...</option>
         <option v-if="!audioLoading && audioList.length === 0" value="" disabled>无可用音频</option>
+        <option v-if="!audioLoading && audioList.length > 0 && !selectedAudio && !currentAudio" value="" disabled>请选择参考音频</option>
         <option v-for="audio in audioList" :key="audio.path" :value="audio.path">
           {{ audio.file_name }}<span v-if="audio.is_current">{{ $t('modelSelector.currentAudio') }}</span>
         </option>
@@ -51,6 +52,11 @@
       <div>{{ $t('modelSelector.currentRefAudio') }}<b>{{ modelStatus.current_ref_audio || $t('modelSelector.none') }}</b></div>
       <button class="btn primary" style="margin-top: 10px;" @click="generateSample" :disabled="sampleLoading">
         {{ $t('modelSelector.generateSampleVoice') }}
+      </button>
+      <!-- 上传参考音频按钮和文件选择框 -->
+      <input ref="audioFileInput" type="file" accept="audio/*" style="display:none" @change="onUploadAudio" />
+      <button class="btn" style="margin-top: 10px; margin-left: 10px;" @click="triggerAudioFileInput">
+        上传参考音频
       </button>
       <div v-if="sampleUrl" style="margin-top: 10px;">
         <audio :src="sampleUrl" controls></audio>
@@ -110,8 +116,15 @@ const fetchAudioList = async () => {
     const data = await res.json();
     audioList.value = data.available_audios || [];
     currentAudio.value = data.current_ref_audio || '';
-    // 默认选中当前音频
-    selectedAudio.value = currentAudio.value;
+    
+    // 默认选中当前音频，如果没有当前音频但有音频列表，选择第一个
+    if (currentAudio.value) {
+      selectedAudio.value = currentAudio.value;
+    } else if (audioList.value.length > 0) {
+      selectedAudio.value = audioList.value[0].path;
+    } else {
+      selectedAudio.value = '';
+    }
   } catch (error) {
     console.error('加载音频列表出错:', error);
   } finally {
@@ -126,7 +139,7 @@ const onSwitchAudio = async () => {
   currentAudio.value = selectedAudio.value;
   audioLoading.value = false;
   ElMessage.success(t('modelSelector.switchAudioSuccess'))
-  await fetchAudioList();
+  // 不重新调用fetchAudioList，避免重置selectedAudio
   await fetchModelStatus();
 };
   
@@ -219,6 +232,40 @@ const generateSample = async () => {
     sampleError.value = t('modelSelector.generateSampleFailed');
   }
   sampleLoading.value = false;
+};
+
+const audioFileInput = ref(null);
+
+const triggerAudioFileInput = () => {
+  audioFileInput.value && audioFileInput.value.click();
+};
+
+const onUploadAudio = async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    audioLoading.value = true;
+    const res = await fetch('http://localhost:9880/upload_ref_audio', {
+      method: 'POST',
+      body: formData,
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      ElMessage.error('上传失败');
+      return;
+    }
+    ElMessage.success('上传成功');
+    await fetchAudioList(); // 上传后刷新音频列表
+  } catch (e) {
+    ElMessage.error('上传失败');
+  } finally {
+    audioLoading.value = false;
+    // 清空input，避免同名文件无法再次上传
+    event.target.value = '';
+  }
 };
 </script>
   

@@ -22,14 +22,14 @@
     </div>
     <div class="button-row">
         <button class="btn test-connect-btn" @click="testStream">
-            <span class="btn-icon">🔗</span>{{ $t('streamConfig.testConnection') }}
+            <span class="btn-icon"><i class="fas fa-link"></i></span>{{ $t('streamConfig.testConnection') }}
         </button>
         <button class="btn primary" @click="getStreamKey">
-            <span class="btn-icon">🔑</span>{{ $t('streamConfig.platformTools')[selectedPlatform] || $t('streamConfig.getStreamKeyTool') }}
+            <span class="btn-icon"><i class="fas fa-key"></i></span>{{ $t('streamConfig.platformTools')[selectedPlatform] || $t('streamConfig.getStreamKeyTool') }}
         </button>
     </div>
     <button class="btn danger" @click="stopLive" :disabled="!isLiveActive">
-        <span class="btn-icon">⏹️</span>{{ $t('streamConfig.stopLive') }}
+        <span class="btn-icon"><i class="fas fa-stop"></i></span>{{ $t('streamConfig.stopLive') }}
     </button>
 </template>
 

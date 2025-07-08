@@ -698,6 +698,7 @@ If you encounter unsolvable problems, please contact the development team or ref
     },
 
     setting: {
+        getStreamKeyTip: 'Please go to the "Live Platform Selection and Stream Key" section on the main page to get the stream key',
         title: 'Settings',
         languageTitle: 'Language Settings',
         themeTitle: 'System Preferences',
@@ -878,7 +879,22 @@ If you encounter unsolvable problems, please contact the development team or ref
             question: 'Q: How to configure AI model?',
             answer: 'A: In the "AI Settings" area of the settings page, select model provider, enter API key, select specific model name.'
         },
-
+        faq6: {         
+            question: 'Q: How to switch interface language?',
+            answer: 'A: In the "Language Settings" area of the settings page, select the required language.'
+        },
+        faq7: {
+            question: 'Q: Why is the stream failed?',
+            answer: 'A: Please check if the stream key and stream address are correct, whether the network is smooth, or try to restart the stream software.'
+        },
+        faq8: {
+            question: 'Q: How to contact customer service or feedback?',
+            answer: 'A: You can find technical support contact information at the bottom of the help page, or join the official feedback group (QQ: 825999096).'
+        },
+        faq10: {
+            question: 'Q: Which live streaming platforms are supported?',
+            answer: 'A: Currently supported platforms include Bilibili, Douyin, Kuaishou, Xiaohongshu, YouTube, and Twitch.'
+        },  
         // Technical support
         supportInfo: {
             title: 'If you encounter problems during use, please:',
@@ -1456,37 +1472,108 @@ If you encounter unsolvable problems, please contact the development team or ref
     },
 
     xiaohongshu: {
-        title: "Xiaohongshu Live",
-        subtitle: "All-in-one Xiaohongshu Live Streaming Management",
-        tabs: {
-            account: { name: "Account Settings", description: "Account Login & Authentication" },
-            live: { name: "Live Settings", description: "Live Configuration & Management" }
+        title: 'Xiaohongshu Live Stream Key Guide',
+        section1: {
+            title: '1. Preparation',
+            step0: {
+                title: 'Account Requirements',
+                desc: 'To obtain a Xiaohongshu live stream key, you must meet the following conditions:',
+                items: [
+                    'Completed Xiaohongshu real-name authentication',
+                    'At least 1000 followers or received an official live invitation',
+                    'No account violations'
+                ]
+            },
+            warning: '⚠️ Important: The Xiaohongshu stream key is for one-time use. You need to get a new one for each live session.'
         },
-        account: {
-            manualInput: "Manual Account Input",
-            userId: "User ID",
-            userIdPlaceholder: "Enter Xiaohongshu User ID",
-            token: "Token",
-            tokenPlaceholder: "Enter Token",
-            saveSettings: "Save Settings",
-            viewHelp: "View Help"
-        },
-        live: {
-            title: "Live Settings",
-            titleInput: "Live Title",
-            titlePlaceholder: "Enter live title",
-            updateTitle: "Update Title",
-            streamKey: "Stream Key",
-            getStreamKey: "Get Stream Key",
-            sendBullet: "Send Bullet Message",
-            bulletInput: "Bullet Message",
-            bulletPlaceholder: "Enter bullet message",
-            startLive: "Start Live",
-            operationLog: "Operation Log",
-            noLogs: "No logs yet"
-        },
-        help: {
-            title: "Help Documentation"
+        section2: {
+            title: '2. Steps to Get the Stream Key',
+            steps: [
+                {
+                    title: 'Step 1: Enable Live Streaming',
+                    desc: 'Open Xiaohongshu app → Tap "Me" → Go to "Creator Center" → Select "More Services" → Tap "Live" → Complete the permission application'
+                },
+                {
+                    title: 'Step 2: Download Live Assistant',
+                    desc: 'Visit the official Xiaohongshu website to download the "Xiaohongshu Live Assistant" PC software, install and log in to your account.'
+                },
+                {
+                    title: 'Step 3: Get the Stream Key',
+                    desc: '1. Open Xiaohongshu Live Assistant\n2. Click "Create Live" → Select "Professional Live"\n3. Find the "Third-party Streaming" option\n4. The system will generate the RTMP address and stream key',
+                    code: 'RTMP address: rtmp://push.xiaohongshu.com/live/<br>Sample stream key: xhs_1234567890abcdef<br>Full stream URL: rtmp://push.xiaohongshu.com/live/xhs_1234567890abcdef'
+                }
+            ]
         }
+    },
+
+    trainPage: {
+        title: 'Advanced Voice Model Training Settings',
+        subtitle: 'Customize experiment parameters and flexibly configure the training process',
+        baseConfig: 'Basic Configuration Info',
+        expName: 'Experiment Name',
+        expNamePlaceholder: 'Please enter experiment name',
+        gpuInfo: 'GPU Info',
+        gpuInfoPlaceholder: 'e.g. 0 or 0,1',
+        versionSelect: 'Model Version',
+        v1: 'V1 Classic',
+        v2: 'V2 Enhanced',
+        sovitsGPath: 'SoVITS G Model Path',
+        sovitsDPath: 'SoVITS D Model Path',
+        gptPath: 'GPT Model Path',
+        pathInputBtn: 'Select Path',
+        tab1A: 'Dataset Formatting',
+        tab1B: 'Training & Monitor',
+        tab1C: 'Inference & Test',
+        // 1A
+        textLabelFile: 'Text Label File',
+        textLabelFilePlaceholder: 'Please enter text label file path',
+        audioDir: 'Audio Directory',
+        audioDirPlaceholder: 'Please enter audio directory',
+        textContent: 'Text Content Processing',
+        textGpuIds: 'GPU IDs, separated by comma, one process per ID',
+        bertPath: 'Pretrained Chinese BERT Model Path',
+        startTextExtract: 'Start Text Extraction',
+        textProcessInfo: 'Text Process Output',
+        sslFeature: 'SSL Self-supervised Feature Extraction',
+        sslGpuIds: 'GPU IDs, separated by comma, one process per ID',
+        sslModelPath: 'Pretrained SSL Model Path',
+        startSSLExtract: 'Start Feature Extraction',
+        sslProcessInfo: 'SSL Process Output',
+        // 1B, 1C etc. can be added as needed
+        tipLog: 'Output log to the experiment directory, which should contain files and folders starting with 23456',
+        tokenExtract: 'Semantic Token Extraction',
+        tokenGpuIds: 'GPU IDs, separated by comma, one process per ID',
+        tokenModelPath: 'Pretrained SoVITS-G Model Path',
+        startTokenExtract: 'Start Semantic Token Extraction',
+        tokenProcessInfo: 'Semantic Token Extraction Process Output',
+        oneClick: 'One-Click Triple Processing',
+        startOneClick: 'Start One-Click Triple',
+        oneClickInfo: 'One-Click Triple Process Output',
+        soVITSTrain: 'SoVITS Training',
+        soVITSBatch: 'Batch size per GPU',
+        soVITSTotalEpoch: 'Total training epochs (not recommended too high)',
+        soVITSWeight: 'Text module learning rate weight',
+        soVITSSaveFreq: 'Save frequency (save_every_epoch)',
+        soVITSOnlyLatest: 'Only save the latest ckpt file to save disk space',
+        soVITSFinalToWeights: 'Save the final small model to weights folder at each save point',
+        soVITSGpuIds: 'GPU IDs, separated by comma, one process per ID',
+        startSoVITSTrain: 'Start SoVITS Training',
+        soVITSProcessInfo: 'SoVITS Training Process Output',
+        gptTrain: 'GPT Training',
+        gptBatch: 'Batch size per GPU',
+        gptTotalEpoch: 'Total training epochs',
+        gptSaveFreq: 'Save frequency (save_every_epoch)',
+        gptDDP: 'Enable ddp training option (experimental)',
+        gptOnlyLatest: 'Only save the latest ckpt file to save disk space',
+        gptFinalToWeights: 'Save the final small model to weights folder at each save point',
+        gptGpuIds: 'GPU IDs, separated by comma, one process per ID',
+        startGPTTrain: 'Start GPT Training',
+        gptProcessInfo: 'GPT Training Process Output',
+        inferTip: 'Select the models stored in SoVITS_weights and GPT_weights after training. The default one is the base model for 5s Zero Shot TTS demo.',
+        gptModelList: 'GPT Model List',
+        soVITSModelList: 'SoVITS Model List',
+        inferGpuId: 'GPU ID, only one integer allowed',
+        refreshModelPath: 'Refresh Model Path',
+        enableParallelInfer: 'Enable parallel inference version (faster)',
     }
 }

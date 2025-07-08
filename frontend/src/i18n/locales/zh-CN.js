@@ -737,6 +737,7 @@ export default {
         platform: '直播平台',
         platformBilibili: '哔哩哔哩',
         getStreamKey: '获取推流码',
+        getStreamKeyTip: '请到主页面"直播平台选择与推流码"部分获取推流码',
         streamDomain: '推流地址',
         inputStreamDomain: '请输入推流地址',
         streamKey: '推流码',
@@ -876,6 +877,22 @@ export default {
         faq5: {
             question: 'Q: 如何配置AI模型？',
             answer: 'A: 在设置页面的"AI设置"区域，选择模型提供商，输入API密钥，选择具体的模型名称。'
+        },
+        faq6: {
+            question: 'Q: 如何切换界面语言？',
+            answer: 'A: 在设置页面的"语言设置"区域选择所需语言即可。'
+        },
+        faq7: {
+            question: 'Q: 为什么推流失败？',
+            answer: 'A: 请检查推流码、推流地址是否正确，网络是否畅通，或尝试重启推流软件。'
+        },
+        faq8: {
+            question: 'Q: 如何联系客服或反馈问题？',
+            answer: 'A: 可在帮助页底部找到技术支持联系方式，或加入官方交流群（QQ：825999096）反馈。'
+        },
+        faq10: {
+            question: 'Q: 支持哪些直播平台？',
+            answer: 'A: 目前支持B站、抖音、快手、小红书、YouTube、Twitch等主流平台。'
         },
 
         // 技术支持
@@ -1455,80 +1472,121 @@ export default {
     },
 
     trainPage: {
-        title: 'GPT-SoVITS 训练工具',
-        subtitle: '专业的语音合成模型训练和管理平台',
-        baseConfig: '基础配置',
-        expName: '实验/模型名',
+        title: '语音模型训练高级设置',
+        subtitle: '自定义实验参数，灵活配置训练流程',
+        baseConfig: '基础配置信息',
+        expName: '实验名称',
         expNamePlaceholder: '请输入实验名称',
-        gpuInfo: '显卡信息',
-        gpuInfoPlaceholder: '0 CPU',
-        versionSelect: '版本选择',
-        v1: 'v1',
-        v2: 'v2',
-        sovitsGPath: '预训练的SoVITS-G模型路径',
-        sovitsDPath: '预训练的SoVITS-D模型路径',
-        gptPath: '预训练的GPT模型路径',
-        pathInput: '路径填入',
-        tab1A: '1A-训练集格式化工具',
-        tab1B: '1B-微调训练',
-        tab1C: '1C-推理测试',
-        tipLog: '输出log到实验目录下，目录下应有23456开头的文件和文件夹',
-        textLabelFile: '*文本标注文件',
-        audioDir: '*训练集音频文件目录',
+        gpuInfo: 'GPU信息',
+        gpuInfoPlaceholder: '如：0 或 0,1',
+        versionSelect: '模型版本选择',
+        v1: 'V1 经典版',
+        v2: 'V2 增强版',
+        sovitsGPath: 'SoVITS G模型路径',
+        sovitsDPath: 'SoVITS D模型路径',
+        gptPath: 'GPT模型路径',
+        pathInputBtn: '路径填入',
+        tab1A: '训练集格式化',
+        tab1B: '训练与监控',
+        tab1C: '推理与测试',
+        // 1A
+        textLabelFile: '文本标注文件',
+        audioDir: '训练集音频文件目录',
         textContent: '文本内容处理',
         textGpuIds: 'GPU卡号,以，分割，每个卡号对应一个进程',
-        textGpuIdsPlaceholder: '0-0',
         bertPath: '预训练的中文BERT模型路径',
         startTextExtract: '开启文本获取',
         textProcessInfo: '文本进程输出信息',
-        sslExtract: '1Ab-SSL自监督特征提取',
+        sslFeature: 'SSL自监督特征提取',
         sslGpuIds: 'GPU卡号，以，分割，每个卡号对应一个进程',
-        sslGpuIdsPlaceholder: '0-0',
         sslModelPath: '预训练的SSL模型路径',
-        startSslExtract: '开启SSL提取',
+        startSSLExtract: '开始特征提取',
         sslProcessInfo: 'SSL进程输出信息',
-        tokenExtract: '1Ac-语义token提取',
-        tokenGpuIds: 'GPU卡号，以，分割，每个卡号对应一个进程',
-        tokenGpuIdsPlaceholder: '0-0',
-        tokenModelPath: '预训练的SoVITS-G模型路径',
-        startTokenExtract: '开启token提取',
-        tokenProcessInfo: 'token进程输出信息',
-        chooseFile: '选择文件',
+        // 1B、1C等可继续补充
+        tipLog: '输出log到实验目录下，目录下应有23456开头的文件和文件夹',
+        textLabelFile: '文本标注文件',
+        textLabelFilePlaceholder: '请输入文本标注文件路径',
+        audioDir: '训练集音频文件目录',
+        audioDirPlaceholder: '请输入音频文件目录',
         pathInputBtn: '路径填入',
+        textContent: '文本内容处理',
+        textGpuIds: 'GPU卡号,以，分割，每个卡号对应一个进程',
+        bertPath: '预训练的中文BERT模型路径',
+        startTextExtract: '开启文本获取',
+        textProcessInfo: '文本进程输出信息',
+        sslFeature: 'SSL自监督特征提取',
+        sslGpuIds: 'GPU卡号，以，分割，每个卡号对应一个进程',
+        sslModelPath: '预训练的SSL模型路径',
+        startSSLExtract: '开始特征提取',
+        sslProcessInfo: 'SSL进程输出信息',
+        tokenExtract: '语义token提取',
+        tokenGpuIds: 'GPU卡号，以，分割，每个卡号对应一个进程',
+        tokenModelPath: '预训练的SoVITS-G模型路径',
+        startTokenExtract: '开启语义token提取',
+        tokenProcessInfo: '语义token提取进程输出信息',
+        oneClick: '一键三连处理',
+        startOneClick: '开启一键三连',
+        oneClickInfo: '一键三连进程输出信息',
+        soVITSTrain: 'SoVITS训练',
+        soVITSBatch: '每张显卡的batch_size',
+        soVITSTotalEpoch: '总训练轮数total_epoch（不建议太高）',
+        soVITSWeight: '文本模块学习率权重',
+        soVITSSaveFreq: '保存频率save_every_epoch',
+        soVITSOnlyLatest: '仅保存最新的ckpt文件以节省硬盘空间',
+        soVITSFinalToWeights: '在每次保存时间点将最终小模型保存至weights文件夹',
+        soVITSGpuIds: 'GPU卡号，以，分割，每个卡号对应一个进程',
+        startSoVITSTrain: '开启SoVITS训练',
+        soVITSProcessInfo: 'SoVITS训练进程输出信息',
+        gptTrain: 'GPT训练',
+        gptBatch: '每张显卡的batch_size',
+        gptTotalEpoch: '总训练轮数total_epoch',
+        gptSaveFreq: '保存频率save_every_epoch',
+        gptDDP: '开启ddp训练选项(实验性)',
+        gptOnlyLatest: '仅保存最新的ckpt文件以节省硬盘空间',
+        gptFinalToWeights: '在每次保存时间点将最终小模型保存至weights文件夹',
+        gptGpuIds: 'GPU卡号，以，分割，每个卡号对应一个进程',
+        startGPTTrain: '开启GPT训练',
+        gptProcessInfo: 'GPT训练进程输出信息',
+        inferTip: '选择训练完存放在SoVITS_weights和GPT_weights下的模型。默认的一个是底模，体验5秒Zero Shot TTS用。',
+        gptModelList: 'GPT模型列表',
+        soVITSModelList: 'SoVITS模型列表',
+        inferGpuId: 'GPU卡号，只能填1个整数',
+        refreshModelPath: '刷新模型路径',
+        enableParallelInfer: '启用并行推理版本(推理速度更快)',
     },
 
     xiaohongshu: {
-        title: "小红书直播",
-        subtitle: "一站式小红书直播推流管理",
-        tabs: {
-            account: { name: "账号设置", description: "账号登录与认证" },
-            live: { name: "直播设置", description: "直播配置与管理" }
+        title: '小红书直播推流码获取教程',
+        section1: {
+            title: '一、准备工作',
+            step0: {
+                title: '账号要求',
+                desc: '获取小红书直播推流码需要满足以下条件：',
+                items: [
+                    '已完成小红书实名认证',
+                    '粉丝数≥1000或获得官方直播邀请',
+                    '账号无违规记录'
+                ]
+            },
+            warning: '⚠️ 重要提示：小红书推流码为一次性使用，每次直播需要重新获取。'
         },
-        account: {
-            manualInput: "手动输入账号信息",
-            userId: "用户ID",
-            userIdPlaceholder: "请输入小红书用户ID",
-            token: "Token",
-            tokenPlaceholder: "请输入Token",
-            saveSettings: "保存设置",
-            viewHelp: "查看帮助"
-        },
-        live: {
-            title: "直播设置",
-            titleInput: "直播标题",
-            titlePlaceholder: "请输入直播标题",
-            updateTitle: "更新标题",
-            streamKey: "推流码",
-            getStreamKey: "获取推流码",
-            sendBullet: "发送弹幕",
-            bulletInput: "弹幕内容",
-            bulletPlaceholder: "请输入弹幕内容",
-            startLive: "开始直播",
-            operationLog: "操作日志",
-            noLogs: "暂无日志"
-        },
-        help: {
-            title: "帮助文档"
+        section2: {
+            title: '二、获取推流码详细步骤',
+            steps: [
+                {
+                    title: '步骤1：开通直播权限',
+                    desc: '打开小红书APP → 点击"我" → 进入"创作者中心" → 选择"更多服务" → 点击"直播" → 完成权限申请'
+                },
+                {
+                    title: '步骤2：下载直播助手',
+                    desc: '访问小红书官网下载"小红书直播助手"PC端软件，安装并登录你的小红书账号。'
+                },
+                {
+                    title: '步骤3：获取推流码',
+                    desc: '1. 打开小红书直播助手\n2. 点击"创建直播" → 选择"专业开播"\n3. 找到"第三方推流"选项\n4. 系统将生成RTMP地址和流密钥',
+                    code: 'RTMP地址: rtmp://push.xiaohongshu.com/live/<br>示例流密钥: xhs_1234567890abcdef<br>完整推流地址: rtmp://push.xiaohongshu.com/live/xhs_1234567890abcdef'
+                }
+            ]
         }
     }
 }

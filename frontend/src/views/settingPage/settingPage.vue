@@ -19,9 +19,14 @@
                                 <v-col cols="12">
                                     <v-select v-model="bannerColor" :items="[
                                         { text: $t('setting.bannerDefault'), value: 'default' },
-                                        { text: $t('setting.bannerRed'), value: 'red' },
                                         { text: $t('setting.bannerBlue'), value: 'blue' },
-                                        { text: $t('setting.bannerPurple'), value: 'purple' }
+                                        { text: $t('setting.bannerGreen'), value: 'green' },
+                                        // { text: $t('setting.bannerRed'), value: 'red' },
+                                        // { text: $t('setting.bannerPurple'), value: 'purple' },
+                                        // { text: $t('setting.bannerWhite'), value: 'white' },
+                                        // { text: $t('setting.bannerBrown'), value: 'brown' },
+                                        { text: $t('setting.bannerYellow'), value: 'yellow' },
+                                        { text: $t('setting.bannerPink'), value: 'pink' }
                                     ]" item-title="text" item-value="value" :label="$t('setting.bannerColor')" outlined
                                         dense class="rounded-input-glass"></v-select>
                                 </v-col>
@@ -700,11 +705,11 @@ export default {
 
     },
     computed: {
-        finishBtnColor() {
-            if (this.bannerColor === 'blue') return '#1976d2';
-            if (this.bannerColor === 'purple') return '#7c3aed';
-            return '#409eff';
-        }
+        // finishBtnColor() {
+        //     if (this.bannerColor === 'blue') return '#1976d2';
+        //     if (this.bannerColor === 'purple') return '#7c3aed';
+        //     return '#409eff';
+        // }
     }
 }
 </script>

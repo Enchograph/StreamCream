@@ -7,7 +7,7 @@
                     <span class="logo-subtitle">{{ $t('topBanner.subtitle') }}</span>
                 </div>
             </div>
-            
+
             <nav class="nav-links" :class="{ dispersed: isDispersed, grouped: !isDispersed }">
                 <a href="#" class="nav-link" @click.prevent="goToHelp" :title="$t('topBanner.help.tooltip')">
                     <span class="nav-text">{{ $t('topBanner.help.text') }}</span>
@@ -15,12 +15,13 @@
                 <a href="#" class="nav-link" @click.prevent="goToSettings" :title="$t('topBanner.settings.tooltip')">
                     <span class="nav-text">{{ $t('topBanner.settings.text') }}</span>
                 </a>
-                <button v-if="showLogout" class="logout-btn" @click="handleLogout" :title="$t('topBanner.logout.tooltip')">
+                <button v-if="showLogout" class="logout-btn" @click="handleLogout"
+                    :title="$t('topBanner.logout.tooltip')">
                     <span class="btn-text">{{ $t('topBanner.logout.text') }}</span>
                 </button>
             </nav>
         </div>
-        
+
         <!-- 装饰性元素 -->
         <div class="banner-decoration">
             <div class="decoration-dots">
@@ -29,7 +30,7 @@
                 <span></span>
             </div>
         </div>
-        
+
         <!-- 流动背景效果 -->
         <div class="flowing-background">
             <div class="flow-wave wave-1"></div>
@@ -86,7 +87,7 @@ const auth = useAuthStore()
 const { t: $t } = useI18n()
 
 const showLogout = computed(() => {
-  return auth.isLoggedIn && router.currentRoute.value.path !== '/loginPage'
+    return auth.isLoggedIn && router.currentRoute.value.path !== '/loginPage'
 })
 
 const bannerColor = ref(localStorage.getItem('bannerColor') || 'default')
@@ -94,28 +95,63 @@ const bannerColor = ref(localStorage.getItem('bannerColor') || 'default')
 const bannerStyle = computed(() => {
     switch (bannerColor.value) {
         case 'blue':
-            return { 
+            return {
                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 boxShadow: '0 4px 20px rgba(102, 126, 234, 0.3)',
                 '--flow-color': 'rgba(255, 255, 255, 0.15)',
                 '--particle-color': 'rgba(255, 255, 255, 0.5)'
             }
         case 'purple':
-            return { 
+            return {
                 background: 'linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)',
                 boxShadow: '0 4px 20px rgba(168, 85, 247, 0.3)',
                 '--flow-color': 'rgba(255, 255, 255, 0.12)',
                 '--particle-color': 'rgba(255, 255, 255, 0.4)'
             }
         case 'red':
-            return { 
+            return {
                 background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
                 boxShadow: '0 4px 20px rgba(239, 68, 68, 0.3)',
                 '--flow-color': 'rgba(255, 255, 255, 0.1)',
                 '--particle-color': 'rgba(255, 255, 255, 0.3)'
             }
+        case 'white':
+            return {
+                background: 'linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%)',
+                boxShadow: '0 4px 20px rgba(229, 231, 235, 0.3)',
+                '--flow-color': 'rgba(0, 0, 0, 0.05)',
+                '--particle-color': 'rgba(0, 0, 0, 0.15)'
+            }
+        case 'green':
+            return {
+                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                boxShadow: '0 4px 20px rgba(16, 185, 129, 0.3)',
+                '--flow-color': 'rgba(255, 255, 255, 0.1)',
+                '--particle-color': 'rgba(255, 255, 255, 0.3)'
+            }
+        case 'brown':
+            return {
+                background: 'linear-gradient(135deg, #92400e 0%, #78350f 100%)',
+                boxShadow: '0 4px 20px rgba(146, 64, 14, 0.3)',
+                '--flow-color': 'rgba(255, 255, 255, 0.08)',
+                '--particle-color': 'rgba(255, 255, 255, 0.25)'
+            }
+        case 'yellow':
+            return {
+                background: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)',
+                boxShadow: '0 4px 20px rgba(217, 119, 6, 0.3)',
+                '--flow-color': 'rgba(255, 255, 255, 0.08)',
+                '--particle-color': 'rgba(255, 255, 255, 0.25)'
+            }
+        case 'pink':
+            return {
+                background: 'linear-gradient(135deg, #ec4899 0%, #db2777 100%)',
+                boxShadow: '0 4px 20px rgba(236, 72, 153, 0.3)',
+                '--flow-color': 'rgba(255, 255, 255, 0.1)',
+                '--particle-color': 'rgba(255, 255, 255, 0.3)'
+            }
         default:
-            return { 
+            return {
                 background: 'linear-gradient(135deg, #1f2937 0%, #374151 100%)',
                 boxShadow: '0 4px 20px rgba(31, 41, 55, 0.3)',
                 '--flow-color': 'rgba(255, 255, 255, 0.08)',
@@ -160,7 +196,7 @@ async function handleLogout() {
 
 const isDispersed = ref(localStorage.getItem('topBannerDispersed') === 'true')
 function syncDisperse() {
-  isDispersed.value = localStorage.getItem('topBannerDispersed') === 'true'
+    isDispersed.value = localStorage.getItem('topBannerDispersed') === 'true'
 }
 
 onMounted(() => {
@@ -183,7 +219,7 @@ function goToHome() {
 }
 
 onUnmounted(() => {
-  window.removeEventListener('topBannerLayoutChange', syncDisperse)
+    window.removeEventListener('topBannerLayoutChange', syncDisperse)
 })
 </script>
 
@@ -421,11 +457,14 @@ onUnmounted(() => {
 }
 
 @keyframes dotPulse {
-    0%, 100% { 
+
+    0%,
+    100% {
         transform: scale(1);
         opacity: 0.3;
     }
-    50% { 
+
+    50% {
         transform: scale(1.2);
         opacity: 0.8;
     }
@@ -475,15 +514,20 @@ onUnmounted(() => {
 }
 
 @keyframes waveFlow {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateX(-50%) translateY(0);
     }
+
     25% {
         transform: translateX(-30%) translateY(-10px);
     }
+
     50% {
         transform: translateX(-70%) translateY(0);
     }
+
     75% {
         transform: translateX(-20%) translateY(-5px);
     }
@@ -735,12 +779,15 @@ onUnmounted(() => {
         transform: translateY(0) translateX(0);
         opacity: 0;
     }
+
     10% {
         opacity: 1;
     }
+
     90% {
         opacity: 1;
     }
+
     100% {
         transform: translateY(-100px) translateX(50px);
         opacity: 0;
@@ -752,35 +799,35 @@ onUnmounted(() => {
     .banner-content {
         padding: 0 20px;
     }
-    
+
     .logo-main {
         font-size: 20px;
     }
-    
+
     .logo-subtitle {
         font-size: 10px;
     }
-    
+
     .nav-text {
         display: none;
     }
-    
+
     .btn-text {
         display: none;
     }
-    
+
     .nav-link {
         padding: 12px;
     }
-    
+
     .logout-btn {
         padding: 12px;
     }
-    
+
     .decoration-dots {
         display: none;
     }
-    
+
     .flowing-background {
         display: none;
     }
@@ -790,13 +837,13 @@ onUnmounted(() => {
     .top-banner {
         height: 60px;
     }
-    
 
-    
+
+
     .logo-main {
         font-size: 18px;
     }
-    
+
     .nav-links {
         gap: 4px;
     }
@@ -804,17 +851,19 @@ onUnmounted(() => {
 
 /* 新增样式 */
 .banner-content.centered {
-  max-width: 1200px;
-  padding: 0 30px;
-  margin: 0 auto;
+    max-width: 1200px;
+    padding: 0 30px;
+    margin: 0 auto;
 }
+
 .banner-content.centered .logo-section,
 .banner-content.centered .nav-links {
-  margin: 0 12px;
+    margin: 0 12px;
 }
+
 .banner-content.centered .nav-links {
-  justify-content: center !important;
-  width: auto !important;
+    justify-content: center !important;
+    width: auto !important;
 }
 </style>
 
@@ -824,11 +873,13 @@ onUnmounted(() => {
     font-size: 1.1rem;
     padding: 24px 32px;
 }
+
 .logout-messagebox .el-message-box__title {
     font-weight: bold;
     font-size: 1.2rem;
     color: #7c3aed;
 }
+
 .logout-messagebox .el-message-box__btns .el-button--primary {
     background: linear-gradient(90deg, #7c3aed 0%, #86a8e7 100%);
     border: none;
@@ -836,6 +887,7 @@ onUnmounted(() => {
     font-weight: bold;
     border-radius: 8px;
 }
+
 .logout-messagebox .el-message-box__btns .el-button--default {
     border-radius: 8px;
 }

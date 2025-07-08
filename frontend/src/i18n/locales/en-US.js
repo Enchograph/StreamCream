@@ -879,7 +879,22 @@ If you encounter unsolvable problems, please contact the development team or ref
             question: 'Q: How to configure AI model?',
             answer: 'A: In the "AI Settings" area of the settings page, select model provider, enter API key, select specific model name.'
         },
-
+        faq6: {         
+            question: 'Q: How to switch interface language?',
+            answer: 'A: In the "Language Settings" area of the settings page, select the required language.'
+        },
+        faq7: {
+            question: 'Q: Why is the stream failed?',
+            answer: 'A: Please check if the stream key and stream address are correct, whether the network is smooth, or try to restart the stream software.'
+        },
+        faq8: {
+            question: 'Q: How to contact customer service or feedback?',
+            answer: 'A: You can find technical support contact information at the bottom of the help page, or join the official feedback group.'
+        },
+        faq10: {
+            question: 'Q: Which live streaming platforms are supported?',
+            answer: 'A: Currently supported platforms include Bilibili, Douyin, Kuaishou, Xiaohongshu, YouTube, and Twitch.'
+        },  
         // Technical support
         supportInfo: {
             title: 'If you encounter problems during use, please:',

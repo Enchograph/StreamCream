@@ -878,6 +878,22 @@ export default {
             question: 'Q: 如何配置AI模型？',
             answer: 'A: 在设置页面的"AI设置"区域，选择模型提供商，输入API密钥，选择具体的模型名称。'
         },
+        faq6: {
+            question: 'Q: 如何切换界面语言？',
+            answer: 'A: 在设置页面的"语言设置"区域选择所需语言即可。'
+        },
+        faq7: {
+            question: 'Q: 为什么推流失败？',
+            answer: 'A: 请检查推流码、推流地址是否正确，网络是否畅通，或尝试重启推流软件。'
+        },
+        faq8: {
+            question: 'Q: 如何联系客服或反馈问题？',
+            answer: 'A: 可在帮助页底部找到技术支持联系方式，或加入官方交流群反馈。'
+        },
+        faq10: {
+            question: 'Q: 支持哪些直播平台？',
+            answer: 'A: 目前支持B站、抖音、快手、小红书、YouTube、Twitch等主流平台。'
+        },
 
         // 技术支持
         supportInfo: {

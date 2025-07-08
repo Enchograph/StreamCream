@@ -252,9 +252,9 @@
                                         { text: $t('setting.platformBilibili'), value: 'bilibili' },
                                         { text: '抖音', value: 'douyin' },
                                         { text: '快手', value: 'kuaishou' },
-                                        { text: '虎牙', value: 'huya' },
-                                        { text: '斗鱼', value: 'douyu' },
-                                        { text: 'YY直播', value: 'yy' }
+                                        { text: '小红书', value: 'xiaohongshu' },
+                                        { text: 'YouTube', value: 'youtube' },
+                                        { text: 'Twitch', value: 'twitch' }
                                     ]" item-title="text" item-value="value" :label="$t('setting.platform')" outlined
                                         dense class="rounded-input-glass"></v-select>
                                 </v-col>
@@ -312,6 +312,7 @@
                 </v-btn>
             </div>
         </v-card>
+        <div class="setting-copyright" v-html="$t('copyright.text')"></div>
     </v-container>
 </template>
 
@@ -915,5 +916,16 @@ export default {
         font-size: 15px;
         transform: translateX(-50%);
     }
+}
+
+.setting-copyright {
+  width: 100%;
+  text-align: center;
+  color: rgba(60,60,60,0.55);
+  font-size: 15px;
+  margin-top: 48px;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+  user-select: none;
 }
 </style>

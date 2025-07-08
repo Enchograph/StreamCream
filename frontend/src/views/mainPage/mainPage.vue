@@ -37,13 +37,13 @@
                                 style="color: #409eff; font-weight: bold;">{{ $t('mainPage.selectedFiles') }}:</small>
                             <div v-for="(model, index) in uploadedVoiceModels" :key="index"
                                 style="margin: 5px 0; padding: 5px; background: #f5f7fa; border-radius: 4px; font-size: 12px;">
-                                📁 {{ model.name }} ({{ model.type }})
+                                <span class="btn-icon"><i class="fas fa-file"></i></span> {{ model.name }} ({{ model.type }})
                             </div>
                         </div>
                     </div>
 
                     <button class="btn primary" @click="applyVoiceModel" :disabled="!uploadedVoiceModels.length">
-                        <span class="btn-icon">🎵</span>
+                        <span class="btn-icon"><i class="fas fa-music"></i></span>
                         {{ $t('mainPage.applyVoiceModel') }}
                     </button>
                 </div>
@@ -130,7 +130,7 @@
                     </div>
 
                     <button class="btn primary" @click="applyCustomModel" :disabled="!customModelPath">
-                        <span class="btn-icon">🎭</span>
+                        <span class="btn-icon"><i class="fas fa-theater-masks"></i></span>
                         {{ $t('mainPage.applyCustomModel') }}
                     </button>
                     <!-- <a href="#" class="link">{{ $t('mainPage.advancedLive2dTrain') }}</a> -->
@@ -165,11 +165,11 @@
                         </div>
                         <div class="btn-group">
                             <button class="btn secondary" @click="refreshPreview" :disabled="isRefreshing">
-                                <span class="btn-icon">{{ isRefreshing ? '⏳' : '🔄' }}</span>
+                                <span class="btn-icon"><i :class="isRefreshing ? 'fas fa-hourglass-half' : 'fas fa-rotate-right'"></i></span>
                                 {{ isRefreshing ? $t('mainPage.refreshing') : $t('mainPage.refreshPreview') }}
                             </button>
                             <button class="btn success pulse" id="test-stream" @click="goToNextPage">
-                                <span class="btn-icon">📺</span>
+                                <span class="btn-icon"><i class="fas fa-tv"></i></span>
                                 {{ $t('mainPage.startLive') }}
                             </button>
                         </div>
@@ -205,11 +205,11 @@
 
                     <div class="btn-group">
                         <button class="btn primary animated" @click="generateSpeech" :disabled="!topic || isGenerating">
-                            <span class="btn-icon">{{ isGenerating ? '⏳' : '🤖' }}</span>
+                            <span class="btn-icon"><i :class="isGenerating ? 'fas fa-hourglass-half' : 'fas fa-robot'"></i></span>
                             {{ isGenerating ? $t('mainPage.generating') : $t('mainPage.generateScript') }}
                         </button>
                         <button class="btn warning" @click="testSpeech">
-                            <span class="btn-icon">🎤</span>
+                            <span class="btn-icon"><i class="fas fa-microphone"></i></span>
                             {{ $t('mainPage.testScript') }}
                         </button>
                     </div>

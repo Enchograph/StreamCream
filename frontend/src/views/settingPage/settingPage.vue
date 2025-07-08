@@ -51,24 +51,17 @@
                                                 { text: $t('setting.bannerRed'), value: 'red' },
                                                 { text: $t('setting.bannerBlue'), value: 'blue' },
                                                 { text: $t('setting.bannerPurple'), value: 'purple' }
-                                            ]" item-title="text" item-value="value" :label="$t('setting.bannerColor')" outlined
-                                                dense class="rounded-input-glass"></v-select>
+                                            ]" item-title="text" item-value="value" :label="$t('setting.bannerColor')"
+                                                outlined dense class="rounded-input-glass"></v-select>
                                         </v-col>
                                         <v-col cols="6" class="d-flex justify-end align-center">
-                                            <v-select
-                                                v-model="isBannerDispersed"
-                                                :items="[
-                                                    { text: $t('setting.bannerDisperse'), value: false },
-                                                    { text: $t('setting.bannerGather'), value: true }
-                                                ]"
-                                                item-title="text"
-                                                item-value="value"
-                                                :label="$t('setting.bannerLayout')"
-                                                outlined
-                                                dense
+                                            <v-select v-model="isBannerDispersed" :items="[
+                                                { text: $t('setting.bannerDisperse'), value: true },
+                                                { text: $t('setting.bannerGather'), value: false }
+                                            ]" item-title="text" item-value="value"
+                                                :label="$t('setting.bannerLayout')" outlined dense
                                                 class="rounded-input-glass"
-                                                @change="handleBannerLayoutChange"
-                                            ></v-select>
+                                                @change="handleBannerLayoutChange"></v-select>
                                         </v-col>
                                     </v-row>
                                 </v-col>

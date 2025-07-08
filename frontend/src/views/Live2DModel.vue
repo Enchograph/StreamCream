@@ -146,6 +146,9 @@ onMounted(() => {
             resumeAllAnimations();
         }
     });
+    
+    // 添加窗口大小变化监听
+    window.addEventListener('resize', handleResize);
 });
 
 // 组件卸载前销毁 PIXI 应用，释放资源
@@ -162,6 +165,12 @@ onBeforeUnmount(() => {
     if (audioContext) {
         audioContext.close();
     }
+    
+    // 移除事件监听器
+    window.removeEventListener('resize', handleResize);
+    document.removeEventListener('mousemove', handleMouseMove);
+    document.removeEventListener('mouseup', handleMouseUp);
+    
     app = null;
     model = null;
 });
@@ -338,8 +347,8 @@ const init = async () => {
     }
 
     const container = document.querySelector('.canvasWrap');
-    const containerWidth = window.innerWidth;
-    const containerHeight = window.innerHeight;
+    const containerWidth = container.offsetWidth || window.innerWidth;
+    const containerHeight = container.offsetHeight || window.innerHeight;
 
     app = new PIXI.Application({
         view: document.querySelector("#myCanvas"),
@@ -444,14 +453,14 @@ const init = async () => {
         live2DStore.saveState();
     });
 
-    // 缩放和位置调整
-    const rect = document.querySelector('#myCanvas').getBoundingClientRect();
-    model.x = rect.left + lastPosition.x * rect.width;
-    model.y = rect.top + lastPosition.y * rect.height;
-
     // 根据容器尺寸统一调整模型大小
     const initialScale = (containerWidth * live2DStore.relativeScale) / model.width;
     model.scale.set(initialScale);
+    
+    // 设置模型位置 - 使用保存的相对位置
+    model.x = lastPosition.x * containerWidth;
+    model.y = lastPosition.y * containerHeight;
+    
     live2DStore.saveState();
 
     // 将模型添加到舞台
@@ -1271,6 +1280,35 @@ const resumeAllAnimations = () => {
     isPaused.value = false;
 };
 
+// 处理窗口大小变化
+const handleResize = () => {
+    if (app) {
+        const container = document.querySelector('.canvasWrap');
+        const containerWidth = container.offsetWidth || window.innerWidth;
+        const containerHeight = container.offsetHeight || window.innerHeight;
+        
+        // 调整PIXI应用尺寸
+        app.renderer.resize(containerWidth, containerHeight);
+        
+        // 重新调整模型位置和大小
+        if (model) {
+            const rect = document.querySelector('#myCanvas').getBoundingClientRect();
+            const initialScale = (containerWidth * live2DStore.relativeScale) / model.width;
+            model.scale.set(initialScale);
+            
+            // 保持模型在用户之前设置的位置，而不是强制居中
+            // 如果模型位置超出新容器范围，则调整到可见区域
+            const maxX = containerWidth / 2;
+            const maxY = containerHeight / 2;
+            const minX = -containerWidth / 2;
+            const minY = -containerHeight / 2;
+            
+            model.x = Math.max(minX, Math.min(maxX, model.x));
+            model.y = Math.max(minY, Math.min(maxY, model.y));
+        }
+    }
+};
+
 // 改进的字幕时长估算函数
 const estimateSubtitleDuration = (text) => {
     if (!text) return 1.0;
@@ -1392,8 +1430,13 @@ const handleSubtitleChange = async (subtitleData) => {
 }
 
 .live-preview {
-    width: 100%;
+    width: 100vw;
+    height: 100vh;
     overflow: hidden !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
 }
 
 .canvasWrap {
@@ -1404,6 +1447,7 @@ const handleSubtitleChange = async (subtitleData) => {
     align-items: center;
     justify-content: center;
     overflow: hidden !important;
+    position: relative;
 }
 
 /* 按钮样式 */

@@ -851,6 +851,42 @@ export default {
     generateSampleFailed: 'サンプル音声の生成に失敗しました',
     sampleText: 'こんにちは、これはサンプル音声です。おはようございます、こんにちは、こんばんは。'
   },
+
+  // streamConfig component
+  streamConfig: {
+    title: '配信プラットフォーム選択と配信キー',
+    subtitle: '配信プラットフォームを選択し、配信キーを入力してください',
+    selectPlatform: '配信プラットフォームを選択',
+    streamUrl: '配信URL:',
+    streamUrlPlaceholder: '配信URLを入力',
+    streamKey: '配信キー:',
+    streamKeyPlaceholder: '配信キーを入力',
+    testConnection: '接続テスト',
+    getStreamKeyTool: '配信キー取得ツール',
+    stopLive: '配信停止',
+    // プラットフォームツール名
+    platformTools: {
+      bilibili: 'B站配信キー取得ツール',
+      douyin: '抖音配信キー取得ツール',
+      xiaohongshu: '小紅書配信キー取得ツール',
+      kuaishou: '快手配信キー取得ツール',
+      youtube: 'YouTube配信キー取得ツール',
+      twitch: 'Twitch配信キー取得ツール'
+    },
+    // デフォルト配信URL
+    defaultUrls: {
+      bilibili: 'rtmp://live-push.bilivideo.com/live-bvc/',
+      douyin: 'rtmp://push-rtmp-13.douyincdn.com/third/',
+      xiaohongshu: 'rtmp://live-push.xhscdn.com/live/',
+      kuaishou: 'rtmp://aliyun-open-push.voip.yximgs.com/gifshow/'
+    },
+    // エラーメッセージ
+    errors: {
+      userCancelled: 'ユーザーがキャプチャをキャンセルしたか、ブラウザがサポートされていません',
+      websocketFailed: 'WebSocket接続に失敗しました',
+      routeNotFound: '対応するプラットフォームのルートが見つかりません'
+    }
+  },
   help: {
     title: 'StreamCreamご利用ガイド',
     subtitle: 'AI配信アシスタントの完全な使い方',

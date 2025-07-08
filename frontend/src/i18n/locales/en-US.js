@@ -337,6 +337,7 @@ If you encounter unsolvable problems, please contact the development team or ref
   streamingPage: {
     // Script/Outline/AI explanation related
     topicAndOutline: 'Topic Setting and Outline Generation',
+    liveEnded: 'Live Ended',
     inputLiveTopic: 'Please enter live streaming topic',
     generating: 'Generating...',
     generateOutline: 'Generate Outline',
@@ -701,6 +702,7 @@ If you encounter unsolvable problems, please contact the development team or ref
     title: 'Settings',
     languageTitle: 'Language Settings',
     debugTitle: 'Debug Settings',
+    themeTitle:'TopBannersetting',
     resetAll: 'Reset All Preferences',
     debugMode: 'Debug Mode',
     enabled: 'Enabled',

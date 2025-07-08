@@ -380,6 +380,7 @@ export default {
     cancelEdit: '取消',
     broadcasting: '直播中',
     notStarted: '未开始',
+    liveEnded: '暂无直播',
     startBroadcast: '开始直播',
     pauseBroadcast: '暂停',
     endBroadcast: '直播结束',
@@ -698,6 +699,7 @@ export default {
 
   setting: {
     title: '设置',
+    themeTitle:'导航栏设置',
     languageTitle: '语言设置',
     debugTitle: '调试设置',
     resetAll: '重置所有偏好设置',

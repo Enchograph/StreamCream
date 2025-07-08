@@ -112,6 +112,7 @@ export default {
   },
   setting: {
     title: '設定',
+    themeTitle:'トップバナー設定',
     languageTitle: '言語設定',
     debugTitle: 'デバッグ設定',
     resetAll: 'すべての設定をリセット',

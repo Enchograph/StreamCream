@@ -13,15 +13,7 @@
                             <span class="section-bar-gradient"><v-icon color="#fff"
                                     size="20">mdi-palette</v-icon></span>{{ $t('setting.themeTitle') }}
                         </v-card-title>
-                        <v-card-text>
-                            <v-row align="center" justify="space-between">
-                                <v-col cols="6" class="d-flex align-center">
-                                    <div class="language-setting-container">
-                                        <LanguageSwitcher />
-                                    </div>
-                                </v-col>
-                            </v-row>
-                        </v-card-text>
+
                         <v-col cols="12">
                             <v-row align="center" justify="space-between">
                                 <v-col cols="12">
@@ -184,6 +176,28 @@
                     <v-card flat class="mb-6 section-card-glass">
                         <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">
                             <span class="section-bar-gradient"><v-icon color="#fff"
+                                    size="20">mdi-translate</v-icon></span>{{ $t('setting.languageTitle') }}
+                        </v-card-title>
+                        <v-card-text>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-select v-model="locale" :items="[
+                                        { text: '中文', value: 'zh-CN' },
+                                        { text: 'English', value: 'en' },
+                                        { text: '日本語', value: 'ja-JP' }
+                                    ]" item-title="text" item-value="value" :label="$t('setting.languageTitle')"
+                                        outlined dense class="rounded-input-glass" @change="switchLanguage"></v-select>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12">
+                    <v-card flat class="mb-6 section-card-glass">
+                        <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">
+                            <span class="section-bar-gradient"><v-icon color="#fff"
                                     size="20">mdi-video-wireless</v-icon></span>{{ $t('setting.liveTitle') }}
                         </v-card-title>
                         <v-card-text>
@@ -305,6 +319,7 @@ export default {
             debugMode: localStorage.getItem('debugMode') === 'true',
             bannerColor: localStorage.getItem('bannerColor') || 'default',
             resolution: localStorage.getItem('resolution') || '1920x1080',
+            locale: localStorage.getItem('locale') || 'zh-CN',
             revolutionPreference: localStorage.getItem('revolutionPreference') || '1920x1080',
             fpsPreference: localStorage.getItem('fpsPreference') || '30',
             bgPreference: localStorage.getItem('bgPreference') || 'default',
@@ -665,6 +680,12 @@ export default {
         handleBannerLayoutChange() {
             localStorage.setItem('topBannerDispersed', this.isBannerDispersed)
             window.dispatchEvent(new Event('topBannerLayoutChange'))
+        },
+        switchLanguage(lang) {
+            this.locale = lang;
+            localStorage.setItem('locale', lang);
+            this.$i18n.locale = lang;
+            window.dispatchEvent(new Event('languageChange'));
         }
     },
     computed: {

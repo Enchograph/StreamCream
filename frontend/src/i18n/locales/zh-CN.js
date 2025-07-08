@@ -737,6 +737,7 @@ export default {
         platform: '直播平台',
         platformBilibili: '哔哩哔哩',
         getStreamKey: '获取推流码',
+        getStreamKeyTip: '请到主页面"直播平台选择与推流码"部分获取推流码',
         streamDomain: '推流地址',
         inputStreamDomain: '请输入推流地址',
         streamKey: '推流码',

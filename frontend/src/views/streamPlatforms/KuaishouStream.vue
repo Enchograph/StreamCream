@@ -1,9 +1,140 @@
 <template>
+<<<<<<< HEAD
+  <div class="kuaishou-stream-container">
+    <div class="kuaishou-bg-container">
+      <div class="bg-decoration">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+        <div class="floating-shape shape-4"></div>
+      </div>
+    </div>
+    <!-- 页面标题 -->
+    <div class="page-header">
+      <h1>{{ $t('kuaishou.title') }}</h1>
+      <p>{{ $t('kuaishou.subtitle') }}</p>
+    </div>
+
+    <!-- 导航操作栏 -->
+    <div class="nav-actions">
+      <div class="action-buttons">
+        <button @click="showHelp" class="action-btn">
+          <i class="fas fa-question-circle"></i>
+          {{ $t('kuaishou.actions.help') }}
+        </button>
+        <button @click="showQuickActions" class="action-btn">
+          <i class="fas fa-bolt"></i>
+          {{ $t('kuaishou.actions.quickActions') }}
+        </button>
+        <button @click="showTutorial" class="action-btn">
+          <i class="fas fa-graduation-cap"></i>
+          {{ $t('kuaishou.actions.tutorial') }}
+        </button>
+        <button @click="resetTutorial" class="action-btn">
+          <i class="fas fa-redo"></i>
+          {{ $t('kuaishou.actions.resetTutorial') }}
+        </button>
+      </div>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div class="main-content">
+      <!-- 标签页导航 -->
+      <div class="tabs-container">
+        <div class="tabs">
+          <button 
+            v-for="tab in tabs" 
+            :key="tab.key"
+            @click="activeTab = tab.key"
+            :class="['tab-btn', { active: activeTab === tab.key }]"
+          >
+            <i :class="tab.icon"></i>
+            <span>{{ $t(`kuaishou.tabs.${tab.key}.name`) }}</span>
+            <small>{{ $t(`kuaishou.tabs.${tab.key}.description`) }}</small>
+          </button>
+        </div>
+      </div>
+
+      <!-- 标签页内容 -->
+      <div class="tab-content">
+        <!-- 账号设置 -->
+        <div v-if="activeTab === 'account'" class="tab-panel">
+          <div class="panel-header">
+            <h2>{{ $t('kuaishou.account.title') }}</h2>
+            <p>{{ $t('kuaishou.account.subtitle') }}</p>
+          </div>
+
+          <div class="settings-grid">
+            <!-- Cookies文件导入 -->
+            <div class="setting-card">
+              <h3>{{ $t('kuaishou.account.cookiesImport.title') }}</h3>
+              <p>{{ $t('kuaishou.account.cookiesImport.description') }}</p>
+              <div class="file-input-container">
+                <input 
+                  type="file" 
+                  @change="handleFileUpload" 
+                  accept=".txt,.json"
+                  class="file-input"
+                />
+                <label class="file-label">{{ $t('kuaishou.account.cookiesImport.selectFile') }}</label>
+              </div>
+            </div>
+
+            <!-- 自动获取 -->
+            <div class="setting-card">
+              <h3>{{ $t('kuaishou.account.autoGet.title') }}</h3>
+              <p>{{ $t('kuaishou.account.autoGet.description') }}</p>
+              <button 
+                @click="startAutoGet" 
+                :disabled="isGetting"
+                class="primary-btn"
+              >
+                <i v-if="isGetting" class="fas fa-spinner fa-spin"></i>
+                <span v-if="isGetting">{{ $t('kuaishou.account.autoGet.getting') }}</span>
+                <span v-else>{{ $t('kuaishou.account.autoGet.startGet') }}</span>
+              </button>
+            </div>
+
+            <!-- 手动输入 -->
+            <div class="setting-card">
+              <h3>{{ $t('kuaishou.account.manualInput.title') }}</h3>
+              <p>{{ $t('kuaishou.account.manualInput.description') }}</p>
+              <div class="input-group">
+                <label>{{ $t('kuaishou.account.manualInput.roomId') }}</label>
+                <input 
+                  v-model="manualInput.roomId" 
+                  :placeholder="$t('kuaishou.account.manualInput.roomIdPlaceholder')"
+                  type="text"
+                />
+              </div>
+              <div class="input-group">
+                <label>{{ $t('kuaishou.account.manualInput.cookies') }}</label>
+                <textarea 
+                  v-model="manualInput.cookies" 
+                  :placeholder="$t('kuaishou.account.manualInput.cookiesPlaceholder')"
+                  rows="3"
+                ></textarea>
+              </div>
+              <div class="input-group">
+                <label>{{ $t('kuaishou.account.manualInput.sessionId') }}</label>
+                <input 
+                  v-model="manualInput.sessionId" 
+                  :placeholder="$t('kuaishou.account.manualInput.sessionIdPlaceholder')"
+                  type="text"
+                />
+              </div>
+              <button @click="saveManualSettings" class="primary-btn">
+                {{ $t('kuaishou.account.manualInput.saveSettings') }}
+              </button>
+            </div>
+          </div>
+=======
     <div class="kuaishou-stream-container">
         <!-- 页面标题 -->
         <div class="page-header">
             <h1>{{ $t('kuaishou.title') }}</h1>
             <!-- <p>{{ $t('kuaishou.subtitle') }}</p> -->
+>>>>>>> 07a94825d062f79ffc13cd0636437fb9d487876f
         </div>
 
         <!-- 导航操作栏 -->
@@ -1186,5 +1317,70 @@ export default {
         flex-direction: column;
         gap: 15px;
     }
+}
+
+/* 全屏渐变背景和装饰 */
+.kuaishou-bg-container {
+  min-height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  background: linear-gradient(120deg, #fff 0%, #ffe5ea 40%, #ffb3c6 100%);
+  overflow-x: hidden;
+}
+
+.bg-decoration {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.floating-shape {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 36, 66, 0.10);
+  animation: float 6s ease-in-out infinite;
+}
+
+.shape-1 {
+  width: 120px;
+  height: 120px;
+  top: 12%;
+  left: 8%;
+  animation-delay: 0s;
+}
+
+.shape-2 {
+  width: 180px;
+  height: 180px;
+  top: 60%;
+  right: 10%;
+  animation-delay: 2s;
+}
+
+.shape-3 {
+  width: 90px;
+  height: 90px;
+  bottom: 18%;
+  left: 18%;
+  animation-delay: 4s;
+}
+
+.shape-4 {
+  width: 140px;
+  height: 140px;
+  top: 28%;
+  right: 28%;
+  animation-delay: 1s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
 }
 </style>

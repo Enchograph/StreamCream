@@ -153,7 +153,11 @@ export default {
     saveSettings: '設定を保存',
     ttsTitle: '音声合成設定',
     live2dTitle: 'Live2D設定',
-    finish: '完了'
+    finish: '完了',
+    topBannerLayout: 'ナビゲーションバーのレイアウト',
+    bannerDisperse: '分散',
+    bannerGather: '集中',
+    bannerLayout: 'ナビゲーションバーのレイアウト',
   },
   bilibili: {
     title: 'ビリビリ配信キー取得ツール',
@@ -847,6 +851,42 @@ export default {
     generateSampleFailed: 'サンプル音声の生成に失敗しました',
     sampleText: 'こんにちは、これはサンプル音声です。おはようございます、こんにちは、こんばんは。'
   },
+
+  // streamConfig component
+  streamConfig: {
+    title: '配信プラットフォーム選択と配信キー',
+    subtitle: '配信プラットフォームを選択し、配信キーを入力してください',
+    selectPlatform: '配信プラットフォームを選択',
+    streamUrl: '配信URL:',
+    streamUrlPlaceholder: '配信URLを入力',
+    streamKey: '配信キー:',
+    streamKeyPlaceholder: '配信キーを入力',
+    testConnection: '接続テスト',
+    getStreamKeyTool: '配信キー取得ツール',
+    stopLive: '配信停止',
+    // プラットフォームツール名
+    platformTools: {
+      bilibili: 'B站配信キー取得ツール',
+      douyin: '抖音配信キー取得ツール',
+      xiaohongshu: '小紅書配信キー取得ツール',
+      kuaishou: '快手配信キー取得ツール',
+      youtube: 'YouTube配信キー取得ツール',
+      twitch: 'Twitch配信キー取得ツール'
+    },
+    // デフォルト配信URL
+    defaultUrls: {
+      bilibili: 'rtmp://live-push.bilivideo.com/live-bvc/',
+      douyin: 'rtmp://push-rtmp-13.douyincdn.com/third/',
+      xiaohongshu: 'rtmp://live-push.xhscdn.com/live/',
+      kuaishou: 'rtmp://aliyun-open-push.voip.yximgs.com/gifshow/'
+    },
+    // エラーメッセージ
+    errors: {
+      userCancelled: 'ユーザーがキャプチャをキャンセルしたか、ブラウザがサポートされていません',
+      websocketFailed: 'WebSocket接続に失敗しました',
+      routeNotFound: '対応するプラットフォームのルートが見つかりません'
+    }
+  },
   help: {
     title: 'StreamCreamご利用ガイド',
     subtitle: 'AI配信アシスタントの完全な使い方',
@@ -968,4 +1008,38 @@ export default {
       restartServices: '関連バックエンドサービスを再起動'
     }
   },
+  xiaohongshu: {
+    title: "小紅書ライブ",
+    subtitle: "ワンストップ小紅書ライブ配信管理",
+    tabs: {
+      account: { name: "アカウント設定", description: "アカウントログインと認証" },
+      live: { name: "ライブ設定", description: "ライブ構成と管理" }
+    },
+    account: {
+      manualInput: "アカウント情報の手動入力",
+      userId: "ユーザーID",
+      userIdPlaceholder: "小紅書ユーザーIDを入力してください",
+      token: "トークン",
+      tokenPlaceholder: "トークンを入力してください",
+      saveSettings: "設定を保存",
+      viewHelp: "ヘルプを見る"
+    },
+    live: {
+      title: "ライブ設定",
+      titleInput: "ライブタイトル",
+      titlePlaceholder: "ライブタイトルを入力してください",
+      updateTitle: "タイトルを更新",
+      streamKey: "配信キー",
+      getStreamKey: "配信キーを取得",
+      sendBullet: "弾幕を送信",
+      bulletInput: "弾幕内容",
+      bulletPlaceholder: "弾幕内容を入力してください",
+      startLive: "ライブ開始",
+      operationLog: "操作ログ",
+      noLogs: "ログはありません"
+    },
+    help: {
+      title: "ヘルプドキュメント"
+    }
+  }
 }

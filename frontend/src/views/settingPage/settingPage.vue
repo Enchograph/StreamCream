@@ -12,8 +12,8 @@
                             <span class="section-bar-gradient"><v-icon color="#fff" size="20">mdi-translate</v-icon></span>{{ $t('setting.languageTitle') }}
                         </v-card-title>
                         <v-card-text>
-                            <v-row>
-                                <v-col cols="12">
+                            <v-row align="center" justify="space-between">
+                                <v-col cols="6" class="d-flex align-center">
                                     <div class="language-setting-container">
                                         <LanguageSwitcher />
                                     </div>
@@ -39,13 +39,33 @@
                                         :messages="debugMode ? $t('setting.enabled') : $t('setting.disabled')" class="rounded-switch-glass"></v-switch>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-select v-model="bannerColor" :items="[
-                                        { text: $t('setting.bannerDefault'), value: 'default' },
-                                        { text: $t('setting.bannerRed'), value: 'red' },
-                                        { text: $t('setting.bannerBlue'), value: 'blue' },
-                                        { text: $t('setting.bannerPurple'), value: 'purple' }
-                                    ]" item-title="text" item-value="value" :label="$t('setting.bannerColor')" outlined
-                                        dense class="rounded-input-glass"></v-select>
+                                    <v-row align="center" justify="space-between">
+                                        <v-col cols="6">
+                                            <v-select v-model="bannerColor" :items="[
+                                                { text: $t('setting.bannerDefault'), value: 'default' },
+                                                { text: $t('setting.bannerRed'), value: 'red' },
+                                                { text: $t('setting.bannerBlue'), value: 'blue' },
+                                                { text: $t('setting.bannerPurple'), value: 'purple' }
+                                            ]" item-title="text" item-value="value" :label="$t('setting.bannerColor')" outlined
+                                                dense class="rounded-input-glass"></v-select>
+                                        </v-col>
+                                        <v-col cols="6" class="d-flex justify-end align-center">
+                                            <v-select
+                                                v-model="isBannerDispersed"
+                                                :items="[
+                                                    { text: $t('setting.bannerDisperse'), value: false },
+                                                    { text: $t('setting.bannerGather'), value: true }
+                                                ]"
+                                                item-title="text"
+                                                item-value="value"
+                                                :label="$t('setting.bannerLayout')"
+                                                outlined
+                                                dense
+                                                class="rounded-input-glass"
+                                                @change="handleBannerLayoutChange"
+                                            ></v-select>
+                                        </v-col>
+                                    </v-row>
                                 </v-col>
                             </v-row>
                         </v-card-text>
@@ -263,6 +283,7 @@ import { useRouter } from 'vue-router'
 import { useLive2DStore } from '../../stores/live2d';
 import { ElMessage } from 'element-plus';
 import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
+import { ref, watch } from 'vue'
 
 export default {
     name: 'settingPage',
@@ -339,7 +360,8 @@ export default {
                 { value: 'o3', label: 'O3', group: '其他' },
                 { value: 'o3-all', label: 'O3 All', group: '其他' },
                 { value: 'text-embedding-ada-002', label: 'Text Embedding Ada 002', group: '其他' }
-            ]
+            ],
+            isBannerDispersed: localStorage.getItem('topBannerDispersed') === 'true'
         }
     },
     watch: {
@@ -395,6 +417,10 @@ export default {
         },
         'aiSettings.maxTokens'(newVal) {
             localStorage.setItem('aiMaxTokens', newVal)
+        },
+        isBannerDispersed(newVal) {
+            localStorage.setItem('topBannerDispersed', newVal)
+            window.dispatchEvent(new Event('topBannerLayoutChange'))
         }
     },
     async mounted() {
@@ -623,6 +649,10 @@ export default {
                 if (showAlert) alert('LLM服务连接异常：' + e);
                 return false;
             }
+        },
+        handleBannerLayoutChange() {
+            localStorage.setItem('topBannerDispersed', this.isBannerDispersed)
+            window.dispatchEvent(new Event('topBannerLayoutChange'))
         }
     },
     computed: {

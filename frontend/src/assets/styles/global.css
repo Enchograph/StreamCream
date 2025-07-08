@@ -49,6 +49,10 @@ body {
     /* 确保html和body占满视口高度 */
     margin: 0;
     /* 移除默认边距 */
+    background: linear-gradient(120deg, #fff 0%, #ffe5ea 40%, #ffb3c6 100%);
+    color: var(--text-color);
+    transition: background 0.3s, color 0.3s;
+    min-height: 100vh;
 }
 
 /* global.css */
@@ -111,4 +115,14 @@ main {
     /* 这会让main占据剩余高度 */
     display: flex;
     /* 添加flex布局 */
+}
+
+:root {
+  --bg-color: #fff;
+  --text-color: #222;
+}
+
+.dark {
+  --bg-color: #181818;
+  --text-color: #eee;
 }

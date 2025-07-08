@@ -3,9 +3,9 @@
     <div class="page-container">
         <div class="page-bg-animated"></div>
         <!-- 语言切换器 -->
-        <!-- <div style="position: absolute; top: 20px; right: 20px; z-index: 10;">
+        <div style="position: absolute; top: 20px; right: 20px; z-index: 10;">
             <LanguageSwitcher />
-        </div> -->
+        </div>
         <div class="welcome-message">
             <h2>{{ $t('login.title') }}</h2>
         </div>
@@ -234,11 +234,13 @@ import TopBanner from '/src/components/TopBanner.vue'
 import LanguageSwitcher from '/src/components/LanguageSwitcher.vue'
 import { ElMessage, ElInput } from 'element-plus'
 import { useI18n } from 'vue-i18n'
+import { useThemeStore } from '../../stores/theme';
 
 const auth = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 const { t } = useI18n();
+const themeStore = useThemeStore();
 // 定义响应式状态
 const isRegistering = ref(false);
 const isForgotPassword = ref(false);

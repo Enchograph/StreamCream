@@ -1,6 +1,6 @@
 <template>
     <header class="top-banner" :style="bannerStyle">
-        <div class="banner-content">
+        <div class="banner-content" :class="{ 'centered': !isDispersed, dispersed: isDispersed }">
             <div class="logo-section" @click="goToHome">
                 <div class="logo-text">
                     <span class="logo-main">StreamCream</span>
@@ -8,7 +8,7 @@
                 </div>
             </div>
             
-        <nav class="nav-links">
+            <nav class="nav-links" :class="{ dispersed: isDispersed, grouped: !isDispersed }">
                 <a href="#" class="nav-link" @click.prevent="goToHelp" :title="$t('topBanner.help.tooltip')">
                     <span class="nav-text">{{ $t('topBanner.help.text') }}</span>
                 </a>
@@ -18,7 +18,7 @@
                 <button v-if="showLogout" class="logout-btn" @click="handleLogout" :title="$t('topBanner.logout.tooltip')">
                     <span class="btn-text">{{ $t('topBanner.logout.text') }}</span>
                 </button>
-        </nav>
+            </nav>
         </div>
         
         <!-- 装饰性元素 -->
@@ -75,7 +75,7 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js'
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 
@@ -158,8 +158,15 @@ async function handleLogout() {
     }
 }
 
+const isDispersed = ref(localStorage.getItem('topBannerDispersed') === 'true')
+function syncDisperse() {
+  isDispersed.value = localStorage.getItem('topBannerDispersed') === 'true'
+}
+
 onMounted(() => {
     window.addEventListener('storage', syncBannerColor)
+    window.addEventListener('topBannerLayoutChange', syncDisperse)
+    syncDisperse()
 })
 
 function syncBannerColor() {
@@ -174,6 +181,10 @@ function goToHome() {
         router.push('/loginPage')
     }
 }
+
+onUnmounted(() => {
+  window.removeEventListener('topBannerLayoutChange', syncDisperse)
+})
 </script>
 
 
@@ -198,10 +209,10 @@ function goToHome() {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 1200px;
-    padding: 0 30px;
-    position: relative;
-    z-index: 2;
+}
+
+.banner-content.dispersed {
+    justify-content: space-between !important;
 }
 
 /* Logo 区域样式 */
@@ -215,6 +226,7 @@ function goToHome() {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
+    margin-left: 16px;
 }
 
 .logo-section::before {
@@ -264,8 +276,21 @@ function goToHome() {
 /* 导航链接样式 */
 .nav-links {
     display: flex;
-    gap: 8px;
     align-items: center;
+    gap: 18px;
+    transition: justify-content 0.3s;
+    justify-content: flex-end;
+}
+
+.nav-links.dispersed {
+    width: 100%;
+    justify-content: flex-end;
+    gap: 24px;
+}
+
+.nav-links.grouped {
+    justify-content: flex-end !important;
+    width: auto !important;
 }
 
 .nav-link {
@@ -775,6 +800,21 @@ function goToHome() {
     .nav-links {
         gap: 4px;
     }
+}
+
+/* 新增样式 */
+.banner-content.centered {
+  max-width: 1200px;
+  padding: 0 30px;
+  margin: 0 auto;
+}
+.banner-content.centered .logo-section,
+.banner-content.centered .nav-links {
+  margin: 0 12px;
+}
+.banner-content.centered .nav-links {
+  justify-content: center !important;
+  width: auto !important;
 }
 </style>
 

@@ -1,7 +1,7 @@
 <template>
     <v-container class="pa-4 setting-bg-glass">
         <v-card flat class="mx-auto setting-card-glass" max-width="1000">
-            <v-card-title class="text-h5 font-weight-medium setting-title-glass">
+            <v-card-title class="text-h5 font-weight-medium setting-title-glass text-left">
                 <span class="title-bar-gradient"><v-icon color="#fff"
                         size="28">mdi-cog</v-icon></span>{{ $t('setting.title') }}
             </v-card-title>
@@ -11,20 +11,47 @@
                     <v-card flat class="mb-6 section-card-glass">
                         <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">
                             <span class="section-bar-gradient"><v-icon color="#fff"
-                                    size="20">mdi-translate</v-icon></span>{{ $t('setting.languageTitle') }}
+                                    size="20">mdi-palette</v-icon></span>{{ $t('setting.themeTitle') }}
                         </v-card-title>
-                        <v-card-text>
+
+                        <v-col cols="12">
                             <v-row align="center" justify="space-between">
-                                <v-col cols="6" class="d-flex align-center">
-                                    <div class="language-setting-container">
-                                        <LanguageSwitcher />
-                                    </div>
+                                <v-col cols="12">
+                                    <v-select v-model="bannerColor" :items="[
+                                        { text: $t('setting.bannerDefault'), value: 'default' },
+                                        { text: $t('setting.bannerBlue'), value: 'blue' },
+                                        { text: $t('setting.bannerGreen'), value: 'green' },
+                                        // { text: $t('setting.bannerRed'), value: 'red' },
+                                        // { text: $t('setting.bannerPurple'), value: 'purple' },
+                                        // { text: $t('setting.bannerWhite'), value: 'white' },
+                                        // { text: $t('setting.bannerBrown'), value: 'brown' },
+                                        { text: $t('setting.bannerYellow'), value: 'yellow' },
+                                        { text: $t('setting.bannerPink'), value: 'pink' }
+                                    ]" item-title="text" item-value="value" :label="$t('setting.bannerColor')" outlined
+                                        dense class="rounded-input-glass"></v-select>
+                                </v-col>
+                                <v-col cols="12" class="d-flex justify-end align-center">
+                                    <v-select v-model="isBannerDispersed" :items="[
+                                        { text: $t('setting.bannerDisperse'), value: true },
+                                        { text: $t('setting.bannerGather'), value: false }
+                                    ]" item-title="text" item-value="value" :label="$t('setting.bannerLayout')"
+                                        outlined dense class="rounded-input-glass"
+                                        @change="handleBannerLayoutChange"></v-select>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-select v-model="locale" :items="[
+                                        { text: '中文', value: 'zh-CN' },
+                                        { text: 'English', value: 'en-US' },
+                                        { text: '日本語', value: 'ja-JP' }
+                                    ]" item-title="text" item-value="value" :label="$t('setting.languageTitle')"
+                                        outlined dense class="rounded-input-glass" @update:model-value="switchLanguage">
+                                    </v-select>
                                 </v-col>
                             </v-row>
-                        </v-card-text>
+                        </v-col>
                     </v-card>
                 </v-col>
-                <v-col cols="12">
+                <!-- <v-col cols="12">
                     <v-card flat class="mb-6 section-card-glass">
                         <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">
                             <span class="section-bar-gradient"><v-icon color="#fff"
@@ -43,32 +70,11 @@
                                         :messages="debugMode ? $t('setting.enabled') : $t('setting.disabled')"
                                         class="rounded-switch-glass"></v-switch>
                                 </v-col>
-                                <v-col cols="12">
-                                    <v-row align="center" justify="space-between">
-                                        <v-col cols="6">
-                                            <v-select v-model="bannerColor" :items="[
-                                                { text: $t('setting.bannerDefault'), value: 'default' },
-                                                { text: $t('setting.bannerRed'), value: 'red' },
-                                                { text: $t('setting.bannerBlue'), value: 'blue' },
-                                                { text: $t('setting.bannerPurple'), value: 'purple' }
-                                            ]" item-title="text" item-value="value" :label="$t('setting.bannerColor')"
-                                                outlined dense class="rounded-input-glass"></v-select>
-                                        </v-col>
-                                        <v-col cols="6" class="d-flex justify-end align-center">
-                                            <v-select v-model="isBannerDispersed" :items="[
-                                                { text: $t('setting.bannerDisperse'), value: true },
-                                                { text: $t('setting.bannerGather'), value: false }
-                                            ]" item-title="text" item-value="value"
-                                                :label="$t('setting.bannerLayout')" outlined dense
-                                                class="rounded-input-glass"
-                                                @change="handleBannerLayoutChange"></v-select>
-                                        </v-col>
-                                    </v-row>
-                                </v-col>
+
                             </v-row>
                         </v-card-text>
                     </v-card>
-                </v-col>
+                </v-col> -->
                 <v-col cols="12">
                     <v-card flat class="mb-6 section-card-glass">
                         <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">
@@ -167,18 +173,40 @@
                                         :placeholder="$t('setting.customModelNamePlaceholder')" outlined dense
                                         class="rounded-input-glass"></v-text-field>
                                 </v-col>
+                                <v-col cols="12" class="text-center">
+                                    <v-btn color="primary" class="mr-4" @click="testLLMConnection">
+                                        {{ $t('setting.testConnection') }}
+                                    </v-btn>
+                                    <v-btn color="success" @click="saveAISettings"
+                                        @update:model-value="handleResolutionChange">
+                                        {{ $t('setting.saveSettings') }}
+                                    </v-btn>
+                                </v-col>
+
                             </v-row>
                         </v-card-text>
                     </v-card>
                 </v-col>
             </v-row>
-            <v-row class="mt-6">
+            <!-- <v-row class="mt-6">
                 <v-col cols="12" class="text-center">
-                    <!-- <v-btn color="primary" variant="flat" @click="saveSettings" class="rounded-btn-glass">
+                    <v-btn color="primary" variant="flat" @click="saveSettings" class="rounded-btn-glass">
                         保存
-                    </v-btn> -->
+                    </v-btn>
                 </v-col>
-            </v-row>
+            </v-row> -->
+            <!-- <v-row>
+                <v-col cols="12">
+                    <v-card flat class="mb-6 section-card-glass">
+                        <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">
+                            <span class="section-bar-gradient"><v-icon color="#fff"
+                                    size="20">mdi-translate</v-icon></span>{{ $t('setting.languageTitle') }}
+                        </v-card-title>
+                        <v-card-text>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row> -->
             <v-row>
                 <v-col cols="12">
                     <v-card flat class="mb-6 section-card-glass">
@@ -260,12 +288,11 @@
                     </v-card>
                 </v-col>
             </v-row>
-            <v-row>
+            <!-- <v-row>
                 <v-col cols="12">
                     <v-card class="mb-4" outlined>
                         <v-card-title class="text-h5">{{ $t('setting.ttsTitle') }}</v-card-title>
                         <v-card-text>
-                            <!-- 预留内容 -->
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -275,11 +302,10 @@
                     <v-card class="mb-4" outlined>
                         <v-card-title class="text-h5">{{ $t('setting.live2dTitle') }}</v-card-title>
                         <v-card-text>
-                            <!-- 预留内容 -->
                         </v-card-text>
                     </v-card>
                 </v-col>
-            </v-row>
+            </v-row> -->
             <div class="finish-btn-wrapper">
                 <v-btn color="primary" variant="elevated" @click="completeSetting" class="rounded-btn-glass">
                     {{ $t('setting.finish') }}
@@ -296,6 +322,8 @@ import { useLive2DStore } from '../../stores/live2d';
 import { ElMessage } from 'element-plus';
 import LanguageSwitcher from '../../components/LanguageSwitcher.vue'
 import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 
 export default {
     name: 'settingPage',
@@ -305,6 +333,7 @@ export default {
             debugMode: localStorage.getItem('debugMode') === 'true',
             bannerColor: localStorage.getItem('bannerColor') || 'default',
             resolution: localStorage.getItem('resolution') || '1920x1080',
+            locale: localStorage.getItem('locale') || 'zh-CN',
             revolutionPreference: localStorage.getItem('revolutionPreference') || '1920x1080',
             fpsPreference: localStorage.getItem('fpsPreference') || '30',
             bgPreference: localStorage.getItem('bgPreference') || 'default',
@@ -468,6 +497,7 @@ export default {
         if (localStorage.getItem('bannerColor') !== null) {
             this.bannerColor = localStorage.getItem('bannerColor')
         }
+
     },
     methods: {
         handleResolutionChange(newResolution) {
@@ -643,7 +673,7 @@ export default {
                     body: JSON.stringify({
                         model: modelName,
                         messages: [
-                            { role: 'user', content: '你好，请简单回复"测试成功"四个字。' }
+                            { role: 'user', content: '你好，请不多不少地只回复"测试成功"四个字。' }
                         ],
                         temperature: temperature || 0.7,
                         max_tokens: 16
@@ -651,7 +681,8 @@ export default {
                 });
                 const data = await res.json();
                 if (res.ok && data.choices && data.choices.length > 0) {
-                    if (showAlert) alert('LLM服务连接成功！返回内容：' + (data.choices[0].message?.content || '无'));
+                    // if (showAlert) alert('LLM服务连接成功！返回内容：' + (data.choices[0].message?.content || '无'));
+                    if (showAlert) alert('LLM服务连接成功！');
                     return true;
                 } else {
                     if (showAlert) alert('LLM服务连接失败！' + (data.error?.message || JSON.stringify(data)));
@@ -665,14 +696,20 @@ export default {
         handleBannerLayoutChange() {
             localStorage.setItem('topBannerDispersed', this.isBannerDispersed)
             window.dispatchEvent(new Event('topBannerLayoutChange'))
+        },
+        switchLanguage(newLocale) {
+            localStorage.setItem('locale', this.locale);
+            this.$i18n.locale = this.locale;
+            window.dispatchEvent(new Event('languageChange'));
         }
+
     },
     computed: {
-        finishBtnColor() {
-            if (this.bannerColor === 'blue') return '#1976d2';
-            if (this.bannerColor === 'purple') return '#7c3aed';
-            return '#409eff';
-        }
+        // finishBtnColor() {
+        //     if (this.bannerColor === 'blue') return '#1976d2';
+        //     if (this.bannerColor === 'purple') return '#7c3aed';
+        //     return '#409eff';
+        // }
     }
 }
 </script>
@@ -720,7 +757,6 @@ export default {
 .setting-title-glass {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     font-size: 2.4rem;
     margin-bottom: 28px;
     letter-spacing: 2px;

@@ -1,5 +1,4 @@
 <template>
-<<<<<<< HEAD
   <div class="kuaishou-stream-container">
     <div class="kuaishou-bg-container">
       <div class="bg-decoration">
@@ -128,349 +127,245 @@
               </button>
             </div>
           </div>
-=======
-    <div class="kuaishou-stream-container">
-        <!-- 页面标题 -->
-        <div class="page-header">
-            <h1>{{ $t('kuaishou.title') }}</h1>
-            <!-- <p>{{ $t('kuaishou.subtitle') }}</p> -->
->>>>>>> 07a94825d062f79ffc13cd0636437fb9d487876f
         </div>
+        <!-- 直播设置 -->
+        <div v-if="activeTab === 'live'" class="tab-panel">
+          <div class="panel-header">
+            <h2>{{ $t('kuaishou.live.title') }}</h2>
+            <p>{{ $t('kuaishou.live.subtitle') }}</p>
+          </div>
 
-        <!-- 导航操作栏 -->
-        <div class="nav-actions">
-            <div class="action-buttons">
-                <button @click="showHelp" class="action-btn">
-                    <i class="fas fa-question-circle"></i>
-                    {{ $t('kuaishou.actions.help') }}
+          <div class="settings-grid">
+            <!-- 直播标题 -->
+            <div class="setting-card">
+              <h3>{{ $t('kuaishou.live.titleSetting.title') }}</h3>
+              <p>{{ $t('kuaishou.live.titleSetting.description') }}</p>
+              <div class="input-group">
+                <input v-model="liveSettings.title"
+                  :placeholder="$t('kuaishou.live.titleSetting.placeholder')" type="text" />
+                <button @click="updateLiveTitle" class="secondary-btn">
+                  {{ $t('kuaishou.live.titleSetting.updateTitle') }}
                 </button>
-                <button @click="showQuickActions" class="action-btn">
-                    <i class="fas fa-bolt"></i>
-                    {{ $t('kuaishou.actions.quickActions') }}
+              </div>
+            </div>
+
+            <!-- 直播分类 -->
+            <div class="setting-card">
+              <h3>{{ $t('kuaishou.live.category.title') }}</h3>
+              <p>{{ $t('kuaishou.live.category.description') }}</p>
+              <div class="input-group">
+                <label>{{ $t('kuaishou.live.category.mainCategory') }}</label>
+                <select v-model="liveSettings.mainCategory">
+                  <option value="">{{ $t('kuaishou.live.category.selectCategory') }}</option>
+                  <option v-for="category in categories" :key="category.id" :value="category.id">
+                    {{ category.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label>{{ $t('kuaishou.live.category.subCategory') }}</label>
+                <select v-model="liveSettings.subCategory">
+                  <option value="">{{ $t('kuaishou.live.category.selectSubCategory') }}</option>
+                  <option v-for="subCategory in subCategories" :key="subCategory.id"
+                    :value="subCategory.id">
+                    {{ subCategory.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="button-group">
+                <button @click="updateCategory" class="secondary-btn">
+                  {{ $t('kuaishou.live.category.updateCategory') }}
                 </button>
-                <button @click="showTutorial" class="action-btn">
-                    <i class="fas fa-graduation-cap"></i>
-                    {{ $t('kuaishou.actions.tutorial') }}
+                <button @click="refreshCategories" class="secondary-btn">
+                  {{ $t('kuaishou.live.category.refreshCategories') }}
                 </button>
-                <button @click="resetTutorial" class="action-btn">
-                    <i class="fas fa-redo"></i>
-                    {{ $t('kuaishou.actions.resetTutorial') }}
+              </div>
+            </div>
+
+            <!-- 发送评论 -->
+            <div class="setting-card">
+              <h3>{{ $t('kuaishou.live.comment.title') }}</h3>
+              <p>{{ $t('kuaishou.live.comment.description') }}</p>
+              <div class="input-group">
+                <textarea v-model="commentText" :placeholder="$t('kuaishou.live.comment.placeholder')"
+                  rows="3"></textarea>
+                <button @click="sendComment" class="secondary-btn">
+                  {{ $t('kuaishou.live.comment.sendComment') }}
                 </button>
+              </div>
             </div>
+
+            <!-- 开始直播 -->
+            <div class="setting-card">
+              <button @click="startLive" class="primary-btn large">
+                <i class="fas fa-play"></i>
+                {{ $t('kuaishou.live.startLive.text') }}
+              </button>
+            </div>
+          </div>
         </div>
+        <!-- 推流信息 -->
+        <div v-if="activeTab === 'stream'" class="tab-panel">
+          <div class="panel-header">
+            <h2>{{ $t('kuaishou.stream.title') }}</h2>
+            <p>{{ $t('kuaishou.stream.subtitle') }}</p>
+          </div>
 
-        <!-- 主要内容区域 -->
-        <div class="main-content">
-            <!-- 标签页导航 -->
-            <div class="tabs-container">
-                <div class="tabs">
-                    <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key"
-                        :class="['tab-btn', { active: activeTab === tab.key }]">
-                        <i :class="tab.icon"></i>
-                        <span>{{ $t(`kuaishou.tabs.${tab.key}.name`) }}</span>
-                        <small>{{ $t(`kuaishou.tabs.${tab.key}.description`) }}</small>
-                    </button>
+          <div class="stream-info-grid">
+            <!-- 推流地址 -->
+            <div class="info-card">
+              <h3>{{ $t('kuaishou.stream.server.title') }}</h3>
+              <div class="info-content">
+                <div v-if="streamInfo.server" class="info-value">
+                  <code>{{ streamInfo.server }}</code>
+                  <button @click="copyToClipboard(streamInfo.server)" class="copy-btn">
+                    <i class="fas fa-copy"></i>
+                    {{ $t('kuaishou.stream.server.copy') }}
+                  </button>
                 </div>
+                <div v-else class="info-empty">
+                  {{ $t('kuaishou.stream.server.empty') }}
+                </div>
+              </div>
             </div>
 
-            <!-- 标签页内容 -->
-            <div class="tab-content">
-                <!-- 账号设置 -->
-                <div v-if="activeTab === 'account'" class="tab-panel">
-                    <div class="panel-header">
-                        <h2>{{ $t('kuaishou.account.title') }}</h2>
-                        <p>{{ $t('kuaishou.account.subtitle') }}</p>
-                    </div>
-
-                    <div class="settings-grid">
-                        <!-- Cookies文件导入 -->
-                        <div class="setting-card">
-                            <h3>{{ $t('kuaishou.account.cookiesImport.title') }}</h3>
-                            <p>{{ $t('kuaishou.account.cookiesImport.description') }}</p>
-                            <div class="file-input-container">
-                                <input type="file" @change="handleFileUpload" accept=".txt,.json" class="file-input" />
-                                <label class="file-label">{{ $t('kuaishou.account.cookiesImport.selectFile') }}</label>
-                            </div>
-                        </div>
-
-                        <!-- 自动获取 -->
-                        <div class="setting-card">
-                            <h3>{{ $t('kuaishou.account.autoGet.title') }}</h3>
-                            <p>{{ $t('kuaishou.account.autoGet.description') }}</p>
-                            <button @click="startAutoGet" :disabled="isGetting" class="primary-btn">
-                                <i v-if="isGetting" class="fas fa-spinner fa-spin"></i>
-                                <span v-if="isGetting">{{ $t('kuaishou.account.autoGet.getting') }}</span>
-                                <span v-else>{{ $t('kuaishou.account.autoGet.startGet') }}</span>
-                            </button>
-                        </div>
-
-                        <!-- 手动输入 -->
-                        <div class="setting-card">
-                            <h3>{{ $t('kuaishou.account.manualInput.title') }}</h3>
-                            <p>{{ $t('kuaishou.account.manualInput.description') }}</p>
-                            <div class="input-group">
-                                <label>{{ $t('kuaishou.account.manualInput.roomId') }}</label>
-                                <input v-model="manualInput.roomId"
-                                    :placeholder="$t('kuaishou.account.manualInput.roomIdPlaceholder')" type="text" />
-                            </div>
-                            <div class="input-group">
-                                <label>{{ $t('kuaishou.account.manualInput.cookies') }}</label>
-                                <textarea v-model="manualInput.cookies"
-                                    :placeholder="$t('kuaishou.account.manualInput.cookiesPlaceholder')"
-                                    rows="3"></textarea>
-                            </div>
-                            <div class="input-group">
-                                <label>{{ $t('kuaishou.account.manualInput.sessionId') }}</label>
-                                <input v-model="manualInput.sessionId"
-                                    :placeholder="$t('kuaishou.account.manualInput.sessionIdPlaceholder')"
-                                    type="text" />
-                            </div>
-                            <button @click="saveManualSettings" class="primary-btn">
-                                {{ $t('kuaishou.account.manualInput.saveSettings') }}
-                            </button>
-                        </div>
-                    </div>
+            <!-- 推流密钥 -->
+            <div class="info-card">
+              <h3>{{ $t('kuaishou.stream.code.title') }}</h3>
+              <div class="info-content">
+                <div v-if="streamInfo.code" class="info-value">
+                  <code>{{ streamInfo.code }}</code>
+                  <button @click="copyToClipboard(streamInfo.code)" class="copy-btn">
+                    <i class="fas fa-copy"></i>
+                    {{ $t('kuaishou.stream.code.copy') }}
+                  </button>
                 </div>
-
-                <!-- 直播设置 -->
-                <div v-if="activeTab === 'live'" class="tab-panel">
-                    <div class="panel-header">
-                        <h2>{{ $t('kuaishou.live.title') }}</h2>
-                        <p>{{ $t('kuaishou.live.subtitle') }}</p>
-                    </div>
-
-                    <div class="settings-grid">
-                        <!-- 直播标题 -->
-                        <div class="setting-card">
-                            <h3>{{ $t('kuaishou.live.titleSetting.title') }}</h3>
-                            <p>{{ $t('kuaishou.live.titleSetting.description') }}</p>
-                            <div class="input-group">
-                                <input v-model="liveSettings.title"
-                                    :placeholder="$t('kuaishou.live.titleSetting.placeholder')" type="text" />
-                                <button @click="updateLiveTitle" class="secondary-btn">
-                                    {{ $t('kuaishou.live.titleSetting.updateTitle') }}
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- 直播分类 -->
-                        <div class="setting-card">
-                            <h3>{{ $t('kuaishou.live.category.title') }}</h3>
-                            <p>{{ $t('kuaishou.live.category.description') }}</p>
-                            <div class="input-group">
-                                <label>{{ $t('kuaishou.live.category.mainCategory') }}</label>
-                                <select v-model="liveSettings.mainCategory">
-                                    <option value="">{{ $t('kuaishou.live.category.selectCategory') }}</option>
-                                    <option v-for="category in categories" :key="category.id" :value="category.id">
-                                        {{ category.name }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="input-group">
-                                <label>{{ $t('kuaishou.live.category.subCategory') }}</label>
-                                <select v-model="liveSettings.subCategory">
-                                    <option value="">{{ $t('kuaishou.live.category.selectSubCategory') }}</option>
-                                    <option v-for="subCategory in subCategories" :key="subCategory.id"
-                                        :value="subCategory.id">
-                                        {{ subCategory.name }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="button-group">
-                                <button @click="updateCategory" class="secondary-btn">
-                                    {{ $t('kuaishou.live.category.updateCategory') }}
-                                </button>
-                                <button @click="refreshCategories" class="secondary-btn">
-                                    {{ $t('kuaishou.live.category.refreshCategories') }}
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- 发送评论 -->
-                        <div class="setting-card">
-                            <h3>{{ $t('kuaishou.live.comment.title') }}</h3>
-                            <p>{{ $t('kuaishou.live.comment.description') }}</p>
-                            <div class="input-group">
-                                <textarea v-model="commentText" :placeholder="$t('kuaishou.live.comment.placeholder')"
-                                    rows="3"></textarea>
-                                <button @click="sendComment" class="secondary-btn">
-                                    {{ $t('kuaishou.live.comment.sendComment') }}
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- 开始直播 -->
-                        <div class="setting-card">
-                            <button @click="startLive" class="primary-btn large">
-                                <i class="fas fa-play"></i>
-                                {{ $t('kuaishou.live.startLive.text') }}
-                            </button>
-                        </div>
-                    </div>
+                <div v-else class="info-empty">
+                  {{ $t('kuaishou.stream.code.empty') }}
                 </div>
-
-                <!-- 推流信息 -->
-                <div v-if="activeTab === 'stream'" class="tab-panel">
-                    <div class="panel-header">
-                        <h2>{{ $t('kuaishou.stream.title') }}</h2>
-                        <p>{{ $t('kuaishou.stream.subtitle') }}</p>
-                    </div>
-
-                    <div class="stream-info-grid">
-                        <!-- 推流地址 -->
-                        <div class="info-card">
-                            <h3>{{ $t('kuaishou.stream.server.title') }}</h3>
-                            <div class="info-content">
-                                <div v-if="streamInfo.server" class="info-value">
-                                    <code>{{ streamInfo.server }}</code>
-                                    <button @click="copyToClipboard(streamInfo.server)" class="copy-btn">
-                                        <i class="fas fa-copy"></i>
-                                        {{ $t('kuaishou.stream.server.copy') }}
-                                    </button>
-                                </div>
-                                <div v-else class="info-empty">
-                                    {{ $t('kuaishou.stream.server.empty') }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 推流密钥 -->
-                        <div class="info-card">
-                            <h3>{{ $t('kuaishou.stream.code.title') }}</h3>
-                            <div class="info-content">
-                                <div v-if="streamInfo.code" class="info-value">
-                                    <code>{{ streamInfo.code }}</code>
-                                    <button @click="copyToClipboard(streamInfo.code)" class="copy-btn">
-                                        <i class="fas fa-copy"></i>
-                                        {{ $t('kuaishou.stream.code.copy') }}
-                                    </button>
-                                </div>
-                                <div v-else class="info-empty">
-                                    {{ $t('kuaishou.stream.code.empty') }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 导出选项 -->
-                        <div class="info-card">
-                            <h3>{{ $t('kuaishou.stream.export.title') }}</h3>
-                            <p>{{ $t('kuaishou.stream.export.description') }}</p>
-                            <div class="button-group">
-                                <button @click="exportToDesktop" class="secondary-btn">
-                                    {{ $t('kuaishou.stream.export.exportToDesktop') }}
-                                </button>
-                                <button @click="exportToFile" class="secondary-btn">
-                                    {{ $t('kuaishou.stream.export.exportToFile') }}
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- 直播控制 -->
-                        <div class="info-card">
-                            <h3>{{ $t('kuaishou.stream.control.title') }}</h3>
-                            <p>{{ $t('kuaishou.stream.control.description') }}</p>
-                            <div class="button-group">
-                                <button @click="stopLive" class="danger-btn">
-                                    {{ $t('kuaishou.stream.control.stopLive') }}
-                                </button>
-                                <button @click="refreshStreamInfo" class="secondary-btn">
-                                    {{ $t('kuaishou.stream.control.refreshStream') }}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              </div>
             </div>
-        </div>
 
-        <!-- 操作日志 -->
-        <div class="logs-section">
-            <div class="logs-header">
-                <h3>{{ $t('kuaishou.logs.title') }}</h3>
-                <div class="logs-actions">
-                    <button @click="clearLogs" class="secondary-btn small">
-                        {{ $t('kuaishou.logs.clear') }}
-                    </button>
-                    <button @click="exportLogs" class="secondary-btn small">
-                        {{ $t('kuaishou.logs.export') }}
-                    </button>
-                </div>
-            </div>
-            <div class="logs-content">
-                <div v-if="logs.length === 0" class="logs-empty">
-                    {{ $t('kuaishou.logs.empty') }}
-                </div>
-                <div v-else class="logs-list">
-                    <div v-for="(log, index) in logs" :key="index" class="log-item">
-                        <span class="log-time">{{ log.time }}</span>
-                        <span class="log-level" :class="log.level">{{ log.level }}</span>
-                        <span class="log-message">{{ log.message }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 状态栏 -->
-        <div class="status-bar">
-            <div class="status-left">
-                <span class="status-item">
-                    <i class="fas fa-info-circle"></i>
-                    {{ $t('kuaishou.status.tutorial') }}
-                </span>
-            </div>
-            <div class="status-right">
-                <button @click="resetAll" class="text-btn">
-                    {{ $t('kuaishou.status.reset') }}
+            <!-- 导出选项 -->
+            <div class="info-card">
+              <h3>{{ $t('kuaishou.stream.export.title') }}</h3>
+              <p>{{ $t('kuaishou.stream.export.description') }}</p>
+              <div class="button-group">
+                <button @click="exportToDesktop" class="secondary-btn">
+                  {{ $t('kuaishou.stream.export.exportToDesktop') }}
                 </button>
+                <button @click="exportToFile" class="secondary-btn">
+                  {{ $t('kuaishou.stream.export.exportToFile') }}
+                </button>
+              </div>
             </div>
-        </div>
 
-        <!-- 二维码对话框 -->
-        <div v-if="showQRDialog" class="modal-overlay" @click="closeQRDialog">
-            <div class="modal-content" @click.stop>
-                <div class="modal-header">
-                    <h3>{{ $t('kuaishou.qrDialog.title') }}</h3>
-                    <button @click="closeQRDialog" class="close-btn">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="qr-container">
-                        <div class="qr-code-placeholder">
-                            <i class="fas fa-qrcode"></i>
-                            <p>QR Code</p>
-                        </div>
-                    </div>
-                    <div class="qr-tips">
-                        <p>{{ $t('kuaishou.qrDialog.tip') }}</p>
-                        <ol>
-                            <li>{{ $t('kuaishou.qrDialog.step1') }}</li>
-                            <li>{{ $t('kuaishou.qrDialog.step2') }}</li>
-                            <li>{{ $t('kuaishou.qrDialog.step3') }}</li>
-                            <li>{{ $t('kuaishou.qrDialog.step4') }}</li>
-                        </ol>
-                    </div>
-                </div>
+            <!-- 直播控制 -->
+            <div class="info-card">
+              <h3>{{ $t('kuaishou.stream.control.title') }}</h3>
+              <p>{{ $t('kuaishou.stream.control.description') }}</p>
+              <div class="button-group">
+                <button @click="stopLive" class="danger-btn">
+                  {{ $t('kuaishou.stream.control.stopLive') }}
+                </button>
+                <button @click="refreshStreamInfo" class="secondary-btn">
+                  {{ $t('kuaishou.stream.control.refreshStream') }}
+                </button>
+              </div>
             </div>
+          </div>
         </div>
-
-        <!-- 帮助对话框 -->
-        <div v-if="showHelpDialog" class="modal-overlay" @click="closeHelpDialog">
-            <div class="modal-content large" @click.stop>
-                <div class="modal-header">
-                    <h3>{{ $t('kuaishou.helpDialog.title') }}</h3>
-                    <button @click="closeHelpDialog" class="close-btn">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="help-content">
-                        <pre>{{ $t('kuaishou.helpDialog.content') }}</pre>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+
+    <!-- 操作日志 -->
+    <div class="logs-section">
+      <div class="logs-header">
+        <h3>{{ $t('kuaishou.logs.title') }}</h3>
+        <div class="logs-actions">
+          <button @click="clearLogs" class="secondary-btn small">
+            {{ $t('kuaishou.logs.clear') }}
+          </button>
+          <button @click="exportLogs" class="secondary-btn small">
+            {{ $t('kuaishou.logs.export') }}
+          </button>
+        </div>
+      </div>
+      <div class="logs-content">
+        <div v-if="logs.length === 0" class="logs-empty">
+          {{ $t('kuaishou.logs.empty') }}
+        </div>
+        <div v-else class="logs-list">
+          <div v-for="(log, index) in logs" :key="index" class="log-item">
+            <span class="log-time">{{ log.time }}</span>
+            <span class="log-level" :class="log.level">{{ log.level }}</span>
+            <span class="log-message">{{ log.message }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 状态栏 -->
+    <div class="status-bar">
+      <div class="status-left">
+        <span class="status-item">
+          <i class="fas fa-info-circle"></i>
+          {{ $t('kuaishou.status.tutorial') }}
+        </span>
+      </div>
+      <div class="status-right">
+        <button @click="resetAll" class="text-btn">
+          {{ $t('kuaishou.status.reset') }}
+        </button>
+      </div>
+    </div>
+
+    <!-- 二维码对话框 -->
+    <div v-if="showQRDialog" class="modal-overlay" @click="closeQRDialog">
+      <div class="modal-content" @click.stop>
+        <div class="modal-header">
+          <h3>{{ $t('kuaishou.qrDialog.title') }}</h3>
+          <button @click="closeQRDialog" class="close-btn">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="qr-container">
+            <div class="qr-code-placeholder">
+              <i class="fas fa-qrcode"></i>
+              <p>QR Code</p>
+            </div>
+          </div>
+          <div class="qr-tips">
+            <p>{{ $t('kuaishou.qrDialog.tip') }}</p>
+            <ol>
+              <li>{{ $t('kuaishou.qrDialog.step1') }}</li>
+              <li>{{ $t('kuaishou.qrDialog.step2') }}</li>
+              <li>{{ $t('kuaishou.qrDialog.step3') }}</li>
+              <li>{{ $t('kuaishou.qrDialog.step4') }}</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 帮助对话框 -->
+    <div v-if="showHelpDialog" class="modal-overlay" @click="closeHelpDialog">
+      <div class="modal-content large" @click.stop>
+        <div class="modal-header">
+          <h3>{{ $t('kuaishou.helpDialog.title') }}</h3>
+          <button @click="closeHelpDialog" class="close-btn">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="help-content">
+            <pre>{{ $t('kuaishou.helpDialog.content') }}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -677,6 +572,9 @@ export default {
     margin: 0 auto;
     padding: 20px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
+    z-index: 1;
+    background: transparent;
 }
 
 .page-header {
@@ -1321,21 +1219,24 @@ export default {
 
 /* 全屏渐变背景和装饰 */
 .kuaishou-bg-container {
-  min-height: 100vh;
-  width: 100vw;
-  margin: 0;
-  padding: 0;
-  position: relative;
-  background: linear-gradient(120deg, #fff 0%, #ffe5ea 40%, #ffb3c6 100%);
-  overflow-x: hidden;
-}
-
-.bg-decoration {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(120deg, #fff 0%, #ffe5ea 40%, #ffb3c6 100%);
+  overflow-x: hidden;
+  z-index: -1;
+}
+
+.bg-decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
   z-index: 0;
 }

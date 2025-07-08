@@ -629,9 +629,10 @@ export default {
     outlineBlockEditSave: '保存しました',
     outlineBlockEditFailed: '保存に失敗しました',
     liveManagement: 'ライブ配信管理',
-    nowExplaining: '現在解説中:',
-    nextToExplain: '次に解説:',
+    nowExplaining: '現在説明中：',
+    nextToExplain: '次の文：',
     finished: '配信終了',
+    liveEnded: '配信終了',
     // 推流相关 key（保留自动补全内容）
     startStream: '配信開始',
     stopStream: '配信停止',

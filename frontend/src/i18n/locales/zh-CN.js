@@ -418,9 +418,10 @@ export default {
     outlineBlockEditSave: '已保存',
     outlineBlockEditFailed: '保存失败',
     liveManagement: '直播管理',
-    nowExplaining: '当前解说：',
-    nextToExplain: '下一个解说：',
+    nowExplaining: '正在讲解：',
+    nextToExplain: '下一句：',
     finished: '直播结束',
+    liveEnded: '直播结束',
     // 推流相关 key（保留自动补全内容）
     startStream: '开始推流',
     stopStream: '停止推流',

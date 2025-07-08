@@ -10,7 +10,7 @@
         <div class="subtitle-section">
             <div class="subtitle-display">
                 <div class="current-subtitle">{{ currentSubtitle }}</div>
-                <div class="next-subtitle">下一句: {{ nextSubtitle }}</div>
+                <div class="next-subtitle">{{ $t('streamingPage.nextToExplain') }} {{ nextSubtitle }}</div>
             </div>
         </div>
 
@@ -98,14 +98,14 @@ export default defineComponent({
             if (this.currentBlockIndex >= 0 && this.currentBlockIndex < this.outlineBlocks.length) {
                 return this.outlineBlocks[this.currentBlockIndex].title;
             }
-            return '未开始';
+            return this.$t('streamingPage.notStarted');
         },
         nextBlockTitle() {
             const nextIndex = this.currentBlockIndex + 1;
             if (nextIndex < this.outlineBlocks.length) {
                 return this.outlineBlocks[nextIndex].title;
             }
-            return '直播结束';
+            return this.$t('streamingPage.liveEnded');
         }
     },
     created() {
@@ -298,7 +298,7 @@ export default defineComponent({
             } else if (this.currentBlockIndex < this.outlineBlocks.length - 1) {
                 this.nextSubtitle = '章节结束，即将进入下一章节';
             } else {
-                this.nextSubtitle = '直播结束';
+                this.nextSubtitle = this.$t('streamingPage.liveEnded');
             }
 
             // 如果当前句子播放完毕但下一句还没开始，仍然显示当前句子

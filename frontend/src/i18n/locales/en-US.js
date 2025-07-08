@@ -421,6 +421,7 @@ If you encounter unsolvable problems, please contact the development team or ref
     nowExplaining: 'Now Explaining:',
     nextToExplain: 'Next to Explain:',
     finished: 'Broadcast Finished',
+    liveEnded: 'Live Ended',
     // 推流相关 key（保留自动补全内容）
     startStream: 'Start Streaming',
     stopStream: 'Stop Streaming',

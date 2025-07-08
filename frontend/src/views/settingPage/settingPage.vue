@@ -11,7 +11,7 @@
                     <v-card flat class="mb-6 section-card-glass">
                         <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">
                             <span class="section-bar-gradient"><v-icon color="#fff"
-                                    size="20">mdi-translate</v-icon></span>{{ $t('setting.languageTitle') }}
+                                    size="20">mdi-palette</v-icon></span>{{ $t('setting.themeTitle') }}
                         </v-card-title>
                         <v-card-text>
                             <v-row align="center" justify="space-between">
@@ -22,9 +22,30 @@
                                 </v-col>
                             </v-row>
                         </v-card-text>
+                        <v-col cols="12">
+                            <v-row align="center" justify="space-between">
+                                <v-col cols="12">
+                                    <v-select v-model="bannerColor" :items="[
+                                        { text: $t('setting.bannerDefault'), value: 'default' },
+                                        { text: $t('setting.bannerRed'), value: 'red' },
+                                        { text: $t('setting.bannerBlue'), value: 'blue' },
+                                        { text: $t('setting.bannerPurple'), value: 'purple' }
+                                    ]" item-title="text" item-value="value" :label="$t('setting.bannerColor')" outlined
+                                        dense class="rounded-input-glass"></v-select>
+                                </v-col>
+                                <v-col cols="12" class="d-flex justify-end align-center">
+                                    <v-select v-model="isBannerDispersed" :items="[
+                                        { text: $t('setting.bannerDisperse'), value: true },
+                                        { text: $t('setting.bannerGather'), value: false }
+                                    ]" item-title="text" item-value="value" :label="$t('setting.bannerLayout')"
+                                        outlined dense class="rounded-input-glass"
+                                        @change="handleBannerLayoutChange"></v-select>
+                                </v-col>
+                            </v-row>
+                        </v-col>
                     </v-card>
                 </v-col>
-                <v-col cols="12">
+                <!-- <v-col cols="12">
                     <v-card flat class="mb-6 section-card-glass">
                         <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">
                             <span class="section-bar-gradient"><v-icon color="#fff"
@@ -43,32 +64,11 @@
                                         :messages="debugMode ? $t('setting.enabled') : $t('setting.disabled')"
                                         class="rounded-switch-glass"></v-switch>
                                 </v-col>
-                                <v-col cols="12">
-                                    <v-row align="center" justify="space-between">
-                                        <v-col cols="6">
-                                            <v-select v-model="bannerColor" :items="[
-                                                { text: $t('setting.bannerDefault'), value: 'default' },
-                                                { text: $t('setting.bannerRed'), value: 'red' },
-                                                { text: $t('setting.bannerBlue'), value: 'blue' },
-                                                { text: $t('setting.bannerPurple'), value: 'purple' }
-                                            ]" item-title="text" item-value="value" :label="$t('setting.bannerColor')"
-                                                outlined dense class="rounded-input-glass"></v-select>
-                                        </v-col>
-                                        <v-col cols="6" class="d-flex justify-end align-center">
-                                            <v-select v-model="isBannerDispersed" :items="[
-                                                { text: $t('setting.bannerDisperse'), value: true },
-                                                { text: $t('setting.bannerGather'), value: false }
-                                            ]" item-title="text" item-value="value"
-                                                :label="$t('setting.bannerLayout')" outlined dense
-                                                class="rounded-input-glass"
-                                                @change="handleBannerLayoutChange"></v-select>
-                                        </v-col>
-                                    </v-row>
-                                </v-col>
+
                             </v-row>
                         </v-card-text>
                     </v-card>
-                </v-col>
+                </v-col> -->
                 <v-col cols="12">
                     <v-card flat class="mb-6 section-card-glass">
                         <v-card-title class="text-subtitle-1 font-weight-medium section-title-glass">

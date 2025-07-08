@@ -107,63 +107,35 @@
                                         class="rounded-input-glass"></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-select v-model="aiSettings.modelName" :items="[
-                                        { text: 'GPT-4o', value: 'gpt-4o', group: 'OpenAI' },
-                                        { text: 'GPT-4 Turbo', value: 'gpt-4-turbo', group: 'OpenAI' },
-                                        { text: 'GPT-3.5 Turbo', value: 'gpt-3.5-turbo', group: 'OpenAI' },
-                                        { text: 'Claude 3 Opus', value: 'claude-3-opus-20240229', group: 'Anthropic' },
-                                        { text: 'Claude 3 Sonnet', value: 'claude-3-sonnet-20240229', group: 'Anthropic' },
-                                        { text: 'Claude 3 Haiku', value: 'claude-3-haiku-20240307', group: 'Anthropic' },
-                                        { text: 'Gemini 2.5 Pro', value: 'gemini-2.5-pro-preview-05-06', group: 'Google' },
-                                        { text: 'Gemini 2.0 Flash', value: 'gemini-2.0-flash-exp', group: 'Google' },
-                                        { text: 'DeepSeek V3', value: 'deepseek-v3', group: '其他' },
-                                        { text: 'Grok-3', value: 'grok-3', group: '其他' },
-                                        { text: 'GPT-4o-2024-05-13', value: 'gpt-4o-2024-05-13', group: 'OpenAI' },
-                                        { text: 'GPT-4o-2024-08-06', value: 'gpt-4o-2024-08-06', group: 'OpenAI' },
-                                        { text: 'GPT-4o-2024-11-20', value: 'gpt-4o-2024-11-20', group: 'OpenAI' },
-                                        { text: 'GPT-4o-image-vip', value: 'gpt-4o-image-vip', group: 'OpenAI' },
-                                        { text: 'GPT-4o-mini', value: 'gpt-4o-mini', group: 'OpenAI' },
-                                        { text: 'Claude 3.5 Haiku', value: 'claude-3-5-haiku-20241022', group: 'Anthropic' },
-                                        { text: 'Claude 3.5 Sonnet', value: 'claude-3-5-sonnet-20240620', group: 'Anthropic' },
-                                        { text: 'Claude 3.5 Sonnet 2024', value: 'claude-3-5-sonnet-20241022', group: 'Anthropic' },
-                                        { text: 'Claude 3.7 Sonnet', value: 'claude-3-7-sonnet-20250219', group: 'Anthropic' },
-                                        { text: 'Claude 3.7 Sonnet Thinking', value: 'claude-3-7-sonnet-thinking', group: 'Anthropic' },
-                                        { text: 'Claude Opus 4', value: 'claude-opus-4', group: 'Anthropic' },
-                                        { text: 'Claude Opus 4 2025', value: 'claude-opus-4-20250514', group: 'Anthropic' },
-                                        { text: 'Claude Opus 4 Thinking', value: 'claude-opus-4-thinking', group: 'Anthropic' },
-                                        { text: 'Claude Opus 4 All', value: 'claude-opus-4-all', group: 'Anthropic' },
-                                        { text: 'Claude Opus 4 Thinking All', value: 'claude-opus-4-thinking-all', group: 'Anthropic' },
-                                        { text: 'Claude Sonnet 4', value: 'claude-sonnet-4', group: 'Anthropic' },
-                                        { text: 'Claude Sonnet 4 2025', value: 'claude-sonnet-4-20250514', group: 'Anthropic' },
-                                        { text: 'Claude Sonnet 4 Thinking', value: 'claude-sonnet-4-thinking', group: 'Anthropic' },
-                                        { text: 'Claude Sonnet 4 All', value: 'claude-sonnet-4-all', group: 'Anthropic' },
-                                        { text: 'Claude Sonnet 4 Thinking All', value: 'claude-sonnet-4-thinking-all', group: 'Anthropic' },
-                                        { text: 'DeepSeek R1', value: 'deepseek-r1', group: '其他' },
-                                        { text: 'DeepSeek R1 0528', value: 'deepseek-r1-0528', group: '其他' },
-                                        { text: 'DeepSeek Reasoner All', value: 'deepseek-reasoner-all', group: '其他' },
-                                        { text: 'Gemini 2.0 Flash Thinking', value: 'gemini-2.0-flash-thinking-exp', group: 'Google' },
-                                        { text: 'Gemini 2.0 Flash Thinking 01-21', value: 'gemini-2.0-flash-thinking-exp-01-21', group: 'Google' },
-                                        { text: 'Gemini 2.0 Flash Thinking 1219', value: 'gemini-2.0-flash-thinking-exp-1219', group: 'Google' },
-                                        { text: 'Gemini 2.5 Flash Preview', value: 'gemini-2.5-flash-preview-04-17', group: 'Google' },
-                                        { text: 'Gemini 2.5 Flash Thinking', value: 'gemini-2.5-flash-preview-04-17-thinking', group: 'Google' },
-                                        { text: 'Gemini 2.5 Pro Exp', value: 'gemini-2.5-pro-exp-03-25', group: 'Google' },
-                                        { text: 'Grok-3 DeepSearch', value: 'grok-3-deepsearch', group: '其他' },
-                                        { text: 'Grok-3 Reasoning', value: 'grok-3-reasoning', group: '其他' },
-                                        { text: 'MJ Chat', value: 'mj-chat', group: '其他' },
-                                        { text: 'Net DeepSeek R1', value: 'net-deepseek-r1', group: '其他' },
-                                        { text: 'O1', value: 'o1', group: '其他' },
-                                        { text: 'O1 Mini', value: 'o1-mini', group: '其他' },
-                                        { text: 'O3', value: 'o3', group: '其他' },
-                                        { text: 'O3 All', value: 'o3-all', group: '其他' },
-                                        { text: 'Text Embedding Ada 002', value: 'text-embedding-ada-002', group: '其他' }
-                                    ]" :label="$t('setting.modelName')" outlined dense item-title="text"
-                                        item-value="value" :filter="modelFilter" :search-input.sync="modelSearch"
+                                    <v-select
+                                        v-model="aiSettings.modelName"
+                                        :items="filteredModels"
+                                        :label="$t('setting.modelName')"
+                                        outlined dense item-title="text" item-value="value"
+                                        :filter="modelFilter"
+                                        :search-input.sync="modelSearch"
                                         clearable :no-data-text="$t('setting.noModelFound')"
-                                        class="rounded-input-glass">
+                                        class="rounded-input-glass"
+                                    >
                                         <template v-slot:prepend-item>
-                                            <v-text-field v-model="modelSearch" :label="$t('setting.searchModel')"
-                                                prepend-inner-icon="mdi-magnify" clearable hide-details
-                                                class="px-4 rounded-input-glass"></v-text-field>
+                                            <div style="display: flex; gap: 8px; padding: 8px 16px; flex-wrap: wrap;">
+                                                <v-btn
+                                                    v-for="group in modelGroups"
+                                                    :key="group.value"
+                                                    size="small"
+                                                    :color="modelGroupFilter === group.value ? 'primary' : 'default'"
+                                                    @click.stop="selectModelGroup(group.value)"
+                                                >
+                                                    {{ group.text }}
+                                                </v-btn>
+                                            </div>
+                                            <v-text-field
+                                                v-model="modelSearch"
+                                                :label="$t('setting.searchModel')"
+                                                prepend-inner-icon="mdi-magnify"
+                                                clearable hide-details
+                                                class="px-4 rounded-input-glass"
+                                            ></v-text-field>
                                         </template>
                                     </v-select>
                                 </v-col>
@@ -354,56 +326,66 @@ export default {
             modelSearch: '',
             showModelSearch: false,
             allModels: [
-                { value: 'gpt-4o', label: 'GPT-4o', group: 'OpenAI' },
-                { value: 'gpt-4-turbo', label: 'GPT-4 Turbo', group: 'OpenAI' },
-                { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo', group: 'OpenAI' },
-                { value: 'claude-3-opus-20240229', label: 'Claude 3 Opus', group: 'Anthropic' },
-                { value: 'claude-3-sonnet-20240229', label: 'Claude 3 Sonnet', group: 'Anthropic' },
-                { value: 'claude-3-haiku-20240307', label: 'Claude 3 Haiku', group: 'Anthropic' },
-                { value: 'gemini-2.5-pro-preview-05-06', label: 'Gemini 2.5 Pro', group: 'Google' },
-                { value: 'gemini-2.0-flash-exp', label: 'Gemini 2.0 Flash', group: 'Google' },
-                { value: 'deepseek-v3', label: 'DeepSeek V3', group: '其他' },
-                { value: 'grok-3', label: 'Grok-3', group: '其他' },
-                { value: 'gpt-4o-2024-05-13', label: 'GPT-4o-2024-05-13', group: 'OpenAI' },
-                { value: 'gpt-4o-2024-08-06', label: 'GPT-4o-2024-08-06', group: 'OpenAI' },
-                { value: 'gpt-4o-2024-11-20', label: 'GPT-4o-2024-11-20', group: 'OpenAI' },
-                { value: 'gpt-4o-image-vip', label: 'GPT-4o-image-vip', group: 'OpenAI' },
-                { value: 'gpt-4o-mini', label: 'GPT-4o-mini', group: 'OpenAI' },
-                { value: 'claude-3-5-haiku-20241022', label: 'Claude 3.5 Haiku', group: 'Anthropic' },
-                { value: 'claude-3-5-sonnet-20240620', label: 'Claude 3.5 Sonnet', group: 'Anthropic' },
-                { value: 'claude-3-5-sonnet-20241022', label: 'Claude 3.5 Sonnet 2024', group: 'Anthropic' },
-                { value: 'claude-3-7-sonnet-20250219', label: 'Claude 3.7 Sonnet', group: 'Anthropic' },
-                { value: 'claude-3-7-sonnet-thinking', label: 'Claude 3.7 Sonnet Thinking', group: 'Anthropic' },
-                { value: 'claude-opus-4', label: 'Claude Opus 4', group: 'Anthropic' },
-                { value: 'claude-opus-4-20250514', label: 'Claude Opus 4 2025', group: 'Anthropic' },
-                { value: 'claude-opus-4-thinking', label: 'Claude Opus 4 Thinking', group: 'Anthropic' },
-                { value: 'claude-opus-4-all', label: 'Claude Opus 4 All', group: 'Anthropic' },
-                { value: 'claude-opus-4-thinking-all', label: 'Claude Opus 4 Thinking All', group: 'Anthropic' },
-                { value: 'claude-sonnet-4', label: 'Claude Sonnet 4', group: 'Anthropic' },
-                { value: 'claude-sonnet-4-20250514', label: 'Claude Sonnet 4 2025', group: 'Anthropic' },
-                { value: 'claude-sonnet-4-thinking', label: 'Claude Sonnet 4 Thinking', group: 'Anthropic' },
-                { value: 'claude-sonnet-4-all', label: 'Claude Sonnet 4 All', group: 'Anthropic' },
-                { value: 'claude-sonnet-4-thinking-all', label: 'Claude Sonnet 4 Thinking All', group: 'Anthropic' },
-                { value: 'deepseek-r1', label: 'DeepSeek R1', group: '其他' },
-                { value: 'deepseek-r1-0528', label: 'DeepSeek R1 0528', group: '其他' },
-                { value: 'deepseek-reasoner-all', label: 'DeepSeek Reasoner All', group: '其他' },
-                { value: 'gemini-2.0-flash-thinking-exp', label: 'Gemini 2.0 Flash Thinking', group: 'Google' },
-                { value: 'gemini-2.0-flash-thinking-exp-01-21', label: 'Gemini 2.0 Flash Thinking 01-21', group: 'Google' },
-                { value: 'gemini-2.0-flash-thinking-exp-1219', label: 'Gemini 2.0 Flash Thinking 1219', group: 'Google' },
-                { value: 'gemini-2.5-flash-preview-04-17', label: 'Gemini 2.5 Flash Preview', group: 'Google' },
-                { value: 'gemini-2.5-flash-preview-04-17-thinking', label: 'Gemini 2.5 Flash Thinking', group: 'Google' },
-                { value: 'gemini-2.5-pro-exp-03-25', label: 'Gemini 2.5 Pro Exp', group: 'Google' },
-                { value: 'grok-3-deepsearch', label: 'Grok-3 DeepSearch', group: '其他' },
-                { value: 'grok-3-reasoning', label: 'Grok-3 Reasoning', group: '其他' },
-                { value: 'mj-chat', label: 'MJ Chat', group: '其他' },
-                { value: 'net-deepseek-r1', label: 'Net DeepSeek R1', group: '其他' },
-                { value: 'o1', label: 'O1', group: '其他' },
-                { value: 'o1-mini', label: 'O1 Mini', group: '其他' },
-                { value: 'o3', label: 'O3', group: '其他' },
-                { value: 'o3-all', label: 'O3 All', group: '其他' },
-                { value: 'text-embedding-ada-002', label: 'Text Embedding Ada 002', group: '其他' }
+                { value: 'gpt-4o', text: 'GPT-4o', group: 'OpenAI' },
+                { value: 'gpt-4-turbo', text: 'GPT-4 Turbo', group: 'OpenAI' },
+                { value: 'gpt-3.5-turbo', text: 'GPT-3.5 Turbo', group: 'OpenAI' },
+                { value: 'claude-3-opus-20240229', text: 'Claude 3 Opus', group: 'Anthropic' },
+                { value: 'claude-3-sonnet-20240229', text: 'Claude 3 Sonnet', group: 'Anthropic' },
+                { value: 'claude-3-haiku-20240307', text: 'Claude 3 Haiku', group: 'Anthropic' },
+                { value: 'gemini-2.5-pro-preview-05-06', text: 'Gemini 2.5 Pro', group: 'Google' },
+                { value: 'gemini-2.0-flash-exp', text: 'Gemini 2.0 Flash', group: 'Google' },
+                { value: 'deepseek-v3', text: 'DeepSeek V3', group: 'DeepSeek' },
+                { value: 'grok-3', text: 'Grok-3', group: '其他' },
+                { value: 'gpt-4o-2024-05-13', text: 'GPT-4o-2024-05-13', group: 'OpenAI' },
+                { value: 'gpt-4o-2024-08-06', text: 'GPT-4o-2024-08-06', group: 'OpenAI' },
+                { value: 'gpt-4o-2024-11-20', text: 'GPT-4o-2024-11-20', group: 'OpenAI' },
+                { value: 'gpt-4o-image-vip', text: 'GPT-4o-image-vip', group: 'OpenAI' },
+                { value: 'gpt-4o-mini', text: 'GPT-4o-mini', group: 'OpenAI' },
+                { value: 'claude-3-5-haiku-20241022', text: 'Claude 3.5 Haiku', group: 'Anthropic' },
+                { value: 'claude-3-5-sonnet-20240620', text: 'Claude 3.5 Sonnet', group: 'Anthropic' },
+                { value: 'claude-3-5-sonnet-20241022', text: 'Claude 3.5 Sonnet 2024', group: 'Anthropic' },
+                { value: 'claude-3-7-sonnet-20250219', text: 'Claude 3.7 Sonnet', group: 'Anthropic' },
+                { value: 'claude-3-7-sonnet-thinking', text: 'Claude 3.7 Sonnet Thinking', group: 'Anthropic' },
+                { value: 'claude-opus-4', text: 'Claude Opus 4', group: 'Anthropic' },
+                { value: 'claude-opus-4-20250514', text: 'Claude Opus 4 2025', group: 'Anthropic' },
+                { value: 'claude-opus-4-thinking', text: 'Claude Opus 4 Thinking', group: 'Anthropic' },
+                { value: 'claude-opus-4-all', text: 'Claude Opus 4 All', group: 'Anthropic' },
+                { value: 'claude-opus-4-thinking-all', text: 'Claude Opus 4 Thinking All', group: 'Anthropic' },
+                { value: 'claude-sonnet-4', text: 'Claude Sonnet 4', group: 'Anthropic' },
+                { value: 'claude-sonnet-4-20250514', text: 'Claude Sonnet 4 2025', group: 'Anthropic' },
+                { value: 'claude-sonnet-4-thinking', text: 'Claude Sonnet 4 Thinking', group: 'Anthropic' },
+                { value: 'claude-sonnet-4-all', text: 'Claude Sonnet 4 All', group: 'Anthropic' },
+                { value: 'claude-sonnet-4-thinking-all', text: 'Claude Sonnet 4 Thinking All', group: 'Anthropic' },
+                { value: 'deepseek-r1', text: 'DeepSeek R1', group: 'DeepSeek' },
+                { value: 'deepseek-r1-0528', text: 'DeepSeek R1 0528', group: 'DeepSeek' },
+                { value: 'deepseek-reasoner-all', text: 'DeepSeek Reasoner All', group: 'DeepSeek' },
+                { value: 'gemini-2.0-flash-thinking-exp', text: 'Gemini 2.0 Flash Thinking', group: 'Google' },
+                { value: 'gemini-2.0-flash-thinking-exp-01-21', text: 'Gemini 2.0 Flash Thinking 01-21', group: 'Google' },
+                { value: 'gemini-2.0-flash-thinking-exp-1219', text: 'Gemini 2.0 Flash Thinking 1219', group: 'Google' },
+                { value: 'gemini-2.5-flash-preview-04-17', text: 'Gemini 2.5 Flash Preview', group: 'Google' },
+                { value: 'gemini-2.5-flash-preview-04-17-thinking', text: 'Gemini 2.5 Flash Thinking', group: 'Google' },
+                { value: 'gemini-2.5-pro-exp-03-25', text: 'Gemini 2.5 Pro Exp', group: 'Google' },
+                { value: 'grok-3-deepsearch', text: 'Grok-3 DeepSearch', group: '其他' },
+                { value: 'grok-3-reasoning', text: 'Grok-3 Reasoning', group: '其他' },
+                { value: 'mj-chat', text: 'MJ Chat', group: '其他' },
+                { value: 'net-deepseek-r1', text: 'Net DeepSeek R1', group: 'DeepSeek' },
+                { value: 'o1', text: 'O1', group: '其他' },
+                { value: 'o1-mini', text: 'O1 Mini', group: '其他' },
+                { value: 'o3', text: 'O3', group: '其他' },
+                { value: 'o3-all', text: 'O3 All', group: '其他' },
+                { value: 'text-embedding-ada-002', text: 'Text Embedding Ada 002', group: '其他' },
+                { value: 'deepseek-ai/DeepSeek-V3', text: 'deepseek-ai/DeepSeek-V3', group: 'DeepSeek' },
             ],
-            isBannerDispersed: localStorage.getItem('topBannerDispersed') === 'true'
+            isBannerDispersed: localStorage.getItem('topBannerDispersed') === 'true',
+            modelGroupFilter: '',
+            modelGroups: [
+                { text: '全部', value: '' },
+                { text: 'OpenAI', value: 'OpenAI' },
+                { text: 'Anthropic', value: 'Anthropic' },
+                { text: 'Google', value: 'Google' },
+                { text: 'DeepSeek', value: 'DeepSeek' },
+                { text: '其他', value: '其他' }
+            ]
         }
     },
     watch: {
@@ -714,14 +696,16 @@ export default {
         },
         showStreamKeyTip() {
             ElMessage.error(this.$t('setting.getStreamKeyTip'));
+        },
+        selectModelGroup(groupValue) {
+            this.modelGroupFilter = groupValue;
         }
     },
     computed: {
-        // finishBtnColor() {
-        //     if (this.bannerColor === 'blue') return '#1976d2';
-        //     if (this.bannerColor === 'purple') return '#7c3aed';
-        //     return '#409eff';
-        // }
+        filteredModels() {
+            if (!this.modelGroupFilter) return this.allModels;
+            return this.allModels.filter(m => m.group === this.modelGroupFilter);
+        }
     }
 }
 </script>

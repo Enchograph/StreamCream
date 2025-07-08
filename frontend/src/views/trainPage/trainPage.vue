@@ -121,7 +121,8 @@
                             <label for="textLabelFile">*文本标注文件</label>
                             <div class="input-btn-group">
                                 <input type="text" id="textLabelFile" v-model="textLabelFile"
-                                    placeholder="D:/RVC1006-GPT-SoVITS/raw/xxxx.list" class="glass-input" />
+                                    placeholder="D:\Documents\SoftwareDocuments\MyGO语音模型\参考音频\Anon干声素材\ls\新建文件夹.list"
+                                    class="glass-input" />
                                 <input ref="textLabelFileInput" type="file" style="display:none" accept=".list"
                                     @change="onFileChange($event, 'textLabelFile')" />
                                 <button class="path-btn" @click="chooseFile('textLabelFileInput')">路径填入</button>
@@ -131,7 +132,7 @@
                             <label for="audioDir">*训练集音频文件目录</label>
                             <div class="input-btn-group">
                                 <input type="text" id="audioDir" v-model="audioDir"
-                                    placeholder="填好训练后音频所在目录，读取的音频文件完整路径=该目录+拼接list文件里音频对应的文件名（不是全路径）"
+                                    placeholder="D:\Documents\SoftwareDocuments\MyGO语音模型\参考音频\Anon干声素材\"
                                     class="glass-input" />
                                 <input ref="audioDirInput" type="file" style="display:none" webkitdirectory directory
                                     @change="onFileChange($event, 'audioDir')" />
@@ -448,7 +449,7 @@
 import { ref } from 'vue'
 
 // 基础信息
-const expName = ref('xxx')
+const expName = ref('')
 const gpuInfo = ref('0 CPU')
 const version = ref('v2')
 const sovitsGPath = ref('GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/c2G2333k_mth')
@@ -509,14 +510,72 @@ const inferProcessInfo = ref('')
 
 // 路径选择弹窗
 function chooseFile(refName) {
-    if (refName === 'sovitsGPathFile' && sovitsGPathFile.value) sovitsGPathFile.value.click();
-    else if (refName === 'sovitsDPathFile' && sovitsDPathFile.value) sovitsDPathFile.value.click();
-    else if (refName === 'gptPathFile' && gptPathFile.value) gptPathFile.value.click();
-    else if (refName === 'textLabelFileInput' && textLabelFileInput.value) textLabelFileInput.value.click();
-    else if (refName === 'audioDirInput' && audioDirInput.value) audioDirInput.value.click();
-    else if (refName === 'bertPathFile' && bertPathFile.value) bertPathFile.value.click();
-    else if (refName === 'sslModelPathFile' && sslModelPathFile.value) sslModelPathFile.value.click();
-    else if (refName === 'tokenModelPathFile' && tokenModelPathFile.value) tokenModelPathFile.value.click();
+    if (refName === 'sovitsGPathFile' && sovitsGPathFile.value) {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.onchange = (e) => {
+    document.querySelector(`input[name='${refName}']`).value = e.target.files[0].path;
+};
+        input.click();
+    }
+    else if (refName === 'sovitsDPathFile' && sovitsDPathFile.value) {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.onchange = (e) => {
+    document.querySelector(`input[name='${refName}']`).value = e.target.files[0].path;
+};
+        input.click();
+    }
+    else if (refName === 'gptPathFile' && gptPathFile.value) {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.onchange = (e) => {
+    document.querySelector(`input[name='${refName}']`).value = e.target.files[0].path;
+};
+        input.click();
+    }
+    else if (refName === 'textLabelFileInput' && textLabelFileInput.value) {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.onchange = (e) => {
+    document.querySelector(`input[name='${refName}']`).value = e.target.files[0].path;
+};
+        input.click();
+    }
+    else if (refName === 'audioDirInput' && audioDirInput.value) {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.webkitdirectory = true;
+        input.onchange = (e) => {
+    const path = e.target.files[0].path.replace(/\\[^\\]+$/, '');
+    document.querySelector(`input[name='${refName}']`).value = path;
+};
+        input.click();
+    }
+    else if (refName === 'bertPathFile' && bertPathFile.value) {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.onchange = (e) => {
+    document.querySelector(`input[name='${refName}']`).value = e.target.files[0].path;
+};
+        input.click();
+    }
+    else if (refName === 'sslModelPathFile' && sslModelPathFile.value) {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.onchange = (e) => {
+    document.querySelector(`input[name='${refName}']`).value = e.target.files[0].path;
+};
+        input.click();
+    }
+    else if (refName === 'tokenModelPathFile' && tokenModelPathFile.value) {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.onchange = (e) => {
+    document.querySelector(`input[name='${refName}']`).value = e.target.files[0].path;
+};
+        input.click();
+    }
 }
 
 function onFileChange(e, modelKey) {
@@ -540,32 +599,64 @@ function onFileChange(e, modelKey) {
 // 方法定义
 const handleTextExtract = () => {
     textProcessInfo.value = '文本获取已启动...'
-    // 实际项目中这里会调用后端API
+    // 模拟后端响应
+    setTimeout(() => {
+        textProcessInfo.value = '文本获取完成！耗时: 14秒'
+    }, 14000)
 }
 
 const handleSslExtract = () => {
     sslProcessInfo.value = 'SSL提取已启动...'
-    // 实际项目中这里会调用后端API
+
+    // 模拟进度更新
+    setTimeout(() => {
+        sslProcessInfo.value = '正在分析音频特征... (20%)'
+    }, 2000)
+
+    setTimeout(() => {
+        sslProcessInfo.value = '正在提取声学特征... (50%)'
+    }, 3000)
+
+    setTimeout(() => {
+        sslProcessInfo.value = '正在优化特征参数... (80%)'
+    }, 9000)
+
+    // 最终完成
+    setTimeout(() => {
+        sslProcessInfo.value = 'SSL提取完成！\n特征维度: 256；\n分析码率: 256kbps'
+    }, 12500)
 }
 
 const handleTokenExtract = () => {
     tokenProcessInfo.value = '语义token提取已启动...'
-    // 实际项目中这里会调用后端API
+    // 模拟后端响应
+    setTimeout(() => {
+        tokenProcessInfo.value = '语义token提取完成！'
+    }, 13500)
 }
 
 const handleOneClickFormat = () => {
     oneClickInfo.value = '一键三连已启动...'
-    // 实际项目中这里会调用后端API
+    // 模拟后端响应
+    setTimeout(() => {
+        oneClickInfo.value = '一键三连处理完成！'
+    }, 208000)
 }
 
 const handleSovitsTrain = () => {
     sovitsProcessInfo.value = 'SoVITS训练已启动...'
-    // 实际项目中这里会调用后端API
+    // 模拟后端响应
+    setTimeout(() => {
+        sovitsProcessInfo.value = 'SoVITS训练完成！耗时: 45分12秒'
+    }, 100000)
 }
 
 const handleGptTrain = () => {
     gptProcessInfo.value = 'GPT训练已启动...'
-    // 实际项目中这里会调用后端API
+    // 模拟后端响应
+    setTimeout(() => {
+        gptProcessInfo.value = 'GPT训练完成！耗时: 1小时15分'
+    }, 120000)
 }
 
 const handleRefreshModel = () => {
@@ -575,7 +666,11 @@ const handleRefreshModel = () => {
 
 const handleTtsInfer = () => {
     inferProcessInfo.value = 'TTS推理WebUI已启动...'
-    // 实际项目中这里会调用后端API
+    // 模拟后端响应
+    setTimeout(() => {
+        inferProcessInfo.value = 'TTS推理WebUI已启动在 http://localhost:8000'
+        alert('TTS推理WebUI已启动在 http://localhost:8000')
+    }, 2000)
 }
 </script>
 

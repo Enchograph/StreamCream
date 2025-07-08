@@ -572,6 +572,9 @@ export default {
     margin: 0 auto;
     padding: 20px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
+    z-index: 1;
+    background: transparent;
 }
 
 .page-header {
@@ -1216,21 +1219,24 @@ export default {
 
 /* 全屏渐变背景和装饰 */
 .kuaishou-bg-container {
-  min-height: 100vh;
-  width: 100vw;
-  margin: 0;
-  padding: 0;
-  position: relative;
-  background: linear-gradient(120deg, #fff 0%, #ffe5ea 40%, #ffb3c6 100%);
-  overflow-x: hidden;
-}
-
-.bg-decoration {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(120deg, #fff 0%, #ffe5ea 40%, #ffb3c6 100%);
+  overflow-x: hidden;
+  z-index: -1;
+}
+
+.bg-decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
   z-index: 0;
 }

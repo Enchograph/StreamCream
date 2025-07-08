@@ -27,10 +27,11 @@ export const useLive2DStore = defineStore('live2d', () => {
         const savedRelativeScale = localStorage.getItem('live2dRelativeScale')
         const savedModel = localStorage.getItem('live2dCurrentModel')
 
-        if (savedX) position.value.x = Number(savedX)
-        if (savedY) position.value.y = Number(savedY)
-        if (savedRelativeScale) relativeScale.value = Number(savedRelativeScale)
-        if (savedModel) currentModel.value = savedModel
+        // 只有在localStorage中有值时才覆盖默认值
+        if (savedX !== null) position.value.x = Number(savedX)
+        if (savedY !== null) position.value.y = Number(savedY)
+        if (savedRelativeScale !== null) relativeScale.value = Number(savedRelativeScale)
+        if (savedModel !== null) currentModel.value = savedModel
     }
 
     // 保存状态到localStorage

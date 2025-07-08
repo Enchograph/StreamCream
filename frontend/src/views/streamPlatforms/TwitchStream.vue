@@ -14,40 +14,29 @@
           </defs>
         </svg>
       </span>
-      <h1>如何获取 Twitch 直播推流码</h1>
+      <h1>{{ $t('twitch.streamKeyGuide.title') }}</h1>
     </div>
     <div class="twitch-card">
-      <p class="twitch-desc">按照以下步骤获取你的 Twitch 推流码（Stream Key）：</p>
+      <p class="twitch-desc">{{ $t('twitch.streamKeyGuide.description') }}</p>
       <ol class="twitch-steps">
-        <li>
-          登录 <a href="https://www.twitch.tv/" class="twitch-link" target="_blank">Twitch</a>，进入你的账号。
-        </li>
-        <li>
-          点击右上角头像，选择<strong>"创作者控制台"</strong>（Creator Dashboard）。
-        </li>
-        <li>
-          在左侧菜单依次点击 <strong>"设置"</strong> &gt; <strong>"流"</strong>（Settings &gt; Stream）。
-        </li>
-        <li>
-          在"流密钥和首选项"部分，找到<strong>"主流密钥"</strong>（Primary Stream Key），点击"显示"按钮查看完整推流码。
-        </li>
-        <li>
-          点击"复制"按钮，将推流码粘贴到相应位置即可开始直播。
-        </li>
+        <li v-html="$t('twitch.streamKeyGuide.steps.step1', { twitch: '<a href=\'https://www.twitch.tv/\' class=\'twitch-link\' target=\'_blank\'>Twitch</a>' })"></li>
+        <li v-html="$t('twitch.streamKeyGuide.steps.step2')"></li>
+        <li v-html="$t('twitch.streamKeyGuide.steps.step3')"></li>
+        <li v-html="$t('twitch.streamKeyGuide.steps.step4')"></li>
+        <li v-html="$t('twitch.streamKeyGuide.steps.step5')"></li>
       </ol>
       <div class="twitch-warning">
         <span class="twitch-warning-icon">⚠️</span>
-        <span>不要泄露你的推流码，否则他人可能会用你的账号直播！如有泄露可在页面重置推流码。</span>
+        <span>{{ $t('twitch.streamKeyGuide.warning.title') }}：{{ $t('twitch.streamKeyGuide.warning.content') }}</span>
       </div>
-      <p class="twitch-tip">获取推流码和推流地址后，选择直播平台为 "Twitch"，然后粘贴推流码和推流地址即可。</p>
+      <p class="twitch-tip">{{ $t('twitch.streamKeyGuide.tip') }}</p>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'TwitchStream'
-}
+<script setup>
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 </script>
 
 <style scoped>

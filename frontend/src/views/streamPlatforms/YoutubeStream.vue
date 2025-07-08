@@ -7,42 +7,43 @@
           <polygon points="16,12 30,20 16,28" fill="#fff"/>
         </svg>
       </span>
-      <h1>如何获取 YouTube 直播推流码</h1>
+      <h1>{{ $t('youtube.streamKeyGuide.title') }}</h1>
     </div>
     <div class="yt-card">
-      <p class="yt-desc">以下是获取 YouTube 推流码（Stream Key）的步骤：</p>
+      <p class="yt-desc">{{ $t('youtube.streamKeyGuide.description') }}</p>
       <ol class="yt-steps">
-        <li>
-          登录 <a href="https://www.youtube.com/" class="yt-link" target="_blank">YouTube</a>，点击右上角的摄像机图标，选择 <strong>"开始直播"</strong>。
+        <li v-html="$t('youtube.streamKeyGuide.steps.step1', { youtube: '<a href=\'https://www.youtube.com/\' class=\'yt-link\' target=\'_blank\'>YouTube</a>' })">
         </li>
         <li>
-          如果是首次使用，可能需要验证账号（例如绑定手机号），并等待 24 小时激活直播功能。
+          {{ $t('youtube.streamKeyGuide.steps.step2') }}
         </li>
         <li>
-          在直播控制面板中，点击左侧菜单的<strong>"直播编码器"</strong>（或英文界面为 "Stream"）。
+          {{ $t('youtube.streamKeyGuide.steps.step3') }}
         </li>
         <li>
-          在"编码设置"下方，你可以看到以下两项：
+          {{ $t('youtube.streamKeyGuide.steps.step4') }}
           <ul class="yt-ul">
-            <li><strong>推流网址（Stream URL）</strong>：例如 <code class="yt-code">rtmp://a.rtmp.youtube.com/live2</code></li>
-            <li><strong>推流码（Stream Key）</strong>：是一串随机生成的字符串，如 <code class="yt-code">abcd-efgh-ijkl-mnop</code></li>
+            <li><strong>{{ $t('youtube.streamKeyGuide.streamInfo.streamUrl') }}</strong>：{{ $t('youtube.streamKeyGuide.streamInfo.streamUrlExamplePrefix') }} <code class="yt-code">{{ $t('youtube.streamKeyGuide.streamInfo.streamUrlExample') }}</code></li>
+            <li><strong>{{ $t('youtube.streamKeyGuide.streamInfo.streamKey') }}</strong>：{{ $t('youtube.streamKeyGuide.streamInfo.streamKeyExamplePrefix') }} <code class="yt-code">{{ $t('youtube.streamKeyGuide.streamInfo.streamKeyExample') }}</code></li>
           </ul>
         </li>
         <li>
-          点击"显示"按钮查看完整推流码，并复制它。你可以将它粘贴到推流软件（如 OBS）中进行直播。
+          {{ $t('youtube.streamKeyGuide.steps.step5') }}
         </li>
       </ol>
       <div class="yt-warning">
         <span class="yt-warning-icon">⚠️</span>
-        <span>注意：不要公开你的推流码，否则他人可能会用你的账号直播！</span>
+        <span>{{ $t('youtube.streamKeyGuide.warning.title') }}：{{ $t('youtube.streamKeyGuide.warning.content') }}</span>
       </div>
-      <p class="yt-tip">获取推流码和推流地址后，选择直播平台为 "YouTube"，然后粘贴推流码和推流地址即可。</p>
+      <p class="yt-tip">{{ $t('youtube.streamKeyGuide.tip') }}</p>
     </div>
   </div>
 </template>
 
 <script setup>
-// 无需 JavaScript 逻辑
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 </script>
 
 <style scoped>

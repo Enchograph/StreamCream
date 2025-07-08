@@ -1,0 +1,17 @@
+\beamer@sectionintoc {1}{项目概览：环境与架构}{3}{0}{1}
+\beamer@sectionintoc {2}{用户账户管理}{9}{0}{2}
+\beamer@sectionintoc {3}{直播推流模块}{12}{0}{3}
+\beamer@subsectionintoc {3}{1}{一、直播推流码的抓取}{14}{0}{3}
+\beamer@subsectionintoc {3}{2}{二、直播协议的转换}{16}{0}{3}
+\beamer@sectionintoc {4}{虚拟直播模块}{20}{0}{4}
+\beamer@subsectionintoc {4}{1}{一、Live 2D 技术在 Web 端的集成}{22}{0}{4}
+\beamer@subsectionintoc {4}{2}{二、基于语音学的实时口型适配}{27}{0}{4}
+\beamer@subsectionintoc {4}{3}{三、由AI控制的实时表情变化}{32}{0}{4}
+\beamer@sectionintoc {5}{LLM 文案生成模块}{38}{0}{5}
+\beamer@subsectionintoc {5}{1}{一、全面的 AI 服务提供商与模型的适配}{40}{0}{5}
+\beamer@subsectionintoc {5}{2}{二、人类可控的 AI 直播文案生成与即时性的优化}{43}{0}{5}
+\beamer@sectionintoc {6}{TTS语音转换模块}{51}{0}{6}
+\beamer@sectionintoc {7}{I18n 与用户友好特质的开发}{56}{0}{7}
+\beamer@subsectionintoc {7}{1}{一、中日英三语的国际化}{58}{0}{7}
+\beamer@subsectionintoc {7}{2}{二、系统主题的自定义与帮助、文档页面}{61}{0}{7}
+\beamer@sectionintoc {8}{总结与展望}{63}{0}{8}

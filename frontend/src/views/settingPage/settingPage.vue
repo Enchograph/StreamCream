@@ -173,13 +173,13 @@
                     </v-card>
                 </v-col>
             </v-row>
-            <v-row class="mt-6">
+            <!-- <v-row class="mt-6">
                 <v-col cols="12" class="text-center">
-                    <!-- <v-btn color="primary" variant="flat" @click="saveSettings" class="rounded-btn-glass">
+                    <v-btn color="primary" variant="flat" @click="saveSettings" class="rounded-btn-glass">
                         保存
-                    </v-btn> -->
+                    </v-btn>
                 </v-col>
-            </v-row>
+            </v-row> -->
             <!-- <v-row>
                 <v-col cols="12">
                     <v-card flat class="mb-6 section-card-glass">
@@ -273,12 +273,11 @@
                     </v-card>
                 </v-col>
             </v-row>
-            <v-row>
+            <!-- <v-row>
                 <v-col cols="12">
                     <v-card class="mb-4" outlined>
                         <v-card-title class="text-h5">{{ $t('setting.ttsTitle') }}</v-card-title>
                         <v-card-text>
-                            <!-- 预留内容 -->
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -288,11 +287,10 @@
                     <v-card class="mb-4" outlined>
                         <v-card-title class="text-h5">{{ $t('setting.live2dTitle') }}</v-card-title>
                         <v-card-text>
-                            <!-- 预留内容 -->
                         </v-card-text>
                     </v-card>
                 </v-col>
-            </v-row>
+            </v-row> -->
             <div class="finish-btn-wrapper">
                 <v-btn color="primary" variant="elevated" @click="completeSetting" class="rounded-btn-glass">
                     {{ $t('setting.finish') }}

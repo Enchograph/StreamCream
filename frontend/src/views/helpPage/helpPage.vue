@@ -7,9 +7,6 @@
                     {{ $t('help.title') }}
                 </h1>
                 <p class="help-subtitle">{{ $t('help.subtitle') }}</p>
-                <div style="position: absolute; top: 20px; right: 20px;">
-                    <LanguageSwitcher />
-                </div>
             </div>
 
             <div class="help-content">

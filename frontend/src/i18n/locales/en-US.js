@@ -686,6 +686,14 @@ If you encounter unsolvable problems, please contact the development team or ref
     generateSpeechFailed: 'Failed to generate speech, please try again',
     generateSpeechFirstWarning: 'Please generate the speech first',
     speechTestFeatureDev: 'Speech test feature will be implemented later',
+    modelChanged: 'Selected model changed to:',
+    live2dModelSwitched: 'Live2D model switched to:',
+    refreshInProgress: 'Refresh operation in progress, please wait...',
+    live2dPreviewRefreshed: 'Live2D preview refreshed',
+    refreshPreviewFailed: 'Failed to refresh preview:',
+    openaiApiError: 'OpenAI API call error:',
+    generateSpeechError: 'Failed to generate speech:',
+    live2dIframeNotFound: 'Live2D preview iframe not found',
   },
 
   setting: {
@@ -1423,6 +1431,22 @@ If you encounter unsolvable problems, please contact the development team or ref
     currentLang: '中',
     currentLangEn: 'En',
     selectLanguage: 'Select Language'
+  },
+
+  // Common file operations
+  fileOperations: {
+    chooseFile: 'Choose File',
+    noFileSelected: 'No file selected',
+    selectFiles: 'Select Files',
+    dragAndDrop: 'Drag and drop files here or click to select',
+    fileSelected: 'File selected',
+    filesSelected: 'Files selected'
+  },
+
+  // Common input placeholders
+  inputPlaceholders: {
+    keywords: 'Enter keywords, e.g.: Cyberpunk 2077, patch, update',
+    keywordsSeparator: 'Separate with commas'
   },
 
   xiaohongshu: {

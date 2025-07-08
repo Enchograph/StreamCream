@@ -263,6 +263,7 @@ onUnmounted(() => {
     position: relative;
     overflow: hidden;
     margin-left: 16px;
+    flex-shrink: 0;
 }
 
 .logo-section::before {
@@ -292,6 +293,9 @@ onUnmounted(() => {
     display: flex;
     flex-direction: column;
     line-height: 1.2;
+    white-space: nowrap;
+    flex-shrink: 0;
+    overflow: visible;
 }
 
 .logo-main {
@@ -321,7 +325,8 @@ onUnmounted(() => {
 .nav-links.dispersed {
     width: 100%;
     justify-content: flex-end;
-    gap: 24px;
+    gap: 20px;
+    margin-right: 20px;
 }
 
 .nav-links.grouped {

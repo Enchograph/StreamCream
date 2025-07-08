@@ -193,7 +193,8 @@
                                     class="modern-select">
                                     <option value="">{{ $t('douyin.live.category.selectCategory') }}</option>
                                     <option v-for="category in mainCategories" :key="category" :value="category">
-                                        {{ category }}</option>
+                                        {{ category }}
+                                    </option>
                                 </select>
                             </div>
                             <div class="select-group">
@@ -1143,72 +1144,97 @@ onUnmounted(() => {
 
 <style scoped>
 :root {
-  --primary-color: #667eea;
-  --primary-hover: #764ba2;
+    --primary-color: #667eea;
+    --primary-hover: #764ba2;
 }
 
 .top-nav {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-bottom: 1px solid #e1e8ed;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-bottom: 1px solid #e1e8ed;
 }
 
-.tab-item.active, .action-btn.primary, .card-btn.primary {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
-  color: #fff;
-  border: none;
+.tab-item.active,
+.action-btn.primary,
+.card-btn.primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+    color: #fff;
+    border: none;
 }
 
-.tab-item, .action-btn, .card-btn {
-  background: #fafdff;
-  color: #222;
-  border: 1px solid #e1e8ed;
+.tab-item,
+.action-btn,
+.card-btn {
+    background: #fafdff;
+    color: #222;
+    border: 1px solid #e1e8ed;
 }
 
-input, select, .modern-input, .modern-select, .field-input {
-  background: #fff;
-  border: 1.5px solid #e1e8ed;
-  color: #222;
+input,
+select,
+.modern-input,
+.modern-select,
+.field-input {
+    background: #fff;
+    border: 1.5px solid #e1e8ed;
+    color: #222;
 }
 
-.feature-card, .content-panel, .setting-section, .form-section, .log-section, .export-section, .control-section {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  border: 1px solid #f0f0f0;
+.feature-card,
+.content-panel,
+.setting-section,
+.form-section,
+.log-section,
+.export-section,
+.control-section {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid #f0f0f0;
 }
 
-.card-icon, .tab-icon, .title-icon {
-  color: var(--primary-color);
+.card-icon,
+.tab-icon,
+.title-icon {
+    color: var(--primary-color);
 }
 
-.brand-title, .brand-subtitle {
-  color: var(--primary-color);
+.brand-title,
+.brand-subtitle {
+    color: var(--primary-color);
 }
 
-.action-btn.success, .card-btn.success {
-  background: linear-gradient(135deg, #67c23a 0%, #85ce61 100%);
-  color: #fff;
+.action-btn.success,
+.card-btn.success {
+    background: linear-gradient(135deg, #67c23a 0%, #85ce61 100%);
+    color: #fff;
 }
 
-.action-btn.secondary, .card-btn.secondary {
-  background: #f8f9fa;
-  color: #666;
-  border: 1px solid #ddd;
+.action-btn.secondary,
+.card-btn.secondary {
+    background: #f8f9fa;
+    color: #666;
+    border: 1px solid #ddd;
 }
 
 .tab-item.active {
-  box-shadow: 0 4px 12px rgba(102,126,234,0.25);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
 }
 
-.tab-item:hover, .action-btn:hover, .card-btn:hover {
-  background: rgba(102,126,234,0.08);
-  color: #667eea;
+.tab-item:hover,
+.action-btn:hover,
+.card-btn:hover {
+    background: rgba(102, 126, 234, 0.08);
+    color: #667eea;
 }
 
-input:focus, select:focus, .modern-input:focus, .modern-select:focus, .field-input:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 2px rgba(102,126,234,0.12);
+input:focus,
+select:focus,
+.modern-input:focus,
+.modern-select:focus,
+.field-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.12);
 }
 
 /* 保留原有装饰和动画，logo原色不变 */
@@ -1386,7 +1412,7 @@ input:focus, select:focus, .modern-input:focus, .modern-select:focus, .field-inp
 
 .brand-title {
     font-size: 1.8rem;
-    font-weight: 700;
+    font-weight: 500;
     margin: 0;
     line-height: 1.2;
 }
@@ -1510,13 +1536,13 @@ input:focus, select:focus, .modern-input:focus, .modern-select:focus, .field-inp
 
 .tab-item:hover {
     color: #667eea;
-   
+
 }
 
 .tab-item.active {
     color: white;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    
+
 }
 
 .tab-item.active::before {
@@ -1666,7 +1692,7 @@ input:focus, select:focus, .modern-input:focus, .modern-select:focus, .field-inp
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 50%;
     color: white;
-    box-shadow: 0 4px 12px rgba(102,126,234,0.25);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
 }
 
 .card-header h3 {
@@ -1811,7 +1837,7 @@ input:focus, select:focus, .modern-input:focus, .modern-select:focus, .field-inp
     outline: none;
     border-color: #667eea;
     background: white;
-    box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .form-actions {
@@ -1850,7 +1876,7 @@ input:focus, select:focus, .modern-input:focus, .modern-select:focus, .field-inp
     outline: none;
     border-color: #667eea;
     background: white;
-    box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .category-grid {
@@ -1886,7 +1912,7 @@ input:focus, select:focus, .modern-input:focus, .modern-select:focus, .field-inp
     outline: none;
     border-color: #667eea;
     background: white;
-    box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .action-group {

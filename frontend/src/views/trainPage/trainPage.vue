@@ -14,7 +14,7 @@
                 <br>
                 <br>
                 <h1 class="page-title">
-                    语音模型训练高级设置
+                    {{ $t('trainPage.title') }}
                 </h1>
                 <br>
 
@@ -113,30 +113,28 @@
                 <div class="content-card">
                     <div class="tip-box">
                         <span class="tip-icon">💡</span>
-                        <span>输出log到实验目录下，目录下应有23456开头的文件和文件夹</span>
+                        <span>{{ $t('trainPage.tipLog') }}</span>
                     </div>
 
                     <div class="form-section">
                         <div class="form-group path-row">
-                            <label for="textLabelFile">*文本标注文件</label>
+                            <label for="textLabelFile">{{ $t('trainPage.textLabelFile') }}</label>
                             <div class="input-btn-group">
                                 <input type="text" id="textLabelFile" v-model="textLabelFile"
-                                    placeholder="D:\Documents\SoftwareDocuments\MyGO语音模型\参考音频\Anon干声素材\ls\新建文件夹.list"
-                                    class="glass-input" />
+                                    :placeholder="$t('trainPage.textLabelFilePlaceholder')" class="glass-input" />
                                 <input ref="textLabelFileInput" type="file" style="display:none" accept=".list"
                                     @change="onFileChange($event, 'textLabelFile')" />
-                                <button class="path-btn" @click="chooseFile('textLabelFileInput')">路径填入</button>
+                                <button class="path-btn" @click="chooseFile('textLabelFileInput')">{{ $t('trainPage.pathInputBtn') }}</button>
                             </div>
                         </div>
                         <div class="form-group path-row">
-                            <label for="audioDir">*训练集音频文件目录</label>
+                            <label for="audioDir">{{ $t('trainPage.audioDir') }}</label>
                             <div class="input-btn-group">
                                 <input type="text" id="audioDir" v-model="audioDir"
-                                    placeholder="D:\Documents\SoftwareDocuments\MyGO语音模型\参考音频\Anon干声素材\"
-                                    class="glass-input" />
+                                    :placeholder="$t('trainPage.audioDirPlaceholder')" class="glass-input" />
                                 <input ref="audioDirInput" type="file" style="display:none" webkitdirectory directory
                                     @change="onFileChange($event, 'audioDir')" />
-                                <button class="path-btn" @click="chooseFile('audioDirInput')">路径填入</button>
+                                <button class="path-btn" @click="chooseFile('audioDirInput')">{{ $t('trainPage.pathInputBtn') }}</button>
                             </div>
                         </div>
                     </div>
@@ -145,16 +143,16 @@
                     <div class="section-card">
                         <h3 class="section-title">
                             <span class="section-icon">📝</span>
-                            文本内容处理
+                            {{ $t('trainPage.textContent') }}
                         </h3>
                         <div class="form-section">
                             <div class="form-group">
-                                <label for="textGpuIds">GPU卡号,以，分割，每个卡号对应一个进程</label>
+                                <label for="textGpuIds">{{ $t('trainPage.textGpuIds') }}</label>
                                 <input type="text" id="textGpuIds" v-model="textGpuIds" placeholder="0-0"
                                     class="glass-input" />
                             </div>
                             <div class="form-group path-row">
-                                <label for="bertPath">预训练的中文BERT模型路径</label>
+                                <label for="bertPath">{{ $t('trainPage.bertPath') }}</label>
                                 <div class="input-btn-group">
                                     <input type="text" id="bertPath" v-model="bertPath"
                                         placeholder="GPT_SoVITS/pretrained_models/chinese-roberta-wwm-ext-large"
@@ -166,10 +164,10 @@
                             </div>
                             <button class="action-btn" @click="handleTextExtract">
                                 <span class="btn-icon">🚀</span>
-                                开启文本获取
+                                {{ $t('trainPage.startTextExtract') }}
                             </button>
                             <div class="form-group">
-                                <label for="textProcessInfo">文本进程输出信息</label>
+                                <label for="textProcessInfo">{{ $t('trainPage.textProcessInfo') }}</label>
                                 <input type="text" id="textProcessInfo" v-model="textProcessInfo" disabled
                                     class="glass-input disabled" />
                             </div>
@@ -180,16 +178,16 @@
                     <div class="section-card">
                         <h3 class="section-title">
                             <span class="section-icon">🎵</span>
-                            1Ab-SSL自监督特征提取
+                            {{ $t('trainPage.sslFeature') }}
                         </h3>
                         <div class="form-section">
                             <div class="form-group">
-                                <label for="sslGpuIds">GPU卡号，以，分割，每个卡号对应一个进程</label>
+                                <label for="sslGpuIds">{{ $t('trainPage.sslGpuIds') }}</label>
                                 <input type="text" id="sslGpuIds" v-model="sslGpuIds" placeholder="0-0"
                                     class="glass-input" />
                             </div>
                             <div class="form-group path-row">
-                                <label for="sslModelPath">预训练的SSL模型路径</label>
+                                <label for="sslModelPath">{{ $t('trainPage.sslModelPath') }}</label>
                                 <div class="input-btn-group">
                                     <input type="text" id="sslModelPath" v-model="sslModelPath"
                                         placeholder="GPT_SoVITS/pretrained_models/chinese-hubert-base"
@@ -200,11 +198,11 @@
                                 </div>
                             </div>
                             <button class="action-btn" @click="handleSslExtract">
-                                <span class="btn-icon">🎯</span>
-                                开启SSL提取
+                                <span class="btn-icon">🚀</span>
+                                {{ $t('trainPage.startSSLExtract') }}
                             </button>
                             <div class="form-group">
-                                <label for="sslProcessInfo">SSL进程输出信息</label>
+                                <label for="sslProcessInfo">{{ $t('trainPage.sslProcessInfo') }}</label>
                                 <input type="text" id="sslProcessInfo" v-model="sslProcessInfo" disabled
                                     class="glass-input disabled" />
                             </div>
@@ -215,16 +213,16 @@
                     <div class="section-card">
                         <h3 class="section-title">
                             <span class="section-icon">🔤</span>
-                            1Ac-语义token提取
+                            {{ $t('trainPage.tokenExtract') }}
                         </h3>
                         <div class="form-section">
                             <div class="form-group">
-                                <label for="tokenGpuIds">GPU卡号，以，分割，每个卡号对应一个进程</label>
+                                <label for="tokenGpuIds">{{ $t('trainPage.tokenGpuIds') }}</label>
                                 <input type="text" id="tokenGpuIds" v-model="tokenGpuIds" placeholder="0-0"
                                     class="glass-input" />
                             </div>
                             <div class="form-group path-row">
-                                <label for="tokenModelPath">预训练的SoVITS-G模型路径</label>
+                                <label for="tokenModelPath">{{ $t('trainPage.tokenModelPath') }}</label>
                                 <div class="input-btn-group">
                                     <input type="text" id="tokenModelPath" v-model="tokenModelPath"
                                         placeholder="GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s2G2333k.pth"
@@ -235,11 +233,11 @@
                                 </div>
                             </div>
                             <button class="action-btn" @click="handleTokenExtract">
-                                <span class="btn-icon">⚡</span>
-                                开启语义token提取
+                                <span class="btn-icon">🚀</span>
+                                {{ $t('trainPage.startTokenExtract') }}
                             </button>
                             <div class="form-group">
-                                <label for="tokenProcessInfo">语义token提取进程输出信息</label>
+                                <label for="tokenProcessInfo">{{ $t('trainPage.tokenProcessInfo') }}</label>
                                 <input type="text" id="tokenProcessInfo" v-model="tokenProcessInfo" disabled
                                     class="glass-input disabled" />
                             </div>
@@ -249,16 +247,16 @@
                     <!-- 1Aabc-训练集格式化一键三连 -->
                     <div class="section-card highlight">
                         <h3 class="section-title">
-                            <span class="section-icon">🎯</span>
-                            一键三连处理
+                            <span class="section-icon">⚡</span>
+                            {{ $t('trainPage.oneClick') }}
                         </h3>
                         <div class="form-section">
                             <button class="action-btn primary" @click="handleOneClickFormat">
                                 <span class="btn-icon">🚀</span>
-                                开启一键三连
+                                {{ $t('trainPage.startOneClick') }}
                             </button>
                             <div class="form-group">
-                                <label for="oneClickInfo">一键三连进程输出信息</label>
+                                <label for="oneClickInfo">{{ $t('trainPage.oneClickInfo') }}</label>
                                 <input type="text" id="oneClickInfo" v-model="oneClickInfo" disabled
                                     class="glass-input disabled" />
                             </div>
@@ -273,31 +271,31 @@
                     <!-- 1Ba-SoVITS训练 -->
                     <div class="section-card">
                         <h3 class="section-title">
-                            <span class="section-icon">🎵</span>
-                            1Ba-SoVITS训练
+                            <span class="section-icon">🎶</span>
+                            {{ $t('trainPage.soVITSTrain') }}
                         </h3>
                         <p class="section-desc">用于分享的模型文件输出在SoVITS_weights下</p>
                         <div class="form-section">
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label>每张显卡的batch_size</label>
+                                    <label>{{ $t('trainPage.soVITSBatch') }}</label>
                                     <input type="number" v-model.number="sovitsBatchSize" placeholder="15"
                                         class="glass-input" />
                                 </div>
                                 <div class="form-group">
-                                    <label>总训练轮数total_epoch（不建议太高）</label>
+                                    <label>{{ $t('trainPage.soVITSTotalEpoch') }}</label>
                                     <input type="number" v-model.number="sovitsTotalEpoch" placeholder="8"
                                         class="glass-input" />
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label>文本模块学习率权重</label>
+                                    <label>{{ $t('trainPage.soVITSWeight') }}</label>
                                     <input type="number" step="0.1" v-model.number="sovitsTextWeight" placeholder="0.4"
                                         class="glass-input" />
                                 </div>
                                 <div class="form-group">
-                                    <label>保存频率save_every_epoch</label>
+                                    <label>{{ $t('trainPage.soVITSSaveFreq') }}</label>
                                     <input type="number" v-model.number="sovitsSaveEpoch" placeholder="4"
                                         class="glass-input" />
                                 </div>
@@ -305,24 +303,24 @@
                             <div class="checkbox-group">
                                 <label class="checkbox-item">
                                     <input type="checkbox" id="sovitsSaveLatest" v-model="sovitsSaveLatest" />
-                                    <span class="checkbox-text">仅保存最新的ckpt文件以节省硬盘空间</span>
+                                    <span class="checkbox-text">{{ $t('trainPage.soVITSOnlyLatest') }}</span>
                                 </label>
                                 <label class="checkbox-item">
                                     <input type="checkbox" id="sovitsSaveFinal" v-model="sovitsSaveFinal" />
-                                    <span class="checkbox-text">在每次保存时间点将最终小模型保存至weights文件夹</span>
+                                    <span class="checkbox-text">{{ $t('trainPage.soVITSFinalToWeights') }}</span>
                                 </label>
                             </div>
                             <div class="form-group">
-                                <label for="sovitsGpuIds">GPU卡号，以，分割，每个卡号对应一个进程</label>
+                                <label for="sovitsGpuIds">{{ $t('trainPage.soVITSGpuIds') }}</label>
                                 <input type="text" id="sovitsGpuIds" v-model="sovitsGpuIds" placeholder="0"
                                     class="glass-input" />
                             </div>
                             <button class="action-btn" @click="handleSovitsTrain">
-                                <span class="btn-icon">🎓</span>
-                                开启SoVITS训练
+                                <span class="btn-icon">🚀</span>
+                                {{ $t('trainPage.startSoVITSTrain') }}
                             </button>
                             <div class="form-group">
-                                <label for="sovitsProcessInfo">SoVITS训练进程输出信息</label>
+                                <label for="sovitsProcessInfo">{{ $t('trainPage.soVITSProcessInfo') }}</label>
                                 <input type="text" id="sovitsProcessInfo" v-model="sovitsProcessInfo" disabled
                                     class="glass-input disabled" />
                             </div>
@@ -332,26 +330,26 @@
                     <!-- 1Bb-GPT训练 -->
                     <div class="section-card">
                         <h3 class="section-title">
-                            <span class="section-icon">🧠</span>
-                            1Bb-GPT训练
+                            <span class="section-icon">🤖</span>
+                            {{ $t('trainPage.gptTrain') }}
                         </h3>
                         <p class="section-desc">用于分享的模型文件输出在GPT_weights下</p>
                         <div class="form-section">
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label>每张显卡的batch_size</label>
+                                    <label>{{ $t('trainPage.gptBatch') }}</label>
                                     <input type="number" v-model.number="gptBatchSize" placeholder="15"
                                         class="glass-input" />
                                 </div>
                                 <div class="form-group">
-                                    <label>总训练轮数total_epoch</label>
+                                    <label>{{ $t('trainPage.gptTotalEpoch') }}</label>
                                     <input type="number" v-model.number="gptTotalEpoch" placeholder="15"
                                         class="glass-input" />
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label>保存频率save_every_epoch</label>
+                                    <label>{{ $t('trainPage.gptSaveFreq') }}</label>
                                     <input type="number" v-model.number="gptSaveEpoch" placeholder="5"
                                         class="glass-input" />
                                 </div>
@@ -359,28 +357,28 @@
                             <div class="checkbox-group">
                                 <label class="checkbox-item">
                                     <input type="checkbox" id="gptDdp" v-model="gptDdp" />
-                                    <span class="checkbox-text">开启ddp训练选项(实验性)</span>
+                                    <span class="checkbox-text">{{ $t('trainPage.gptDDP') }}</span>
                                 </label>
                                 <label class="checkbox-item">
                                     <input type="checkbox" id="gptSaveLatest" v-model="gptSaveLatest" />
-                                    <span class="checkbox-text">仅保存最新的ckpt文件以节省硬盘空间</span>
+                                    <span class="checkbox-text">{{ $t('trainPage.gptOnlyLatest') }}</span>
                                 </label>
                                 <label class="checkbox-item">
                                     <input type="checkbox" id="gptSaveFinal" v-model="gptSaveFinal" />
-                                    <span class="checkbox-text">在每次保存时间点将最终小模型保存至weights文件夹</span>
+                                    <span class="checkbox-text">{{ $t('trainPage.gptFinalToWeights') }}</span>
                                 </label>
                             </div>
                             <div class="form-group">
-                                <label for="gptGpuIds">GPU卡号，以，分割，每个卡号对应一个进程</label>
+                                <label for="gptGpuIds">{{ $t('trainPage.gptGpuIds') }}</label>
                                 <input type="text" id="gptGpuIds" v-model="gptGpuIds" placeholder="0"
                                     class="glass-input" />
                             </div>
                             <button class="action-btn" @click="handleGptTrain">
                                 <span class="btn-icon">🚀</span>
-                                开启GPT训练
+                                {{ $t('trainPage.startGPTTrain') }}
                             </button>
                             <div class="form-group">
-                                <label for="gptProcessInfo">GPT训练进程输出信息</label>
+                                <label for="gptProcessInfo">{{ $t('trainPage.gptProcessInfo') }}</label>
                                 <input type="text" id="gptProcessInfo" v-model="gptProcessInfo" disabled
                                     class="glass-input disabled" />
                             </div>
@@ -394,12 +392,12 @@
                 <div class="content-card">
                     <div class="tip-box">
                         <span class="tip-icon">💡</span>
-                        <span>选择训练完存放在SoVITS_weights和GPT_weights下的模型。默认的一个是底模，体验5秒Zero Shot TTS用。</span>
+                        <span>{{ $t('trainPage.inferTip') }}</span>
                     </div>
 
                     <div class="form-section">
                         <div class="form-group">
-                            <label for="gptModelList">*GPT模型列表</label>
+                            <label for="gptModelList">{{ $t('trainPage.gptModelList') }}</label>
                             <select id="gptModelList" v-model="gptModelList" class="glass-input">
                                 <option value="GPT_SoVITS/pretrained_models/gsv-v2final-p">
                                     GPT_SoVITS/pretrained_models/gsv-v2final-p
@@ -407,7 +405,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="sovitsModelList">*SoVITS模型列表</label>
+                            <label for="sovitsModelList">{{ $t('trainPage.soVITSModelList') }}</label>
                             <select id="sovitsModelList" v-model="sovitsModelList" class="glass-input">
                                 <option value="GPT_SoVITS/pretrained_models/gsv-v2final-p">
                                     GPT_SoVITS/pretrained_models/gsv-v2final-p
@@ -415,26 +413,26 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="inferGpuId">GPU卡号，只能填1个整数</label>
+                            <label for="inferGpuId">{{ $t('trainPage.inferGpuId') }}</label>
                             <input type="number" id="inferGpuId" v-model.number="inferGpuId" placeholder="0"
                                 class="glass-input" />
                         </div>
                         <button class="action-btn" @click="handleRefreshModel">
                             <span class="btn-icon">🔄</span>
-                            刷新模型路径
+                            {{ $t('trainPage.refreshModelPath') }}
                         </button>
                         <div class="checkbox-group">
                             <label class="checkbox-item">
                                 <input type="checkbox" id="enableParallel" v-model="enableParallel" />
-                                <span class="checkbox-text">启用并行推理版本(推理速度更快)</span>
+                                <span class="checkbox-text">{{ $t('trainPage.enableParallelInfer') }}</span>
                             </label>
                         </div>
                         <button class="action-btn primary" @click="handleTtsInfer">
                             <span class="btn-icon">🔮</span>
-                            开启TTS推理WebUI
+                            {{ $t('trainPage.startTTSInfer') }}
                         </button>
                         <div class="form-group">
-                            <label for="inferProcessInfo">TTS推理WebUI进程输出信息</label>
+                            <label for="inferProcessInfo">{{ $t('trainPage.inferProcessInfo') }}</label>
                             <input type="text" id="inferProcessInfo" v-model="inferProcessInfo" disabled
                                 class="glass-input disabled" />
                         </div>

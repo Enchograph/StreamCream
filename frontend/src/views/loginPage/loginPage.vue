@@ -2,24 +2,10 @@
     <TopBanner />
     <div class="page-container">
         <div class="page-bg-animated"></div>
-<<<<<<< HEAD
-        <!-- 语言切换器和主题切换按钮 -->
-        <div style="position: absolute; top: 20px; right: 20px; z-index: 10; display: flex; gap: 12px; align-items: center;">
-            <LanguageSwitcher />
-            <button 
-                @click="themeStore.toggleTheme" 
-                :aria-label="themeStore.theme === 'light' ? '切换到深色模式' : '切换到浅色模式'"
-                style="width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--bg-color); color: var(--text-color); box-shadow: 0 2px 8px rgba(0,0,0,0.08); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; transition: background 0.3s, color 0.3s;">
-                <span v-if="themeStore.theme === 'light'">&#x2600;</span> <!-- 太阳 -->
-                <span v-else>&#x1F319;</span> <!-- 月亮 -->
-            </button>
-        </div>
-=======
         <!-- 语言切换器 -->
-        <!-- <div style="position: absolute; top: 20px; right: 20px; z-index: 10;">
+        <div style="position: absolute; top: 20px; right: 20px; z-index: 10;">
             <LanguageSwitcher />
-        </div> -->
->>>>>>> 07a94825d062f79ffc13cd0636437fb9d487876f
+        </div>
         <div class="welcome-message">
             <h2>{{ $t('login.title') }}</h2>
         </div>

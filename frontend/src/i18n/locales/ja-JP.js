@@ -138,6 +138,7 @@ export default {
         apiKey: 'APIキー',
         apiKeyPlaceholder: 'APIキーを入力',
         modelName: 'モデル名',
+        getStreamKeyTip: '配信キーを取得するには、主ページの"配信プラットフォーム選択と推流コード"部分に移動してください',
         noModelFound: '該当するモデルが見つかりません',
         searchModel: 'モデル検索',
         customModelName: 'カスタムモデル名',

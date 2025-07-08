@@ -698,6 +698,7 @@ If you encounter unsolvable problems, please contact the development team or ref
     },
 
     setting: {
+        getStreamKeyTip: 'Please go to the "Live Platform Selection and Stream Key" section on the main page to get the stream key',
         title: 'Settings',
         languageTitle: 'Language Settings',
         themeTitle: 'System Preferences',

@@ -2,7 +2,9 @@
 
 全流程由 AI 控制的虚拟主播直播平台。
 
-![项目徽标](assets/项目徽标.jpg){: style="width:30%; margin-left:auto; margin-right:auto; display:block;"}
+<p align="center">
+  <img src="assets/项目徽标.jpg" alt="项目徽标" style="width:30%;">
+</p>
 
 ## 项目成员
 

@@ -4,7 +4,7 @@
 
 |  |  |
 | --- | --- |
-| ![队伍徽标](.\assets\队伍徽标.jpg) | ![项目徽标](.\assets\项目徽标.jpg) |
+| ![队伍徽标](assets/队伍徽标.jpg) | ![项目徽标](assets/项目徽标.jpg) |
 
 ## 项目成员
 
@@ -23,7 +23,7 @@
 
 |  |  |  |
 | --- | --- | --- |
-|![](.\assets\git1.png) | ![](.\assets\git2.png) | ![](.\assets\git3.png) |
+|![](assets/git1.png) | ![](assets/git2.png) | ![](assets/git3.png) |
 
 #### 开发框架
 
@@ -53,15 +53,15 @@ Flask、FastAPI
 
 > "No Privacy, No Identity."
 
-![](.\assets\prototype\register.png)
+![](assets/prototype/register.png)
 
-![](.\assets\prototype\login.png)
+![](assets/prototype/login.png)
 
 ## 二、控制台
 
 [陈广隰](https://github.com/Enchograph)、[Qinyre](https://github.com/qinyre)
 
-![](.\assets\prototype\控制台.png)
+![](assets/prototype/控制台.png)
 
 ## 三、直播文案生产
 

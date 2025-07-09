@@ -80,17 +80,17 @@
 
 ## 七、项目展示
 
-![](assets/prototype/register.png)
-![](assets/prototype/控制台.png)
-![](assets/prototype/直播控制页面.png)
-![](assets/prototype/语音模型训练页面.png)
-![](assets/prototype/声音模型训练1.png)
-![](assets/prototype/声音模型训练2.png)
-![](assets/prototype/声音模型训练3.png)
-![](assets/prototype/bili.png)
-![](assets/prototype/帮助页.png)
-![](assets/prototype/帮助页英.png)
-![](assets/prototype/帮助页日.png)
+![注册页](assets/prototype/register.png)
+![控制台](assets/prototype/控制台.png)
+![直播页](assets/prototype/直播控制页面.png)
+![语音模型训练页-主](assets/prototype/语音模型训练页面.png)
+![语音模型训练页-1](assets/prototype/声音模型训练1.png)
+![语音模型训练页-2](assets/prototype/声音模型训练2.png)
+![语音模型训练页-3](assets/prototype/声音模型训练3.png)
+![BiliBili推流码在线获取](assets/prototype/bili.png)
+![帮助页](assets/prototype/帮助页.png)
+![帮助页英](assets/prototype/帮助页英.png)
+![帮助页日](assets/prototype/帮助页日.png)
 
 ## 八、项目部署
 

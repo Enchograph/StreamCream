@@ -1,12 +1,28 @@
 # StreamCream
 
-武汉大学2024级软件工程专业2025年小学期实训项目，基于Live2D与GPT-SoVITS的全自动一站式AI虚拟主播直播方案。
+全流程 AI 控制的虚拟主播/ vtuber 的直播方案。
 
-<p align="left"> <a href="https://www.cprogramming.com/" target="_blank"> <img src="https://devicons.github.io/devicon/devicon.git/icons/c/c-original.svg" alt="c" width="40" height="40"/> </a> <a href="https://www.w3schools.com/cpp/" target="_blank"> <img src="https://devicons.github.io/devicon/devicon.git/icons/cplusplus/cplusplus-original.svg" alt="cplusplus" width="40" height="40"/> </a> <a href="https://www.w3schools.com/css/" target="_blank"> <img src="https://devicons.github.io/devicon/devicon.git/icons/css3/css3-original-wordmark.svg" alt="css3" width="40" height="40"/> </a> <a href="https://www.figma.com/" target="_blank"> <img src="https://www.vectorlogo.zone/logos/figma/figma-icon.svg" alt="figma" width="40" height="40"/> </a> <a href="https://flutter.dev" target="_blank"> <img src="https://www.vectorlogo.zone/logos/flutterio/flutterio-icon.svg" alt="flutter" width="40" height="40"/> </a> <a href="https://git-scm.com/" target="_blank"> <img src="https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg" alt="git" width="40" height="40"/> </a> <a href="https://www.w3.org/html/" target="_blank"> <img src="https://devicons.github.io/devicon/devicon.git/icons/html5/html5-original-wordmark.svg" alt="html5" width="40" height="40"/> </a> <a href="https://www.linux.org/" target="_blank"> <img src="https://devicons.github.io/devicon/devicon.git/icons/linux/linux-original.svg" alt="linux" width="40" height="40"/> </a> <a href="https://www.photoshop.com/en" target="_blank"> <img src="https://devicons.github.io/devicon/devicon.git/icons/photoshop/photoshop-plain.svg" alt="photoshop" width="40" height="40"/> </a> <a href="https://www.python.org" target="_blank"> <img src="https://devicons.github.io/devicon/devicon.git/icons/python/python-original.svg" alt="python" width="40" height="40"/> </a> </p>
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="150" viewBox="0 0 300 150">
+  <!-- 背景 -->
+  <rect width="300" height="150" rx="10" ry="10" fill="#f5f5f5"/>
+  
+  <!-- 标题 -->
+  <text x="150" y="25" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#333">开发框架</text>
+  
+  <!-- 前端 -->
+  <rect x="20" y="40" width="260" height="25" rx="5" ry="5" fill="#42b883"/>
+  <text x="150" y="58" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="white">前端：Vue + Vite3</text>
+  
+  <!-- 后端 -->
+  <rect x="20" y="75" width="260" height="25" rx="5" ry="5" fill="#007ACC"/>
+  <text x="150" y="93" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="white">后端：Flask、FastAPI</text>
+  
+  <!-- 测试 -->
+  <rect x="20" y="110" width="260" height="25" rx="5" ry="5" fill="#FF6B00"/>
+  <text x="150" y="128" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="white">测试：APIFox</text>
+</svg>
 
-|  |  |
-| --- | --- |
-| ![队伍徽标](assets/队伍徽标.jpg) | ![项目徽标](assets/项目徽标.jpg) |
+![项目徽标](assets/项目徽标.jpg)
 
 ## 项目成员
 
@@ -23,9 +39,9 @@
 
 ## 一、注册、登录、偏好保存与账户安全
 
-[茯苓](https://github.com/wofiporia)
-
 > "No Privacy, No Identity."
+
+[茯苓](https://github.com/wofiporia)
 
 - 通过邮箱对账号注册进行限制、普遍的解决方案。
 - 通过Werkzeug的`bcrypt`算法,、基于`pbkdf2:sha256`对密码进行迭代加密。
@@ -34,22 +50,20 @@
 
 ## 二、直播推流模块：网络抓包、推流码获取、直播协议转换
 
-任逸青、冯博文、陈宏宇
-
 > "Every Millisecond Matters."
 > —— Arvind Jain, Google
+
+任逸青、冯博文、陈宏宇
 
 - 从零实现了 WebRTC 直播协议到 RTMP 直播协议的低延迟转换。
 - 在网站内嵌入了 BiliBili 等直播平台的推流码在线获取工具。
 
-![](assets/prototype/控制台.png)
-
 ## 三、虚拟主播模块：Live2D Web引擎、基于语音学的口型实时适配、AI 控制的模型表情、动作的变化
-
-解佶睿、陈宏宇、冯博文
 
 > "No One Reveals Himself as He Is; We All Wear the Masks."
 > —— Arthur Schopenhauer
+
+解佶睿、陈宏宇、冯博文
 
 - 实现了 Live 2D 的 Web 端实现，支持从 Cubism core 2.1 到 Cubism core 4.0 的多模型版本，支持用户手动上传 Zip 模型文件。
 - 基于语音学原理，通过分拆元音音素，结合汉语使用者发音习惯实现了实时的 Live 2D 模型口型适配，使得 AI 控制的 vtuber 更加拟真。
@@ -57,10 +71,10 @@
 
 ## 四、LLM 直播文案生成模块：人类的可控性，多服务商适配与完全即时性的优化
 
-任逸青、冯博文、陈宏宇
-
 > "Can Machines Think?"
 > —— Alan Turing
+
+任逸青、冯博文、陈宏宇
 
 - 覆盖了全球主流AI服务提供商：OpenAI、Anthropic、Google、硅基流动、火山方舟、腾讯云、DeepSeek、SORUX等，也支持用户自定义API的接入。
 - 对世界各族模型均有良好的适配： GPT 系列、 Claude 系列、 Gemini 系列、 Deepseek 系列、 Grok 系列等。
@@ -71,9 +85,9 @@
 
 ## 五、TTS语音转换模块：推理、训练与开发者 API
 
-陈宏宇
-
 > "Stop Trying to Reinvent the Wheel."
+
+陈宏宇
 
 - 基于开源项目 GPT-SoVITS 进行开发，实现了多版本（V1\~V4）语音模型的实时转换。
 - 用户可以自己上传语音转换模型使用。
@@ -86,16 +100,18 @@
 
 ## 六、用户友好特质开发
 
-解佶睿、任逸青
-
 > "全球化是社会生产力和科学技术发展的客观要求和必然结果。"
 > —— 江泽民
+
+解佶睿、任逸青
 
 - 对中、英、日三语全面适配，满足国际化需求。
 - 全面兼容了非拉丁字符集。
 - 用户可以根据自己的偏好选择系统的主题样式，支持多种颜色主题与组件样式。
 - 提供了在线帮助、文档、常见问题解答。
 
-## 七、鸣谢使用到的开源项目
+## 七、项目展示
 
-## 八、项目展示
+## 八、项目部署
+
+## 九、鸣谢使用到的开源项目

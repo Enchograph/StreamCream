@@ -353,7 +353,7 @@ export default {
         enterNewSectionTitle: '请输入新章节标题：',
         aiSystemPrompt: '你是一个专业的直播内容助手，擅长生成结构清晰、通俗易懂的内容。',
         generateOutlinePrompt: '为主题"{topic}"生成一个直播提纲，包含5-8个章节，每个章节用一个简短标题概括。格式：\n1. 章节一\n2. 章节二\n以此类推。',
-        generateContentPrompt: '为直播主题"{topic}"的"{sectionTitle}"章节生成详细讲解内容。内容要通俗易懂，语气轻松自然，适合直播朗读。每个句子都要简短，便于字幕显示。',
+        generateContentPrompt: '为直播主题"{topic}"的"{sectionTitle}"章节生成详细讲解内容。每个句子都要简短，便于字幕显示。一定注意：不要生成直播内容以外的文字，包括标题，对我的回复，语言标记等等。',
         apiCallFailed: 'API调用失败: {status} {statusText}',
         invalidApiResponse: '无效的API响应格式',
         generatingContentFor: '正在生成内容：',

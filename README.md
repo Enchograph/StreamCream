@@ -1,6 +1,6 @@
 # StreamCream
 
-全流程应用 AI 的虚拟主播直播平台。
+全流程一站式 AI 虚拟直播解决方案。
 
 <br>
 <p align="center">
@@ -47,12 +47,12 @@
 
 [Qinyre](https://github.com/qinyre)、[茯苓](https://github.com/wofiporia)、[陈广隰](https://github.com/Enchograph)
 
-- 覆盖了全球主流AI服务提供商：OpenAI、Anthropic、Google、硅基流动、火山方舟、腾讯云、DeepSeek、SORUX等，也支持用户自定义API的接入。
-- 对世界各族模型均有良好的适配： GPT 系列、 Claude 系列、 Gemini 系列、 Deepseek 系列、 Grok 系列等。
 - 实现了人类可控的 AI 直播文案生成模式，确保内容质量与人类的可控性，直播文案的生成分三个步骤：
   - **主题输入**: 用户设定直播核心主题。
   - **大纲确定**: AI或用户基于主题确定直播章节大纲。
   - **具体内容**: AI生成具体文案，用户随时调整大纲与内容，掌控全局。
+- 覆盖了全球主流AI服务提供商：OpenAI、Anthropic、Google、硅基流动、火山方舟、腾讯云、DeepSeek、SORUX等，也支持用户自定义API的接入。
+- 对世界各族模型均有良好的适配： GPT 系列、 Claude 系列、 Gemini 系列、 Deepseek 系列、 Grok 系列等。
 
 ## 五、TTS语音转换模块：推理、训练与开发者 API
 
@@ -79,7 +79,7 @@
 
 ## 七、项目展示
 
-由于网络连接延迟，您可能需要等待片刻才能看到15张展示图的全部加载完成。
+由于网络连接延迟，您可能需要等待片刻才能看到16张展示图的全部加载完成。
 
 ![注册页](assets/prototype/register.png)
 
@@ -102,6 +102,8 @@
 ![帮助页英](assets/prototype/帮助页英.png)
 
 ![帮助页日](assets/prototype/帮助页日.png)
+
+![直播效果](assets/prototype/直播效果.png)
 
 ## 八、项目部署
 

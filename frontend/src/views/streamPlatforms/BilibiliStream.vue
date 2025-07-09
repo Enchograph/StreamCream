@@ -40,7 +40,8 @@
                         <div class="auto-block">
                             <h2>{{ $t('bilibili.account.autoGet') }}</h2>
                             <button class="btn success" @click="autoGetAccount" :disabled="autoGetLoading">
-                                <span class="btn-icon"><i v-if="autoGetLoading" class="fas fa-hourglass-half"></i><i v-else class="fas fa-search"></i></span>
+                                <span class="btn-icon"><i v-if="autoGetLoading" class="fas fa-hourglass-half"></i><i
+                                        v-else class="fas fa-search"></i></span>
                                 {{ autoGetLoading ? $t('bilibili.account.getting') : $t('bilibili.account.autoGetAccount') }}
                             </button>
                             <p v-if="autoGetLoading" class="loading-text">{{ $t('bilibili.account.gettingText') }}</p>
@@ -166,12 +167,12 @@
         </div>
 
         <!-- 二维码对话框 -->
-        <el-dialog v-model="showQRCode" :title="$t('bilibili.qrCode.title')" width="30%" class="qr-dialog">
+        <!-- <el-dialog v-model="showQRCode" :title="$t('bilibili.qrCode.title')" width="30%" class="qr-dialog">
             <div class="qr-container">
                 <canvas ref="qrcodeCanvas" v-if="qrcodeUrl" class="qr-canvas"></canvas>
                 <p class="qr-tip">{{ $t('bilibili.qrCode.tip') }}</p>
             </div>
-        </el-dialog>
+        </el-dialog> -->
 
         <el-dialog v-model="showHelpDialog" :title="$t('bilibili.help.title')" width="640px" class="help-dialog"
             :lock-scroll="false" :auto-focus="false">

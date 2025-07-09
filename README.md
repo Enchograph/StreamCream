@@ -2,9 +2,11 @@
 
 全流程由 AI 控制的虚拟主播直播平台。
 
+<br><br><br>
 <p align="center">
-  <img src="assets/项目徽标.jpg" alt="项目徽标" style="width:30%;">
+  <img src="assets/项目徽标.jpg" alt="项目徽标" style="width:50%;">
 </p>
+<br><br><br>
 
 ## 项目成员
 
@@ -35,7 +37,7 @@
 > "Every Millisecond Matters."
 > —— Arvind Jain, Google
 
-任逸青、冯博文、陈宏宇
+[Qinyre](https://github.com/qinyre)、[茯苓](https://github.com/wofiporia)、[陈广隰](https://github.com/Enchograph)
 
 - 从零实现了 WebRTC 直播协议到 RTMP 直播协议的低延迟转换。
 - 在网站内嵌入了 BiliBili 等直播平台的推流码在线获取工具。
@@ -45,7 +47,7 @@
 > "No One Reveals Himself as He Is; We All Wear the Masks."
 > —— Arthur Schopenhauer
 
-解佶睿、陈宏宇、冯博文
+[Bigmuffin](https://github.com/Bigmuffin2005)、[陈广隰](https://github.com/Enchograph)、[茯苓](https://github.com/wofiporia)
 
 - 实现了 Live 2D 的 Web 端实现，支持从 Cubism core 2.1 到 Cubism core 4.0 的多模型版本，支持用户手动上传 Zip 模型文件。
 - 基于语音学原理，通过分拆元音音素，结合汉语使用者发音习惯实现了实时的 Live 2D 模型口型适配，使得 AI 控制的 vtuber 更加拟真。
@@ -56,7 +58,7 @@
 > "Can Machines Think?"
 > —— Alan Turing
 
-任逸青、冯博文、陈宏宇
+[Qinyre](https://github.com/qinyre)、[茯苓](https://github.com/wofiporia)、[陈广隰](https://github.com/Enchograph)
 
 - 覆盖了全球主流AI服务提供商：OpenAI、Anthropic、Google、硅基流动、火山方舟、腾讯云、DeepSeek、SORUX等，也支持用户自定义API的接入。
 - 对世界各族模型均有良好的适配： GPT 系列、 Claude 系列、 Gemini 系列、 Deepseek 系列、 Grok 系列等。
@@ -69,7 +71,7 @@
 
 > "Stop Trying to Reinvent the Wheel."
 
-陈宏宇
+[陈广隰](https://github.com/Enchograph)
 
 - 基于开源项目 GPT-SoVITS 进行开发，实现了多版本（V1\~V4）语音模型的实时转换。
 - 用户可以自己上传语音转换模型使用。
@@ -85,15 +87,52 @@
 > "全球化是社会生产力和科学技术发展的客观要求和必然结果。"
 > —— 江泽民
 
-解佶睿、任逸青
+[Bigmuffin](https://github.com/Bigmuffin2005)、[Qinyre](https://github.com/qinyre)
 
 - 对中、英、日三语全面适配，满足国际化需求。
-- 全面兼容了非拉丁字符集。
+- 全面兼容非拉丁字符集。
 - 用户可以根据自己的偏好选择系统的主题样式，支持多种颜色主题与组件样式。
 - 提供了在线帮助、文档、常见问题解答。
 
 ## 七、项目展示
 
+![](assets\prototype\register.png)
+![](assets\prototype\控制台.png)
+![](assets\prototype\直播控制页面.png)
+![](assets\prototype\语音模型训练页面.png)
+![](assets\prototype\声音模型训练1.png)
+![](assets\prototype\声音模型训练2.png)
+![](assets\prototype\声音模型训练3.png)
+![](assets\prototype\bili.png)
+![](assets\prototype\帮助页.png)
+![](assets\prototype\帮助页英.png)
+![](assets\prototype\帮助页日.png)
+
 ## 八、项目部署
 
-## 九、鸣谢使用到的开源项目
+1. 您需要先 clone GPT-SoVITS 于 backend\GPT-SoVITS ，我们使用的版本是 20250606v2pro 。再把我们于 backend\GPT-SoVITS-副本 提供的文件复制进去，覆盖原有文件，再 'python api_v2.py' 以启动 GPT-SoVITS 部分后端。
+2. 随后您再启动其余后端文件。
+
+    ``` bash
+    pip install requirements.txt
+    python run 
+    ```
+
+3. 随后您再在 frontend/下启动前端。
+
+    ``` bash
+    npm install
+    npm run dev
+    ```
+
+4. 随后您即可访问前端端口以使用此项目。
+
+## 九、鸣谢使用到的开源项目与库
+
+[GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS)
+[PIXI.js]()
+[pixi-live2d-display-lipsyncpatch]()
+[bilibili_live_stream_code](https://github.com/ChaceQC/bilibili_live_stream_code)
+[]()
+[]()
+[]()

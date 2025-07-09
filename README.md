@@ -1,64 +1,8 @@
 # StreamCream
 
-全流程 AI 控制的虚拟主播/ vtuber 的直播方案。
+全流程由 AI 控制的虚拟主播直播平台。
 
-<svg xmlns="http://www.w3.org/2000/svg" width="300" height="240" viewBox="0 0 300 240">
-  <!-- 背景 -->
-  <rect width="300" height="240" rx="10" ry="10" fill="#f5f5f5"/>
-  
-  <!-- 标题 -->
-  <text x="150" y="25" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#333">开发框架</text>
-  
-  <!-- 前端标题 -->
-  <rect x="20" y="40" width="260" height="25" rx="5" ry="5" fill="#42b883"/>
-  <text x="150" y="58" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="white">前端</text>
-  
-  <!-- 前端图标 -->
-  <g transform="translate(40, 80)">
-    <a href="https://vuejs.org" target="_blank">
-      <image href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg" width="40" height="40" alt="Vue.js"/>
-      <text x="20" y="60" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#333">Vue</text>
-    </a>
-  </g>
-  <g transform="translate(130, 80)">
-    <a href="https://vitejs.dev" target="_blank">
-      <image href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vite/vite-original.svg" width="40" height="40" alt="Vite"/>
-      <text x="20" y="60" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#333">Vite3</text>
-    </a>
-  </g>
-  
-  <!-- 后端标题 -->
-  <rect x="20" y="120" width="260" height="25" rx="5" ry="5" fill="#007ACC"/>
-  <text x="150" y="138" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="white">后端</text>
-  
-  <!-- 后端图标 -->
-  <g transform="translate(40, 160)">
-    <a href="https://flask.palletsprojects.com" target="_blank">
-      <image href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg" width="40" height="40" alt="Flask"/>
-      <text x="20" y="60" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#333">Flask</text>
-    </a>
-  </g>
-  <g transform="translate(130, 160)">
-    <a href="https://fastapi.tiangolo.com" target="_blank">
-      <image href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" width="40" height="40" alt="FastAPI"/>
-      <text x="20" y="60" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#333">FastAPI</text>
-    </a>
-  </g>
-  
-  <!-- 测试标题 -->
-  <rect x="20" y="200" width="260" height="25" rx="5" ry="5" fill="#FF6B00"/>
-  <text x="150" y="218" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="white">测试</text>
-  
-  <!-- 测试图标 -->
-  <g transform="translate(85, 240)">
-    <a href="https://www.apifox.cn" target="_blank">
-      <image href="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apifox/apifox-original.svg" width="40" height="40" alt="APIFox"/>
-      <text x="20" y="60" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#333">APIFox</text>
-    </a>
-  </g>
-</svg>  
-
-![项目徽标](assets/项目徽标.jpg)
+![项目徽标](assets/项目徽标.jpg){: style="width:30%; margin-left:auto; margin-right:auto; display:block;"}
 
 ## 项目成员
 

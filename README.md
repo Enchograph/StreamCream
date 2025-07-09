@@ -2,11 +2,11 @@
 
 全流程由 AI 控制的虚拟主播直播平台。
 
-<br><br><br>
+<br>
 <p align="center">
   <img src="assets/项目徽标.jpg" alt="项目徽标" style="width:50%;">
 </p>
-<br><br><br>
+<br>
 
 ## 项目成员
 
@@ -23,8 +23,6 @@
 
 ## 一、注册、登录、偏好保存与账户安全
 
-> "No Privacy, No Identity."
-
 [茯苓](https://github.com/wofiporia)
 
 - 通过邮箱对账号注册进行限制、普遍的解决方案。
@@ -34,9 +32,6 @@
 
 ## 二、直播推流模块：网络抓包、推流码获取、直播协议转换
 
-> "Every Millisecond Matters."
-> —— Arvind Jain, Google
-
 [Qinyre](https://github.com/qinyre)、[茯苓](https://github.com/wofiporia)、[陈广隰](https://github.com/Enchograph)
 
 - 从零实现了 WebRTC 直播协议到 RTMP 直播协议的低延迟转换。
@@ -44,19 +39,13 @@
 
 ## 三、虚拟主播模块：Live2D Web引擎、基于语音学的口型实时适配、AI 控制的模型表情、动作的变化
 
-> "No One Reveals Himself as He Is; We All Wear the Masks."
-> —— Arthur Schopenhauer
-
 [Bigmuffin](https://github.com/Bigmuffin2005)、[陈广隰](https://github.com/Enchograph)、[茯苓](https://github.com/wofiporia)
 
-- 实现了 Live 2D 的 Web 端实现，支持从 Cubism core 2.1 到 Cubism core 4.0 的多模型版本，支持用户手动上传 Zip 模型文件。
+- 实现了 Live 2D 的 Web 端嵌入，支持从 Cubism core 2.1 到 Cubism core 4.0 的多模型版本，支持用户手动上传 Zip 模型文件。
 - 基于语音学原理，通过分拆元音音素，结合汉语使用者发音习惯实现了实时的 Live 2D 模型口型适配，使得 AI 控制的 vtuber 更加拟真。
 - 基于对于直播文案的 Embedding 、与各类情感的语义向量相似度匹配，实现了由 AI 控制的 Live 2D 模型表情、动作的变化。
 
 ## 四、LLM 直播文案生成模块：人类的可控性，多服务商适配与完全即时性的优化
-
-> "Can Machines Think?"
-> —— Alan Turing
 
 [Qinyre](https://github.com/qinyre)、[茯苓](https://github.com/wofiporia)、[陈广隰](https://github.com/Enchograph)
 
@@ -68,8 +57,6 @@
   - **具体内容**: AI生成具体文案，用户随时调整大纲与内容，掌控全局。
 
 ## 五、TTS语音转换模块：推理、训练与开发者 API
-
-> "Stop Trying to Reinvent the Wheel."
 
 [陈广隰](https://github.com/Enchograph)
 
@@ -83,9 +70,6 @@
 - 语音转换性能优化：在念前一句时加载后一句的语音转换流程、以章节为单位加载转化队列、通过分句算法分割段落为长短大致均等的句子。
 
 ## 六、用户友好特质开发
-
-> "全球化是社会生产力和科学技术发展的客观要求和必然结果。"
-> —— 江泽民
 
 [Bigmuffin](https://github.com/Bigmuffin2005)、[Qinyre](https://github.com/qinyre)
 
